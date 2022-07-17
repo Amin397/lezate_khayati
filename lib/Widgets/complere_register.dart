@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:lezate_khayati/Controllers/Login/login_controller.dart';
-import 'package:lezate_khayati/Globals/Globals.dart';
-import 'package:lezate_khayati/Models/user_model.dart';
 import 'package:lezate_khayati/Plugins/get/get.dart';
-import 'package:lezate_khayati/Utils/Api/project_request_utils.dart';
 import 'package:lezate_khayati/Utils/color_utils.dart';
-import 'package:lezate_khayati/Utils/routing_utils.dart';
-import 'package:lezate_khayati/Utils/storage_utils.dart';
-import 'package:lezate_khayati/Utils/view_utils.dart';
 import 'package:lezate_khayati/Utils/widget_utils.dart';
+
+import '../Globals/Globals.dart';
+import '../Models/user_model.dart';
+import '../Utils/Api/project_request_utils.dart';
+import '../Utils/routing_utils.dart';
+import '../Utils/storage_utils.dart';
+import '../Utils/view_utils.dart';
 
 class CompleteRegister extends StatefulWidget {
   final String mobile;
@@ -34,6 +35,8 @@ class _CompleteRegisterState extends State<CompleteRegister> {
   FocusNode nameFocusNode = FocusNode();
   FocusNode lastNameFocusNode = FocusNode();
 
+  String refer = '';
+
   Widget header() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -53,7 +56,7 @@ class _CompleteRegisterState extends State<CompleteRegister> {
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        height: Get.height / 3,
+        height: Get.height * .3,
         width: Get.width / 1.1,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.0),
@@ -99,16 +102,14 @@ class _CompleteRegisterState extends State<CompleteRegister> {
   }
 
   Widget body() {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          name(),
-          SizedBox(
-            height: Get.height / 48,
-          ),
-          lastName(),
-        ],
-      ),
+    return Column(
+      children: [
+        name(),
+        SizedBox(
+          height: Get.height / 48,
+        ),
+        fromWhere(),
+      ],
     );
   }
 
@@ -178,21 +179,20 @@ class _CompleteRegisterState extends State<CompleteRegister> {
     widget.controller.requests
         .completeRegister(
       name: nameController.text,
-      lastName: lastNameController.text,
-      code: widget.code,
-      mobile: widget.mobile,
+      refer: widget.controller.refer,
     )
         .then((ApiResult result) {
       EasyLoading.dismiss();
       if (result.isDone) {
-        StorageUtils.saveUser(widget.mobile.toString());
-        Globals.userStream.changeUser(UserModel.fromJson(result.data['info']));
+        print(result.data);
+        // StorageUtils.saveUser(widget.mobile.toString());
+        // Globals.userStream.changeUser(UserModel.fromJson(result.data['info']));
         ViewUtils.showSuccessDialog(
-          "Go to index",
+          "ثبت نام با موفقیت انجام شد",
         );
-        // Get.offAllNamed(
-        //   RoutingUtils.index.name,
-        // );
+        Get.offAllNamed(
+          RoutingUtils.home.name,
+        );
       } else {
         ViewUtils.showErrorDialog(
           result.data['message'],
@@ -200,4 +200,154 @@ class _CompleteRegisterState extends State<CompleteRegister> {
       }
     });
   }
+
+  Widget fromWhere() {
+    return Expanded(
+      child: Container(
+        width: Get.width,
+        height: double.maxFinite,
+        child: Row(
+          children: [
+            Text(
+              'نحوه آشنایی :',
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+            PopupMenuButton<int>(
+              offset: const Offset(0, 50),
+              shape: const TooltipShape(),
+              onSelected: (item) {},
+              icon: Icon(
+                Icons.arrow_drop_down,
+                color: Colors.grey,
+              ),
+              itemBuilder: (context) => [
+                PopupMenuItem<int>(
+                  onTap: () {
+                    setState(() {
+                      refer = 'اینستاگرام';
+                    });
+                    widget.controller.changeRefer('اینستاگرام');
+                  },
+                  value: 1,
+                  child: const Text(
+                    'اینستاگرام',
+                    style: TextStyle(
+                      color: ColorUtils.textColor,
+                    ),
+                  ),
+                ),
+                PopupMenuItem<int>(
+                  onTap: () {
+                    setState(() {
+                      refer = 'تلگرام';
+                    });
+                    widget.controller.changeRefer('تلگرام');
+                  },
+                  value: 2,
+                  child: const Text('تلگرام',
+                      style: TextStyle(
+                        color: ColorUtils.textColor,
+                      )),
+                ),
+                PopupMenuItem<int>(
+                  onTap: () {
+                    setState(() {
+                      refer = 'گوگل';
+                    });
+                    widget.controller.changeRefer('گوگل');
+                  },
+                  value: 3,
+                  child: const Text(
+                    'گوگل',
+                    style: TextStyle(
+                      color: ColorUtils.textColor,
+                    ),
+                  ),
+                ),
+                PopupMenuItem<int>(
+                  onTap: () {
+                    setState(() {
+                      refer = 'واتس اپ';
+                    });
+                    widget.controller.changeRefer('واتس اپ');
+                  },
+                  value: 4,
+                  child: const Text(
+                    'واتس اپ',
+                    style: TextStyle(
+                      color: ColorUtils.textColor,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Expanded(
+              child: SizedBox(
+                height: double.maxFinite,
+                width: double.maxFinite,
+              ),
+            ),
+            Text(refer , style: TextStyle(
+              color: Colors.white,
+            ),)
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class TooltipShape extends ShapeBorder {
+  const TooltipShape();
+
+  final BorderSide _side = BorderSide.none;
+  final BorderRadiusGeometry _borderRadius = BorderRadius.zero;
+
+  @override
+  EdgeInsetsGeometry get dimensions => EdgeInsets.all(_side.width);
+
+  @override
+  Path getInnerPath(
+    Rect rect, {
+    TextDirection? textDirection,
+  }) {
+    final Path path = Path();
+
+    path.addRRect(
+      _borderRadius.resolve(textDirection).toRRect(rect).deflate(_side.width),
+    );
+
+    return path;
+  }
+
+  @override
+  Path getOuterPath(Rect rect, {TextDirection? textDirection}) {
+    final Path path = Path();
+    final RRect rrect = _borderRadius.resolve(textDirection).toRRect(rect);
+
+    path.moveTo(0, 10);
+    path.quadraticBezierTo(0, 0, 10, 0);
+    path.lineTo(rrect.width - 50, 0);
+    path.lineTo(rrect.width - 15, -15);
+    path.lineTo(rrect.width - 10, 0);
+    path.quadraticBezierTo(rrect.width, 0, rrect.width, 10);
+    path.lineTo(rrect.width, rrect.height - 10);
+    path.quadraticBezierTo(
+        rrect.width, rrect.height, rrect.width - 10, rrect.height);
+    path.lineTo(10, rrect.height);
+    path.quadraticBezierTo(0, rrect.height, 0, rrect.height - 10);
+
+    return path;
+  }
+
+  @override
+  void paint(Canvas canvas, Rect rect, {TextDirection? textDirection}) {}
+
+  @override
+  ShapeBorder scale(double t) => RoundedRectangleBorder(
+        side: _side.scale(t),
+        borderRadius: _borderRadius * t,
+      );
 }

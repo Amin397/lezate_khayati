@@ -1,282 +1,184 @@
 import 'dart:convert';
+import 'dart:developer' as dev;
+import 'dart:io';
 
-import 'package:lezate_khayati/Plugins/get/get.dart';
-import 'package:lezate_khayati/Utils/Api/WebControllers.dart';
-import 'package:lezate_khayati/Utils/Api/WebMethods.dart';
-import 'package:lezate_khayati/Utils/storage_utils.dart';
+import '../../Plugins/get/get.dart';
+import '../storage_utils.dart';
+import 'WebControllers.dart';
+import 'WebMethods.dart';
 
 class RequestsUtil extends GetConnect {
   static RequestsUtil instance = RequestsUtil();
 
   static String token = 'test';
 
-  static String baseRequestUrl = 'https://beeswash.com/admin';
+  static String baseRequestUrl = 'https://seeuland.com/api';
 
-  String _makePath(WebControllers webController, String webMethod) {
-    String controller = webController.toString().split('.').last;
-    controller = controller.capitalizeFirst!;
-    return "${RequestsUtil.baseRequestUrl}/$controller/API/${'_${webMethod.toString()}'}?token=${RequestsUtil.token}";
+  static String _makePath(WebControllers webController, WebMethods webMethod) {
+    return "${RequestsUtil.baseRequestUrl}/${webController.toString().split('.').last}/${webMethod.toString().split('.').last}";
   }
 
   Future<ApiResult> makeRequest({
-    required WebControllers webController,
-    required String webMethod,
-    Map body = const {},
+    WebControllers? webController,
+    WebMethods? webMethod,
+    required String type,
+    Map<String, dynamic> body = const {},
+    List<File> files = const [],
+    Map<String, File?> indexFiles = const {},
+    Map<String, String> header = const {},
+    bool bearer = false,
   }) async {
-    String url = _makePath(webController, webMethod);
-    print("Request url: $url\nRequest body: ${jsonEncode(body)}\n");
-    Response response = await post(
-      url,
-      body,
-      headers: {
-        'token': RequestsUtil.token,
-      },
-    );
-    print(response.body);
-    ApiResult apiResult = ApiResult();
+    String url = _makePath(webController!, webMethod!);
+    // Response response =
+    // await post(Uri.parse(url), body: body, headers: header);
+    Map<String, String> myHeaders = {};
+    if (bearer) {
+      myHeaders.addAll(
+        {
+          ...header,
+          'Authorization': "Bearer ${await StorageUtils.getToken()}",
+          // 'Content-Type': 'application/json',
+        },
+      );
+      print("Headers: $myHeaders");
+    } else {
+      myHeaders.addAll(header);
+    }
+    dev.log("Request url: $url\nRequest body: ${jsonEncode(body)}\n");
+    final form = FormData(body);
+    files.forEach((value) {
+      form.files.add(
+        MapEntry(
+          files.length == 1 ? 'input' : 'file[]',
+          MultipartFile(
+            value,
+            filename: value.path.split('/').last,
+          ),
+        ),
+      );
+    });
+    indexFiles.forEach((key, value) {
+      if (value is File) {
+        form.files.add(
+          MapEntry(
+            key,
+            MultipartFile(
+              value,
+              filename: value.path.split('/').last,
+            ),
+          ),
+        );
+      }
+    });
+    late Response response;
+
+    switch (type) {
+      case 'get':
+        {
+          response = await get(
+            url,
+            headers: myHeaders,
+          );
+          break;
+        }
+
+      default:
+        {
+          response = await post(
+            url,
+            form,
+            headers: myHeaders,
+          );
+        }
+    }
+    ApiResult apiResult = ApiResult(isDone: true, requestedMethod: "");
+    apiResult.status = response.statusCode;
+
     if (response.statusCode == 200) {
       try {
-        Map data = jsonDecode(response.body);
+        Map data = (response.body);
         apiResult.isDone = data['isDone'] == true;
-        apiResult.requestedMethod = data['requestedMethod'].toString();
         apiResult.data = data['data'];
       } catch (e) {
         apiResult.isDone = false;
-        apiResult.requestedMethod = webMethod.toString().split('.').last;
+        print(response.body);
         apiResult.data = response.body;
       }
     } else {
       apiResult.isDone = false;
     }
-    print("\nRequest url: $url\nRequest body: ${jsonEncode(body)}\nResponse: {"
+    dev.log(
+        "\nRequest url: $url\nRequest body: ${jsonEncode(body)}\nResponse: {"
         "status: ${response.statusCode}\n"
         "isDone: ${apiResult.isDone}\n"
         "requestedMethod: ${apiResult.requestedMethod}\n"
         "data: ${apiResult.data}"
         "}");
+    dev.log(jsonEncode(response.body));
     return apiResult;
   }
 
-  Future<ApiResult> userInfo(
-    String mobile,
-  ) async {
-    return makeRequest(
-      webController: WebControllers.users,
-      webMethod: WebMethods.userInfo,
-      body: {
-        'mobile': mobile,
-      },
-    );
+  Future<ApiResult> startLoginRegister({
+    required String mobileNumber,
+  }) async {
+    return await makeRequest(
+        webController: WebControllers.auth,
+        webMethod: WebMethods.sendsms,
+        type: 'post',
+        body: {'phone': mobileNumber}
+        // bearer: true,
+        );
   }
 
-  Future<ApiResult> register({
-    required String mobile,
+  Future<ApiResult> sendCode({
+    required String mobileNumber,
     required String code,
   }) async {
     return await makeRequest(
-      webController: WebControllers.users,
-      webMethod: WebMethods.register,
-      body: {
-        'mobile': mobile,
-        'code': code,
-      },
-    ).timeout(const Duration(seconds: 50));
+        webController: WebControllers.auth,
+        webMethod: WebMethods.sendcode,
+        type: 'post',
+        body: {
+          'phone': mobileNumber,
+          'code': code,
+        });
   }
 
-  Future<ApiResult> forgotPassword(String mobile) async {
+  Future<ApiResult> getUser() async {
     return await makeRequest(
-      body: {
-        'mobile': mobile,
-      },
-      webMethod: WebMethods.forgotPassword,
-      webController: WebControllers.users,
-    );
-  }
-
-  Future<ApiResult> forgotPasswordConfirm(String mobile, String code) async {
-    return await makeRequest(
-      body: {
-        'mobile': mobile,
-        'code': code,
-      },
-      webMethod: WebMethods.forgotPasswordConfirm,
-      webController: WebControllers.users,
-    );
-  }
-
-  Future<ApiResult> login({
-    required String mobile,
-    required String password,
-  }) async {
-    return await makeRequest(
-      webController: WebControllers.users,
-      webMethod: WebMethods.login,
-      body: {
-        'mobile': mobile,
-        'code': password,
-      },
-    ).timeout(const Duration(seconds: 50));
-  }
-
-  Future<ApiResult> startLoginRegister({required String mobile}) async {
-    return await makeRequest(
-      body: {
-        'mobile': mobile,
-      },
-      webMethod: WebMethods.startLoginRegister,
-      webController: WebControllers.users,
-    );
-  }
-
-  Future<ApiResult> getServices() async {
-    return await makeRequest(
-      webMethod: WebMethods.list,
-      webController: WebControllers.services,
-    );
-  }
-
-  Future<ApiResult> getSizes() async {
-    return await makeRequest(
-      webMethod: WebMethods.list,
-      webController: WebControllers.sizes,
-    );
-  }
-
-  Future<ApiResult> singleService(int serviceId) async {
-    return await makeRequest(
-      body: {
-        'serviceId': serviceId.toString(),
-      },
-      webMethod: WebMethods.single,
-      webController: WebControllers.services,
+      type: 'get',
+      webController: WebControllers.auth,
+      webMethod: WebMethods.profile,
+      bearer: true
     );
   }
 
   Future<ApiResult> completeRegister({
     required String name,
-    required String lastName,
-    required String code,
-    required String mobile,
+    required String refer,
   }) async {
     return await makeRequest(
-      webController: WebControllers.users,
-      webMethod: WebMethods.completeRegister,
-      body: {
-        "name": name,
-        "lastName": lastName,
-        "mobile": mobile,
-        "code": code,
-      },
-    ).timeout(const Duration(seconds: 50));
-  }
-
-  Future<ApiResult> addressList() async {
-    return await makeRequest(
-      webController: WebControllers.users,
-      webMethod: WebMethods.addressList,
-      body: {
-        "mobile": await StorageUtils.getMobile(),
-      },
-    ).timeout(const Duration(seconds: 50));
-  }
-
-  Future<ApiResult> submitAddress({
-    required double latitude,
-    required double longitude,
-    required String title,
-    required String plaque,
-    required String address,
-  }) async {
-    return await makeRequest(
-      webController: WebControllers.users,
-      webMethod: WebMethods.submitAddress,
-      body: {
-        "latitude": latitude.toString(),
-        "longitude": longitude.toString(),
-        "title": title.toString(),
-        "plaque": plaque.toString(),
-        "address": address.toString(),
-        'mobile': await StorageUtils.getMobile(),
-      },
-    ).timeout(const Duration(seconds: 50));
-  }
-
-  Future<ApiResult> deleteAddress({required String id}) async {
-    return await makeRequest(
-      webController: WebControllers.users,
-      webMethod: WebMethods.deleteAddress,
-      body: {
-        "id": id,
-        'mobile': await StorageUtils.getMobile(),
-      },
-    ).timeout(const Duration(seconds: 50));
-  }
-
-  Future<ApiResult> orders() async {
-    return await makeRequest(
-      webController: WebControllers.users,
-      webMethod: WebMethods.orders,
-      body: {
-        'mobile': await StorageUtils.getMobile(),
-      },
-    ).timeout(const Duration(seconds: 50));
-  }
-
-  Future<ApiResult> submitOrder({
-    required List<int> services,
-    required int addressId,
-    required int sizeId,
-  }) async {
-    return await makeRequest(
-      webController: WebControllers.users,
-      webMethod: WebMethods.submitOrder,
-      body: {
-        "addressId": addressId.toString(),
-        "sizeId": sizeId.toString(),
-        "services": jsonEncode(services),
-        'mobile': await StorageUtils.getMobile(),
-      },
-    ).timeout(const Duration(seconds: 50));
-  }
-
-  Future<ApiResult> editAddress({
-    required String title,
-    required String plaque,
-    required String address,
-    required int addressId,
-  }) async {
-    return await makeRequest(
-      webController: WebControllers.users,
-      webMethod: WebMethods.editAddress,
-      body: {
-        "title": title.toString(),
-        "plaque": plaque.toString(),
-        "address": address.toString(),
-        'mobile': await StorageUtils.getMobile(),
-        'addressId': addressId.toString(),
-      },
-    ).timeout(const Duration(seconds: 50));
-  }
-
-  Future<ApiResult> appVersion(String version) async {
-    return await makeRequest(
-      webController: WebControllers.users,
-      webMethod: WebMethods.appVersion,
-      body: {
-        'version': version.toString(),
-      },
-    ).timeout(const Duration(seconds: 50));
+        type: 'post',
+        webController: WebControllers.auth,
+        webMethod: WebMethods.username,
+        bearer: true,
+        body: {
+          'name': name,
+          // 'refer': refer,
+        });
   }
 }
 
 class ApiResult {
-  late bool isDone;
-  String? requestedMethod;
+  bool isDone;
+  String requestedMethod;
   dynamic data;
+  dynamic status;
 
   ApiResult({
-    this.isDone = false,
-    this.requestedMethod,
+    required this.isDone,
+    required this.requestedMethod,
     this.data,
+    this.status,
   });
 }

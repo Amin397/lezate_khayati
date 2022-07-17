@@ -15,4 +15,25 @@ class StorageUtils {
       'mobile',
     );
   }
+
+  static Future<String> getToken() async {
+    final box = GetStorage();
+    return box
+        .read(
+          'token',
+        )
+        .toString()
+        .trim();
+  }
+
+  static Future<void> saveToken(String data) async {
+    print("Token Is Being Saved: $data");
+    final box = GetStorage();
+    await box.write('token', data);
+  }
+
+  static logout() async {
+    final box = GetStorage();
+    await box.remove('token');
+  }
 }

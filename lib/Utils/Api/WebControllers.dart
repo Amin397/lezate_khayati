@@ -1,5 +1,4 @@
 enum WebControllers {
-  users,
-  services,
-  sizes,
+  account,
+  auth,
 }

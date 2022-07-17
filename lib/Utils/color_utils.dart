@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 class ColorUtil {
+
+
+
   late final Color color;
 
   ColorUtil([int? colorValue]) {
@@ -35,6 +38,7 @@ class ColorUtil {
 }
 
 class ColorUtils {
+  static const Color textColor = Color(0xff717070);
   static MaterialColor black = ColorUtil(0xff181818).toMaterial();
   static MaterialColor blue = ColorUtil(Colors.blue.value).toMaterial();
   static MaterialColor yellow = ColorUtil(0xffFFCB4A).toMaterial();
@@ -43,4 +47,5 @@ class ColorUtils {
   static MaterialColor red = ColorUtil(0xffFA1616).toMaterial();
   static MaterialColor gray = ColorUtil(0xff181818).toMaterial();
   static MaterialColor purple = ColorUtil(0xff8c32df).toMaterial();
+
 }

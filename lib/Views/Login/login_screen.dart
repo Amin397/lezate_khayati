@@ -10,11 +10,34 @@ import 'package:lezate_khayati/Utils/widget_utils.dart';
 import 'package:lezate_khayati/Widgets/Components/bezier_container.dart';
 import 'package:lezate_khayati/Widgets/Components/circles.dart';
 
+import '../../Utils/logic_utils.dart';
+
 class LoginScreen extends StatelessWidget {
   final LoginController controller = Get.put(
     LoginController(),
   );
+
   LoginScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      alignment: Alignment.topCenter,
+      children: [
+        Scaffold(
+            // backgroundColor: ColorUtils.black,
+            ),
+        ...backGroundItems(),
+        Scaffold(
+          resizeToAvoidBottomInset: false,
+          backgroundColor: Colors.transparent,
+          body: buildBody(),
+        ),
+      ],
+    );
+  }
+
+
   List backGroundItems() {
     return [
       Positioned(
@@ -78,23 +101,6 @@ class LoginScreen extends StatelessWidget {
     ];
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.topCenter,
-      children: [
-        Scaffold(
-          backgroundColor: ColorUtils.black,
-        ),
-        ...backGroundItems(),
-        Scaffold(
-          backgroundColor: Colors.transparent,
-          body: buildBody(),
-        ),
-      ],
-    );
-  }
-
   Widget buildBody() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -103,7 +109,8 @@ class LoginScreen extends StatelessWidget {
           ViewUtils.sizedBox(48),
           Image.asset(
             'assets/img/logo.png',
-            width: Get.width / 0.8,
+            width: Get.width * .7,
+            height: Get.width * .7,
             fit: BoxFit.fill,
           ),
           AutoSizeText(
@@ -214,7 +221,10 @@ class LoginScreen extends StatelessWidget {
                 height: Get.height / 21,
                 decoration: MyNeumorphicDecoration(
                   borderRadius: BorderRadius.circular(10.0),
-                  color: ColorUtils.black,
+                  color: Colors.white,
+                  border: Border.all(
+                    color: Colors.grey.shade100,
+                  ),
                 ),
                 curveType: CurveType.flat,
                 bevel: 8,
@@ -239,8 +249,8 @@ class LoginScreen extends StatelessWidget {
                     ),
                     Text(
                       controller.mobileController.value.text,
-                      style: const TextStyle(
-                        color: Colors.white,
+                      style: TextStyle(
+                        color: ColorUtils.textColor,
                         letterSpacing: 1.9,
                         fontSize: 15.0,
                       ),
@@ -248,7 +258,7 @@ class LoginScreen extends StatelessWidget {
                     Container(
                       decoration: BoxDecoration(
                         border: Border.all(
-                          color: ColorUtils.black,
+                          color: Colors.transparent,
                         ),
                         borderRadius: BorderRadius.circular(10.0),
                       ),
@@ -257,7 +267,7 @@ class LoginScreen extends StatelessWidget {
                         child: Icon(
                           Icons.edit,
                           size: 17.0,
-                          color: ColorUtils.black,
+                          color: Colors.transparent,
                         ),
                       ),
                     ),
@@ -268,11 +278,19 @@ class LoginScreen extends StatelessWidget {
           : WidgetUtils.textField(
               focusNode: controller.mobileFocusNode,
               controller: controller.mobileController.value,
-              onChanged: controller.onChange,
+              backgroundColor: Colors.white,
+              onChanged: (s){
+                LogicUtils.onChange(
+                  string: s,
+                  textController: controller.mobileController.value,
+                  func: controller.submit,
+                );
+              },
               textAlign: TextAlign.center,
               formatter: [
                 LengthLimitingTextInputFormatter(11),
               ],
+
               keyboardType: TextInputType.phone,
               title: "شماره موبایل",
             ),
@@ -294,11 +312,12 @@ class LoginScreen extends StatelessWidget {
       focusNode: controller.codeFocusNode,
       controller: controller.codeController,
       textAlign: TextAlign.center,
+      backgroundColor: Colors.white,
       formatter: [
         LengthLimitingTextInputFormatter(4),
       ],
       onChanged: (String string) {
-        if (string.length > 3) {
+        if (string.length == 6) {
           controller.submit();
         }
       },

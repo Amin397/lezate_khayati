@@ -46,7 +46,7 @@ class WidgetUtils {
         obscureText: password,
         textAlignVertical: TextAlignVertical.bottom,
         style: TextStyle(
-          color: Colors.white,
+          color: ColorUtils.textColor,
           letterSpacing: letterSpacing,
           fontSize: 15.0,
         ),
@@ -85,7 +85,7 @@ class WidgetUtils {
         decoration: InputDecoration(
           hintText: title,
           hintStyle: TextStyle(
-            color: Colors.white.withOpacity(0.3),
+            color: ColorUtils.textColor,
             fontSize: 12.0,
           ),
           hintMaxLines: 1,
