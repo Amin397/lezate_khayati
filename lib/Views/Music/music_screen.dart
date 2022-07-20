@@ -54,6 +54,7 @@ class MusicScreen extends StatelessWidget {
         height: Get.height * .05,
         padding: paddingAll4,
         child: TextField(
+
           controller: controller.searchTextController,
           textAlign: TextAlign.start,
           maxLines: 1,
@@ -63,6 +64,7 @@ class MusicScreen extends StatelessWidget {
             fontSize: 15.0,
           ),
           decoration: InputDecoration(
+            suffixIcon: Icon(Icons.search),
             hintText: 'جستجو',
             hintStyle: TextStyle(color: Colors.grey[500]),
             border: InputBorder.none,

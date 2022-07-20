@@ -62,6 +62,7 @@ class ChatScreen extends StatelessWidget {
             fontSize: 15.0,
           ),
           decoration: InputDecoration(
+            suffixIcon: Icon(Icons.search),
             hintText: 'جستجو',
             hintStyle: TextStyle(
               color: Colors.grey[500],
