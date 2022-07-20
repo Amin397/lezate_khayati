@@ -44,7 +44,7 @@ class ColorUtils {
   static MaterialColor yellow = ColorUtil(0xffFFCB4A).toMaterial();
   static MaterialColor orange = ColorUtil(0xffFF5F00).toMaterial();
   static MaterialColor green = ColorUtil(0xff00C897).toMaterial();
-  static MaterialColor red = ColorUtil(0xffFA1616).toMaterial();
+  static MaterialColor red = ColorUtil(0xffFF3C3C).toMaterial();
   static MaterialColor gray = ColorUtil(0xff181818).toMaterial();
   static MaterialColor purple = ColorUtil(0xff8c32df).toMaterial();
 
