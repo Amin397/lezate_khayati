@@ -5,6 +5,7 @@ import 'package:lezate_khayati/Utils/Consts.dart';
 import '../../Controllers/Music/music_controller.dart';
 import '../../Plugins/neu/src/widget/container.dart';
 import '../../Utils/color_utils.dart';
+import 'Widget/build_music_fillter_widget.dart';
 import 'Widget/build_music_item.dart';
 
 class MusicScreen extends StatelessWidget {
@@ -25,6 +26,10 @@ class MusicScreen extends StatelessWidget {
             height: Get.height * .04,
           ),
           _buildSearchBox(),
+          SizedBox(
+            height: Get.height * .015,
+          ),
+          BuildMusicFilterWidget(controller:controller,),
           SizedBox(
             height: Get.height * .015,
           ),

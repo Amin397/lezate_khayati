@@ -25,11 +25,11 @@ class MainScreen extends StatelessWidget {
           controller: controller.pageController,
           physics: const NeverScrollableScrollPhysics(),
           children: [
-            ProfileScreen(),
             MusicScreen(),
-            HomeScreen(),
             ChatScreen(),
-            TrainingScreen()
+            HomeScreen(),
+            TrainingScreen(),
+            ProfileScreen(),
           ],
         ),
       ),

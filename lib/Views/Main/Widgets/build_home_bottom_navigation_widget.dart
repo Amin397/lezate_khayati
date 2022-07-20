@@ -19,14 +19,7 @@ class BuildHomeBottomNavigationWidget extends StatelessWidget {
           controller.changePage(i);
         },
         items: [
-          SalomonBottomBarItem(
-            icon: Icon(
-              Icons.person,
-              color: Colors.teal,
-            ),
-            title: Text("پروفایل"),
-            selectedColor: Colors.teal,
-          ),
+
           SalomonBottomBarItem(
             icon: Icon(
               Icons.music_note,
@@ -34,14 +27,6 @@ class BuildHomeBottomNavigationWidget extends StatelessWidget {
             ),
             title: Text("موزیک"),
             selectedColor: Colors.yellow.shade800,
-          ),
-          SalomonBottomBarItem(
-            icon: Icon(
-              Icons.home,
-              color: Colors.purple,
-            ),
-            title: Text("خانه"),
-            selectedColor: Colors.purple,
           ),
           SalomonBottomBarItem(
             icon: Icon(
@@ -53,11 +38,28 @@ class BuildHomeBottomNavigationWidget extends StatelessWidget {
           ),
           SalomonBottomBarItem(
             icon: Icon(
+              Icons.home,
+              color: Colors.purple,
+            ),
+            title: Text("خانه"),
+            selectedColor: Colors.purple,
+          ),
+
+          SalomonBottomBarItem(
+            icon: Icon(
               Icons.search,
               color: Colors.red,
             ),
             title: Text("آموزش ها"),
             selectedColor: Colors.red,
+          ),
+          SalomonBottomBarItem(
+            icon: Icon(
+              Icons.person,
+              color: Colors.teal,
+            ),
+            title: Text("پروفایل"),
+            selectedColor: Colors.teal,
           ),
         ],
       ),

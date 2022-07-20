@@ -61,48 +61,8 @@ class MusicController extends GetxController with SingleGetTickerProviderMixin{
 
   @override
   void onInit() {
-    playAudio();
     super.onInit();
   }
-  // void _preparePlayers() async {
-  //   ///audio-1
-  //   ///
-  //   await file1.writeAsBytes(
-  //       (await loadAsset('assets/music/alone.mp3')).buffer.asUint8List());
-  //   playerController.preparePlayer(file1.path);
-  //
-  // }
-
-  // void _getDir() async {
-  //   appDirectory = await getApplicationDocumentsDirectory();
-  //   _preparePlayers();
-  //   path = "${appDirectory.path}/music.aac";
-  // }
-
-  playAudio() async {
-    // await audioPlayer.play(
-    //   widget.file!.url!.replaceAll('http', 'https'),
-    //   volume: 1.0,
-    // );
-
-    // audioPlayer.onAudioPositionChanged.listen((pos) {
-    //   if(mounted){
-    //     setState(() {
-    //       position = pos;
-    //     });
-    //   }
-    // });
-    //
-    // audioPlayer.onDurationChanged.listen((dur) {
-    //   totalDuration = dur;
-    // });
-    //
-    // audioPlayer.onPlayerCompletion.listen((event) {
-    //   audioPlayer.seek(Duration.zero);
-    // });
-  }
-
-
 
 
 
