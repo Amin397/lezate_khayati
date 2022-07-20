@@ -187,11 +187,14 @@ class _CompleteRegisterState extends State<CompleteRegister> {
         print(result.data);
         // StorageUtils.saveUser(widget.mobile.toString());
         // Globals.userStream.changeUser(UserModel.fromJson(result.data['info']));
+
+      Future.delayed(Duration(seconds: 3),(){
+        Get.offAllNamed(
+          RoutingUtils.main.name,
+        );
+      });
         ViewUtils.showSuccessDialog(
           "ثبت نام با موفقیت انجام شد",
-        );
-        Get.offAllNamed(
-          RoutingUtils.home.name,
         );
       } else {
         ViewUtils.showErrorDialog(

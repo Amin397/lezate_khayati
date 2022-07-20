@@ -70,25 +70,27 @@ class LoginController extends GetxController {
     EasyLoading.dismiss();
     if (result.isDone) {
       print(result.data);
-      if(result.data['method'] == 'register'){
+      if (result.data['method'] == 'register') {
         StorageUtils.saveToken(result.data['token']);
+
         ///register
-         Get.dialog(
-                Directionality(
-                  textDirection: TextDirection.rtl,
-                  child: CompleteRegister(
-                    mobile: mobileController.value.text,
-                    code: codeController.value.text,
-                    controller: this,
-                  ),
-                ),
-                barrierColor: Colors.black.withOpacity(0.8),
-                barrierDismissible: true,
-              );
-      }else{
+        Get.dialog(
+          Directionality(
+            textDirection: TextDirection.rtl,
+            child: CompleteRegister(
+              mobile: mobileController.value.text,
+              code: codeController.value.text,
+              controller: this,
+            ),
+          ),
+          barrierColor: Colors.black.withOpacity(0.8),
+          barrierDismissible: true,
+        );
+      } else {
+        login();
+
         ///login
       }
-
     } else {
       ViewUtils.showErrorDialog(
         result.data.toString(),
@@ -110,9 +112,7 @@ class LoginController extends GetxController {
     //   return;
     // }
     EasyLoading.show();
-    ApiResult result = await requests.getUser(
-
-    );
+    ApiResult result = await requests.getUser();
     EasyLoading.dismiss();
     if (result.isDone) {
       ViewUtils.showSuccessDialog(
@@ -152,7 +152,7 @@ class LoginController extends GetxController {
     // isLogin.value = result.data['status'] == 1;
     // if (isLogin.value) {
     //   passwordNode.requestFocus();
-      // codeFocusNode.requestFocus();
+    // codeFocusNode.requestFocus();
     // }
     isRegister(true);
     // isRegister.value =
@@ -219,13 +219,17 @@ class LoginController extends GetxController {
   void changeRefer(String s) {
     refer = s;
   }
+
+  void toMainPage() async {
+    ViewUtils.showSuccessDialog(
+      "با موفقیت وارد شدید",
+    );
+    Future.delayed(Duration(seconds: 3), () {
+      Get.offAllNamed(
+        RoutingUtils.main.name,
+      );
+    });
+  }
 }
 
-void toMainPage() async {
-  ViewUtils.showSuccessDialog(
-    "با موفقیت وارد شدید",
-  );
-  Get.offAndToNamed(
-    RoutingUtils.home.name,
-  );
-}
+

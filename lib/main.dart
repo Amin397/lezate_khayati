@@ -4,9 +4,9 @@ import 'package:get_storage/get_storage.dart';
 import 'package:lezate_khayati/Utils/Api/project_request_utils.dart';
 import 'package:lezate_khayati/Utils/color_utils.dart';
 import 'package:lezate_khayati/Utils/routing_utils.dart';
-import 'package:lezate_khayati/Views/Splash/splash_screen.dart';
 
 import 'Plugins/get/get.dart';
+import 'Views/Main/main_screen.dart';
 
 void main() async {
   await GetStorage.init();
@@ -29,9 +29,10 @@ void main() async {
       getPages: [
         RoutingUtils.splash,
         RoutingUtils.login,
+        RoutingUtils.main,
       ],
       builder: EasyLoading.init(),
-      home: SplashScreen(),
+      home: MainScreen(),
     ),
   );
 }

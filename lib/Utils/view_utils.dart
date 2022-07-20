@@ -62,6 +62,27 @@ class ViewUtils {
     );
   }
 
+  static List<BoxShadow> neoShadow() {
+    return [
+      // Shadow for top-left corner
+      const BoxShadow(
+        color: Colors.grey,
+        offset: Offset(5, 5),
+        blurRadius: 10,
+        spreadRadius: 1,
+      ),
+      // Shadow for bottom-right corner
+      const BoxShadow(
+        color: Colors.white,
+        offset: Offset(-5, -5),
+        blurRadius: 10,
+        spreadRadius: 4,
+      ),
+    ];
+  }
+
+
+
   static void showErrorDialog([
     String? text = "خطایی رخ داد",
     String? title = "خطایی رخ داد",

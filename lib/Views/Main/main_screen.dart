@@ -2,7 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:lezate_khayati/Plugins/get/get.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
-import '../../Controllers/Home/main_controller.dart';
+import '../../Controllers/Main/main_controller.dart';
+import '../Chat/chat_screen.dart';
+import '../Home/home_screen.dart';
+import '../Music/music_screen.dart';
+import '../Profile/profile_screen.dart';
+import '../Training/training_screen.dart';
 import 'Widgets/build_home_bottom_navigation_widget.dart';
 
 class MainScreen extends StatelessWidget {
@@ -20,9 +25,11 @@ class MainScreen extends StatelessWidget {
           controller: controller.pageController,
           physics: const NeverScrollableScrollPhysics(),
           children: [
-            // ProfileScreen(),
-            // MusicScreen(),
-            // HomeScreen()
+            ProfileScreen(),
+            MusicScreen(),
+            HomeScreen(),
+            ChatScreen(),
+            TrainingScreen()
           ],
         ),
       ),

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:lezate_khayati/Controllers/Home/main_controller.dart';
 import 'package:lezate_khayati/Plugins/get/get.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
+
+import '../../../Controllers/Main/main_controller.dart';
 
 class BuildHomeBottomNavigationWidget extends StatelessWidget {
   const BuildHomeBottomNavigationWidget({Key? key, required this.controller})
