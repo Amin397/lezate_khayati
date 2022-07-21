@@ -1,3 +1,4 @@
+import 'package:lezate_khayati/Controllers/Main/main_controller.dart';
 import 'package:lezate_khayati/Plugins/get/get.dart';
 import 'package:lezate_khayati/Views/Login/login_screen.dart';
 import 'package:lezate_khayati/Views/Splash/splash_screen.dart';

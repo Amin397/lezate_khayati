@@ -8,10 +8,15 @@ import '../../Utils/color_utils.dart';
 import 'Widget/build_music_fillter_widget.dart';
 import 'Widget/build_music_item.dart';
 
-class MusicScreen extends StatelessWidget {
-  final MusicController controller = Get.put(MusicController());
-
+class MusicScreen extends StatefulWidget {
   MusicScreen({Key? key}) : super(key: key);
+
+  @override
+  State<MusicScreen> createState() => _MusicScreenState();
+}
+
+class _MusicScreenState extends State<MusicScreen> {
+  final MusicController controller = Get.put(MusicController());
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +34,9 @@ class MusicScreen extends StatelessWidget {
           SizedBox(
             height: Get.height * .015,
           ),
-          BuildMusicFilterWidget(controller:controller,),
+          BuildMusicFilterWidget(
+            controller: controller,
+          ),
           SizedBox(
             height: Get.height * .015,
           ),
@@ -43,7 +50,9 @@ class MusicScreen extends StatelessWidget {
     return Neumorphic(
       style: NeumorphicStyle(
         shape: NeumorphicShape.flat,
-        boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(12)),
+        boxShape: NeumorphicBoxShape.roundRect(
+          BorderRadius.circular(12),
+        ),
         depth: -3,
         lightSource: LightSource.topLeft,
         color: Colors.grey[100],
@@ -54,7 +63,6 @@ class MusicScreen extends StatelessWidget {
         height: Get.height * .05,
         padding: paddingAll4,
         child: TextField(
-
           controller: controller.searchTextController,
           textAlign: TextAlign.start,
           maxLines: 1,
@@ -69,6 +77,9 @@ class MusicScreen extends StatelessWidget {
             hintStyle: TextStyle(color: Colors.grey[500]),
             border: InputBorder.none,
           ),
+          onChanged: (text){
+            controller.searchItem(text:text);
+          },
           textAlignVertical: TextAlignVertical.bottom,
         ),
       ),
@@ -80,14 +91,31 @@ class MusicScreen extends StatelessWidget {
       child: SizedBox(
         height: double.maxFinite,
         width: double.maxFinite,
-        child: ListView.builder(
-          physics: const BouncingScrollPhysics(),
-          itemCount: controller.musicList.length,
-          itemBuilder: (BuildContext context, int index) => BuildMusicItem(
-            item: controller.musicList[index],
-            index: index,
-            controller: controller,
-          ),
+        child: Obx(
+          () => (controller.isLoaded.isTrue)
+              ? (controller.musicList.isEmpty)
+                  ? Center(
+                      child: Text(
+                        'اطلاعاتی یافت نشد',
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 10.0,
+                        ),
+                      ),
+                    )
+                  : ListView.builder(
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: controller.musicList.where((element) => element.isShow!.isTrue).toList().length,
+                      itemBuilder: (BuildContext context, int index) =>
+                          BuildMusicItem(
+                        item: controller.musicList[index],
+                        index: index,
+                        controller: controller,
+                      ),
+                    )
+              : Center(
+                  child: CircularProgressIndicator(),
+                ),
         ),
       ),
     );

@@ -167,6 +167,14 @@ class RequestsUtil extends GetConnect {
           // 'refer': refer,
         });
   }
+
+  Future<ApiResult> getMusics() async {
+    return await makeRequest(
+        type: 'post',
+        webController: WebControllers.musics,
+        webMethod: WebMethods.archive,
+    );
+  }
 }
 
 class ApiResult {

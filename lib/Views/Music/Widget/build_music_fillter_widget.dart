@@ -37,8 +37,12 @@ class BuildMusicFilterWidget extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Icon(Icons.filter_list_rounded ,),
-              Text('فیلتر بر اساس')
+              Icon(
+                Icons.filter_list_rounded,
+              ),
+              Text(
+                'فیلتر بر اساس',
+              )
             ],
           ),
         ),
