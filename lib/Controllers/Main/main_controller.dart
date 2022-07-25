@@ -18,7 +18,6 @@ class MainController extends GetxController {
       // duration: Duration(milliseconds: 300),
       // curve: Curves.easeIn,
     );
-
     switch(i){
       case 0:{
         Get.delete<ChatController>();

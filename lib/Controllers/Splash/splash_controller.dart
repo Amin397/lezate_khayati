@@ -19,8 +19,6 @@ class SplashController extends GetxController {
 
     getData();
 
-
-
     super.onInit();
   }
 

@@ -109,10 +109,18 @@ class MusicController extends GetxController with SingleGetTickerProviderMixin {
 
   @override
   void dispose() {
-    musicList.forEach((element) {
-      element.audioPlayer!.dispose();
-    });
     super.dispose();
+    print('dispose');
+    musicList.clear();
+  }
+
+  @override
+  void onClose() {
+    musicList.forEach((element) async{
+      await element.audioPlayer!.dispose();
+    });
+    onDelete();
+    super.onClose();
   }
 
   void seekMusic({required double newPosition, required MusicModel item}) {

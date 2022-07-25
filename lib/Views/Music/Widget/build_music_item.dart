@@ -48,21 +48,23 @@ class BuildMusicItem extends StatelessWidget {
             width: Get.width,
             child: Column(
               children: [
-                (item.isPlayed!.isTrue)?Container(
-                  width: Get.width,
-                  height: Get.height * .2,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(12.0),
-                    ),
-                    child: Image(
-                      image: NetworkImage(
-                        item.img!,
-                      ),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ):SizedBox(),
+                (item.isPlayed!.isTrue)
+                    ? Container(
+                        width: Get.width,
+                        height: Get.height * .2,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(12.0),
+                          ),
+                          child: Image(
+                            image: NetworkImage(
+                              item.img!,
+                            ),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      )
+                    : SizedBox(),
                 Expanded(
                   child: SizedBox(
                     height: double.maxFinite,
@@ -124,20 +126,24 @@ class BuildMusicItem extends StatelessWidget {
                                     child: GetBuilder(
                                       init: controller,
                                       id: 'audio',
-                                      builder: (ctx) => Slider(
-                                        activeColor: const Color(0xfff00d9be),
-                                        value: item.position!.inMilliseconds
-                                            .toDouble(),
-                                        min: 0,
-                                        max: item.totalDuration!.inMilliseconds
-                                                .toDouble() +
-                                            10,
-                                        onChanged: (value) {
-                                          controller.seekMusic(
-                                            newPosition: value,
-                                            item: item,
-                                          );
-                                        },
+                                      builder: (ctx) => Directionality(
+                                        textDirection: TextDirection.ltr,
+                                        child: Slider(
+                                          activeColor: const Color(0xfff00d9be),
+                                          value: item.position!.inMilliseconds
+                                              .toDouble(),
+                                          min: 0,
+                                          max: item
+                                                  .totalDuration!.inMilliseconds
+                                                  .toDouble() +
+                                              10,
+                                          onChanged: (value) {
+                                            controller.seekMusic(
+                                              newPosition: value,
+                                              item: item,
+                                            );
+                                          },
+                                        ),
                                       ),
                                     ),
                                   ),

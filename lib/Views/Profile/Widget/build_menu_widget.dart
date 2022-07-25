@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:lezate_khayati/Controllers/Profile/profile_controller.dart';
 import 'package:lezate_khayati/Plugins/get/get.dart';
 import 'package:lezate_khayati/Utils/Consts.dart';
@@ -26,40 +27,76 @@ class BuildMenuWidget extends StatelessWidget {
             SizedBox(
               height: Get.height * .05,
             ),
-            _buildMenuItem(
-              id: 0,
-              title: 'کلاس های من',
-              image: 'assets/img/myClass.png',
+            AnimationConfiguration.synchronized(
+              child: SlideAnimation(
+                child: FadeInAnimation(
+                  child: _buildMenuItem(
+                    id: 0,
+                    title: 'کلاس های من',
+                    image: 'assets/img/myClass.png',
+                  ),
+                ),
+              ),
             ),
             Divider(),
-            _buildMenuItem(
-              id: 1,
-              title: 'رویداد های آموزشی من',
-              image: 'assets/img/myTrainingEvent.png',
+            AnimationConfiguration.synchronized(
+              child: SlideAnimation(
+                child: FadeInAnimation(
+                  child: _buildMenuItem(
+                    id: 1,
+                    title: 'رویداد های آموزشی من',
+                    image: 'assets/img/myTrainingEvent.png',
+                  ),
+                ),
+              ),
             ),
             Divider(),
-            _buildMenuItem(
-              id: 2,
-              title: 'سفارش های من',
-              image: 'assets/img/myOrder.png',
+            AnimationConfiguration.synchronized(
+              child: SlideAnimation(
+                child: FadeInAnimation(
+                  child: _buildMenuItem(
+                    id: 2,
+                    title: 'سفارش های من',
+                    image: 'assets/img/myOrder.png',
+                  ),
+                ),
+              ),
             ),
             Divider(),
-            _buildMenuItem(
-              id: 3,
-              title: 'پرسش های من',
-              image: 'assets/img/myQuestion.png',
+            AnimationConfiguration.synchronized(
+              child: SlideAnimation(
+                child: FadeInAnimation(
+                  child: _buildMenuItem(
+                    id: 3,
+                    title: 'پرسش های من',
+                    image: 'assets/img/myQuestion.png',
+                  ),
+                ),
+              ),
             ),
             Divider(),
-            _buildMenuItem(
-              id: 4,
-              title: 'لیست علاقه مندی ها',
-              image: 'assets/img/favorite.png',
+            AnimationConfiguration.synchronized(
+              child: SlideAnimation(
+                child: FadeInAnimation(
+                  child: _buildMenuItem(
+                    id: 4,
+                    title: 'لیست علاقه مندی ها',
+                    image: 'assets/img/favorite.png',
+                  ),
+                ),
+              ),
             ),
             Divider(),
-            _buildMenuItem(
-              id: 5,
-              title: 'ویرایش پروفایل',
-              image: 'assets/img/editProfile.png',
+            AnimationConfiguration.synchronized(
+              child: SlideAnimation(
+                child: FadeInAnimation(
+                  child: _buildMenuItem(
+                    id: 5,
+                    title: 'ویرایش پروفایل',
+                    image: 'assets/img/editProfile.png',
+                  ),
+                ),
+              ),
             ),
             Divider(),
           ],

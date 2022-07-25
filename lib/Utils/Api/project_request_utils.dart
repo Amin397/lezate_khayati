@@ -14,8 +14,13 @@ class RequestsUtil extends GetConnect {
 
   static String baseRequestUrl = 'https://seeuland.com/api';
 
-  static String _makePath(WebControllers webController, WebMethods webMethod) {
-    return "${RequestsUtil.baseRequestUrl}/${webController.toString().split('.').last}/${webMethod.toString().split('.').last}";
+  static String _makePath(WebControllers? webController, WebMethods? webMethod) {
+    if(webMethod == null){
+      return "${RequestsUtil.baseRequestUrl}/${webController.toString().split('.').last}";
+    }else{
+      return "${RequestsUtil.baseRequestUrl}/${webController.toString().split('.').last}/${webMethod.toString().split('.').last}";
+    }
+
   }
 
   Future<ApiResult> makeRequest({
@@ -28,7 +33,7 @@ class RequestsUtil extends GetConnect {
     Map<String, String> header = const {},
     bool bearer = false,
   }) async {
-    String url = _makePath(webController!, webMethod!);
+    String url = _makePath(webController, webMethod);
     // Response response =
     // await post(Uri.parse(url), body: body, headers: header);
     Map<String, String> myHeaders = {};
@@ -150,6 +155,23 @@ class RequestsUtil extends GetConnect {
       webController: WebControllers.auth,
       webMethod: WebMethods.profile,
       bearer: true
+    );
+  }
+
+
+  Future<ApiResult> getBooks() async {
+    return await makeRequest(
+      type: 'get',
+      webController: WebControllers.books,
+      webMethod: WebMethods.archive,
+    );
+  }
+
+  Future<ApiResult> getArticles() async {
+    return await makeRequest(
+      type: 'post',
+      webController: WebControllers.posts,
+      // webMethod: WebMethods.archive,
     );
   }
 

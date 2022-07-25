@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:lezate_khayati/Controllers/Main/main_controller.dart';
 import 'package:lezate_khayati/Utils/Api/project_request_utils.dart';
 import 'package:lezate_khayati/Utils/color_utils.dart';
 import 'package:lezate_khayati/Utils/routing_utils.dart';
+import 'package:lezate_khayati/Views/Main/main_screen.dart';
+import 'package:lezate_khayati/Views/Splash/splash_screen.dart';
 
 import 'Plugins/get/get.dart';
-import 'Views/Main/main_screen.dart';
 
 void main() async {
   await GetStorage.init();
@@ -31,6 +31,10 @@ void main() async {
         RoutingUtils.splash,
         RoutingUtils.login,
         RoutingUtils.main,
+        RoutingUtils.books,
+        RoutingUtils.classes,
+        RoutingUtils.publicTraining,
+        RoutingUtils.freeTraining,
       ],
       builder: EasyLoading.init(),
       home: MainScreen(),

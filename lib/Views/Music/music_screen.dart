@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:lezate_khayati/Plugins/get/get.dart';
 import 'package:lezate_khayati/Utils/Consts.dart';
 
@@ -77,8 +78,8 @@ class _MusicScreenState extends State<MusicScreen> {
             hintStyle: TextStyle(color: Colors.grey[500]),
             border: InputBorder.none,
           ),
-          onChanged: (text){
-            controller.searchItem(text:text);
+          onChanged: (text) {
+            controller.searchItem(text: text);
           },
           textAlignVertical: TextAlignVertical.bottom,
         ),
@@ -103,14 +104,25 @@ class _MusicScreenState extends State<MusicScreen> {
                         ),
                       ),
                     )
-                  : ListView.builder(
-                      physics: const BouncingScrollPhysics(),
-                      itemCount: controller.musicList.where((element) => element.isShow!.isTrue).toList().length,
-                      itemBuilder: (BuildContext context, int index) =>
-                          BuildMusicItem(
-                        item: controller.musicList[index],
-                        index: index,
-                        controller: controller,
+                  : AnimationLimiter(
+                      child: ListView.builder(
+                        physics: const BouncingScrollPhysics(),
+                        itemCount: controller.musicList
+                            .where((element) => element.isShow!.isTrue)
+                            .toList()
+                            .length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return AnimationConfiguration.staggeredList(
+                            position: index,
+                            child: SlideAnimation(
+                              child: BuildMusicItem(
+                                item: controller.musicList[index],
+                                index: index,
+                                controller: controller,
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     )
               : Center(
