@@ -28,8 +28,6 @@ class ArticlesModel {
   static List<ArticlesModel> listFromJson(List data) =>
       data.map((e) => ArticlesModel.fromJson(e)).toList();
 
-
-
   factory ArticlesModel.fromJson(Map<String, dynamic> json) => ArticlesModel(
     id: json["id"],
     name: json["name"],

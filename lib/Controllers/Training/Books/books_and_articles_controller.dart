@@ -5,12 +5,12 @@ import 'package:lezate_khayati/Utils/Api/project_request_utils.dart';
 
 import '../../../Models/Training/Books/books_model.dart';
 
-class BooksController extends GetxController with SingleGetTickerProviderMixin {
+class BooksAndArticlesController extends GetxController with SingleGetTickerProviderMixin {
   late TabController tabController;
 
   RequestsUtil request = RequestsUtil();
 
-  RxBool isLoaded = false.obs;
+  RxBool articlesLoaded = false.obs;
   RxBool bookLoaded = false.obs;
 
   List<BooksModel> booksList = [];
@@ -42,7 +42,7 @@ class BooksController extends GetxController with SingleGetTickerProviderMixin {
     ApiResult result = await request.getArticles();
     if (result.isDone) {
       articlesList = ArticlesModel.listFromJson(result.data);
-      isLoaded(true);
+      articlesLoaded(true);
     }
   }
 }

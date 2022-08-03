@@ -35,6 +35,7 @@ void main() async {
         RoutingUtils.classes,
         RoutingUtils.publicTraining,
         RoutingUtils.freeTraining,
+        RoutingUtils.mainMore,
       ],
       builder: EasyLoading.init(),
       home: MainScreen(),

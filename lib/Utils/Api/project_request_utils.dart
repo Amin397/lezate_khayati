@@ -158,12 +158,63 @@ class RequestsUtil extends GetConnect {
     );
   }
 
+  Future<ApiResult> getProductsData() async {
+    return await makeRequest(
+      type: 'get',
+      webController: WebControllers.products,
+      webMethod: WebMethods.archive,
+      bearer: true
+    );
+  }
+
+  Future<ApiResult> getArticlesData() async {
+    return await makeRequest(
+      type: 'post',
+      webController: WebControllers.posts,
+      bearer: true
+    );
+  }
+
+  Future<ApiResult> getPriceyCoursesData() async {
+    return await makeRequest(
+      type: 'get',
+      webController: WebControllers.courses,
+      webMethod: WebMethods.pricy,
+      bearer: true
+    );
+  }
+
+  Future<ApiResult> getFreeCoursesData() async {
+    return await makeRequest(
+      type: 'get',
+      webController: WebControllers.courses,
+      webMethod: WebMethods.free,
+      bearer: true
+    );
+  }
+
 
   Future<ApiResult> getBooks() async {
     return await makeRequest(
       type: 'get',
       webController: WebControllers.books,
       webMethod: WebMethods.archive,
+    );
+  }
+
+  Future<ApiResult> getHomeData() async {
+    return await makeRequest(
+      type: 'post',
+      webController: WebControllers.theme,
+      webMethod: WebMethods.TopRightSlider,
+    );
+  }
+
+  Future<ApiResult> getHomeOtherData() async {
+    return await makeRequest(
+      type: 'get',
+      webController: WebControllers.app,
+      webMethod: WebMethods.home,
     );
   }
 
@@ -197,6 +248,7 @@ class RequestsUtil extends GetConnect {
         webMethod: WebMethods.archive,
     );
   }
+
 }
 
 class ApiResult {

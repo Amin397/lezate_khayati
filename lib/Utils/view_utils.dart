@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:lezate_khayati/Plugins/get/get.dart';
 import 'package:lezate_khayati/Utils/color_utils.dart';
+import 'package:persian_number_utility/persian_number_utility.dart';
 
 class ViewUtils {
   static void showSuccessDialog(
@@ -34,6 +35,18 @@ class ViewUtils {
       snackPosition: SnackPosition.BOTTOM,
     );
   }
+
+
+  static String moneyFormat(
+      double? price, {
+        bool toman = false,
+      }) {
+    price ??= 0.0;
+    return price.toInt().toString().seRagham() + (toman ? ' تومان' : '');
+  }
+
+
+
 
   static void showInfoDialog([
     String? text = "خطایی رخ داد",

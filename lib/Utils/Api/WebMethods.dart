@@ -4,4 +4,8 @@ enum WebMethods {
   username,
   archive,
   profile,
+  TopRightSlider,
+  free,
+  pricy,
+  home,
 }

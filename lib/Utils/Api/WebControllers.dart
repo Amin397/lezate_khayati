@@ -4,4 +4,8 @@ enum WebControllers {
   musics,
   books,
   posts,
+  app,
+  products,
+  courses,
+  theme,
 }

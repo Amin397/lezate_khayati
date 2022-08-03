@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../Controllers/Training/Books/books_controller.dart';
+import '../../../Controllers/Training/Books/books_and_articles_controller.dart';
 import '../../../Plugins/get/get.dart';
 import 'Widgets/build_articles_widget.dart';
 import 'Widgets/build_books_widget.dart';
@@ -8,7 +8,7 @@ import 'Widgets/build_books_widget.dart';
 class BooksScreen extends StatelessWidget {
   BooksScreen({Key? key}) : super(key: key);
 
-  final BooksController controller = Get.put(BooksController());
+  final BooksAndArticlesController controller = Get.put(BooksAndArticlesController());
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +18,7 @@ class BooksScreen extends StatelessWidget {
           'مقالات و کتاب ها',
         ),
         centerTitle: true,
+        backgroundColor: Colors.red,
         bottom: TabBar(
           controller: controller.tabController,
           tabs: const <Widget>[

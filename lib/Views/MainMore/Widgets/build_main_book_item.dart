@@ -1,51 +1,26 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:lezate_khayati/Controllers/Training/Books/books_and_articles_controller.dart';
 import 'package:lezate_khayati/Models/Training/Books/books_model.dart';
-import 'package:lezate_khayati/Plugins/get/get.dart';
-import 'package:lezate_khayati/Utils/Consts.dart';
-import 'package:lezate_khayati/Utils/view_utils.dart';
 
-class BuildBooksWidget extends StatelessWidget {
-  const BuildBooksWidget({Key? key, required this.controller})
-      : super(key: key);
+import '../../../Controllers/MainMore/main_more_controller.dart';
+import '../../../Plugins/get/get.dart';
+import '../../../Utils/Consts.dart';
+import '../../../Utils/view_utils.dart';
 
-  final BooksAndArticlesController controller;
+class BuildMainBookItem extends StatelessWidget {
+  const BuildMainBookItem({
+    Key? key,
+    required this.controller,
+    required this.book,
+    required this.index,
+  }) : super(key: key);
+
+  final MainMoreController controller;
+  final BooksModel book;
+  final int index;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: Get.width,
-      height: Get.height,
-      child: Obx(
-        () => (controller.bookLoaded.isTrue)
-            ? (controller.booksList.isNotEmpty)
-                ? GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio:
-                          ((Get.width / 2) / (Get.height * .16) / 2),
-                    ),
-                    shrinkWrap: true,
-                    itemBuilder: (_, index) => _buildBooksItem(
-                      book: controller.booksList[index],
-                    ),
-                    itemCount: controller.booksList.length,
-                  )
-                : Center(
-                    child: Text(
-                      'no data',
-                      style: TextStyle(color: Colors.grey, fontSize: 12.0),
-                    ),
-                  )
-            : Center(
-                child: CircularProgressIndicator(),
-              ),
-      ),
-    );
-  }
-
-  Widget _buildBooksItem({required BooksModel book}) {
     return Container(
       margin: EdgeInsets.all(14.0),
       decoration: BoxDecoration(
@@ -55,14 +30,7 @@ class BuildBooksWidget extends StatelessWidget {
       ),
       child: Stack(
         children: [
-          ClipRRect(
-            borderRadius: radiusAll8,
-            child: Image(
-              image: AssetImage(
-                'assets/img/testImage.png',
-              ),
-            ),
-          ),
+          _buildImage(),
           Container(
             decoration: BoxDecoration(
               color: Colors.black38,
@@ -75,20 +43,33 @@ class BuildBooksWidget extends StatelessWidget {
           _buildRateAndView(
             book: book,
           ),
-          Center(
-            child: IconButton(
-              icon: Icon(
-                Icons.download,
-                size: 40.0,
-                color: Colors.white,
-              ),
-              onPressed: () {},
-            ),
-          )
         ],
       ),
     );
   }
+
+
+  Widget _buildImage() {
+    return SizedBox(
+      height: double.maxFinite,
+      width: double.maxFinite,
+      child: ClipRRect(
+        borderRadius: radiusAll10,
+        child: FadeInImage(
+          fit: BoxFit.cover,
+          image: NetworkImage(
+            book.img!,
+          ),
+          placeholder: AssetImage(
+            'assets/img/placeHolder.jpg',
+          ),
+        ),
+      ),
+    );
+  }
+
+
+
 
   Widget _buildName({
     required BooksModel book,
