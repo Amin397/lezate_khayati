@@ -8,4 +8,5 @@ enum WebMethods {
   free,
   pricy,
   home,
+  single,
 }

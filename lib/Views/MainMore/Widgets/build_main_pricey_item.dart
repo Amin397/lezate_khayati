@@ -12,34 +12,42 @@ class BuildMainPriceyItem extends StatelessWidget {
     Key? key,
     required this.controller,
     required this.index,
-    required this.pricyCourse,
+    required this.priceyCourse,
   }) : super(key: key);
 
   final MainMoreController controller;
-  final PriceyCoursesModel pricyCourse;
+  final PriceyCoursesModel priceyCourse;
   final int index;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: double.maxFinite,
-      width: double.maxFinite,
-      margin: paddingAll12,
-      decoration: BoxDecoration(
-        borderRadius: radiusAll10,
-        boxShadow: ViewUtils.neoShadow(),
-      ),
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          _buildImage(),
-          _buildShadow(),
-          _buildRateAndView(
-            course: pricyCourse,
-          ),
-          _buildCourseNameAndTeacherName(),
-          _buildPrice()
-        ],
+    return InkWell(
+      onTap: () {
+        controller.goToPriceyCourse(
+          course: priceyCourse,
+          index: index,
+        );
+      },
+      child: Container(
+        height: double.maxFinite,
+        width: double.maxFinite,
+        margin: paddingAll12,
+        decoration: BoxDecoration(
+          borderRadius: radiusAll10,
+          boxShadow: ViewUtils.neoShadow(),
+        ),
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            _buildImage(),
+            _buildShadow(),
+            _buildRateAndView(
+              course: priceyCourse,
+            ),
+            _buildCourseNameAndTeacherName(),
+            _buildPrice()
+          ],
+        ),
       ),
     );
   }
@@ -149,15 +157,18 @@ class BuildMainPriceyItem extends StatelessWidget {
     return SizedBox(
       height: double.maxFinite,
       width: double.maxFinite,
-      child: ClipRRect(
-        borderRadius: radiusAll10,
-        child: FadeInImage(
-          fit: BoxFit.cover,
-          image: NetworkImage(
-            pricyCourse.img!,
-          ),
-          placeholder: AssetImage(
-            'assets/img/placeHolder.jpg',
+      child: Hero(
+        tag: 'pricey-$index',
+        child: ClipRRect(
+          borderRadius: radiusAll10,
+          child: FadeInImage(
+            fit: BoxFit.cover,
+            image: NetworkImage(
+              priceyCourse.img!,
+            ),
+            placeholder: AssetImage(
+              'assets/img/placeHolder.jpg',
+            ),
           ),
         ),
       ),
@@ -194,7 +205,7 @@ class BuildMainPriceyItem extends StatelessWidget {
                   child: Align(
                     alignment: Alignment.topCenter,
                     child: AutoSizeText(
-                      pricyCourse.name!,
+                      priceyCourse.name!,
                       maxFontSize: 18.0,
                       minFontSize: 12.0,
                       maxLines: 2,
@@ -232,7 +243,7 @@ class BuildMainPriceyItem extends StatelessWidget {
                           child: Align(
                             alignment: Alignment.centerRight,
                             child: AutoSizeText(
-                              pricyCourse.teacher!,
+                              priceyCourse.teacher!,
                               maxLines: 2,
                               maxFontSize: 18.0,
                               minFontSize: 12.0,
@@ -285,10 +296,11 @@ class BuildMainPriceyItem extends StatelessWidget {
                     alignment: Alignment.centerRight,
                     child: AutoSizeText(
                       ViewUtils.moneyFormat(
-                        double.parse(
-                          pricyCourse.price!,
-                        ),
-                      ) + '  تومان',
+                            double.parse(
+                              priceyCourse.price!,
+                            ),
+                          ) +
+                          '  تومان',
                       maxLines: 1,
                       maxFontSize: 18.0,
                       minFontSize: 12.0,

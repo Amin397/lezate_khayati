@@ -7,6 +7,9 @@ import 'package:lezate_khayati/Views/Training/PublicTraining/public_training.dar
 
 import '../Views/Main/main_screen.dart';
 import '../Views/MainMore/main_more_screen.dart';
+import '../Views/SingleBook/single_book_screen.dart';
+import '../Views/SinglePriceyCourse/single_pricey_course_screen.dart';
+import '../Views/SingleProduct/single_product_screen.dart';
 import '../Views/Training/Classes/classes_screen.dart';
 import '../Views/Training/FreeTraining/free_training.dart';
 
@@ -50,6 +53,21 @@ class RoutingUtils {
   static GetPage mainMore = GetPage(
     name: '/mainMore',
     page: () => MainMoreScreen(),
+    transition: Transition.fadeIn,
+  );
+  static GetPage singlePriceyCourse = GetPage(
+    name: '/singlePriceyCourse',
+    page: () => SinglePriceyCourseScreen(),
+    transition: Transition.fadeIn,
+  );
+  static GetPage singleProduct = GetPage(
+    name: '/singleProduct',
+    page: () => SingleProductScreen(),
+    transition: Transition.fadeIn,
+  );
+  static GetPage singleBook = GetPage(
+    name: '/singleBook',
+    page: () => SingleBookScreen(),
     transition: Transition.fadeIn,
   );
 }

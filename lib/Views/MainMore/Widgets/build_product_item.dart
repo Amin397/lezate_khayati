@@ -21,29 +21,36 @@ class BuildProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: double.maxFinite,
-      width: double.maxFinite,
-      margin: paddingAll12,
-      decoration: BoxDecoration(
-        borderRadius: radiusAll10,
-        boxShadow: ViewUtils.neoShadow(),
-      ),
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          _buildImage(),
-          _buildShadow(),
-          _buildViewPart(
-            productView: productItem.views!,
-          ),
-          _buildName(),
-          _buildPrice()
-        ],
+    return InkWell(
+      onTap: () {
+        controller.goToSingleProduct(
+          index: index,
+          product: productItem,
+        );
+      },
+      child: Container(
+        height: double.maxFinite,
+        width: double.maxFinite,
+        margin: paddingAll12,
+        decoration: BoxDecoration(
+          borderRadius: radiusAll10,
+          boxShadow: ViewUtils.neoShadow(),
+        ),
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            _buildImage(),
+            _buildShadow(),
+            _buildViewPart(
+              productView: productItem.views!,
+            ),
+            _buildName(),
+            _buildPrice()
+          ],
+        ),
       ),
     );
   }
-
 
   Widget _buildPrice() {
     return Positioned(
@@ -75,10 +82,11 @@ class BuildProductItem extends StatelessWidget {
                     alignment: Alignment.centerRight,
                     child: AutoSizeText(
                       ViewUtils.moneyFormat(
-                        double.parse(
-                          productItem.price!,
-                        ),
-                      ) + '  تومان',
+                            double.parse(
+                              productItem.price!,
+                            ),
+                          ) +
+                          '  تومان',
                       maxLines: 1,
                       maxFontSize: 18.0,
                       minFontSize: 12.0,
@@ -96,10 +104,6 @@ class BuildProductItem extends StatelessWidget {
       ),
     );
   }
-
-
-
-
 
   Widget _buildName() {
     return Align(
@@ -124,7 +128,6 @@ class BuildProductItem extends StatelessWidget {
     );
   }
 
-
   Widget _buildViewPart({required String productView}) {
     return Align(
       alignment: Alignment.bottomCenter,
@@ -143,7 +146,6 @@ class BuildProductItem extends StatelessWidget {
       ),
     );
   }
-
 
   Widget _buildView({required String view}) {
     return Flexible(
@@ -173,23 +175,22 @@ class BuildProductItem extends StatelessWidget {
     );
   }
 
-
-
-
-
   Widget _buildImage() {
     return SizedBox(
       height: double.maxFinite,
       width: double.maxFinite,
-      child: ClipRRect(
-        borderRadius: radiusAll10,
-        child: FadeInImage(
-          fit: BoxFit.cover,
-          image: NetworkImage(
-            productItem.img!,
-          ),
-          placeholder: AssetImage(
-            'assets/img/placeHolder.jpg',
+      child: Hero(
+        tag: 'products-$index',
+        child: ClipRRect(
+          borderRadius: radiusAll10,
+          child: FadeInImage(
+            fit: BoxFit.cover,
+            image: NetworkImage(
+              productItem.img!,
+            ),
+            placeholder: AssetImage(
+              'assets/img/placeHolder.jpg',
+            ),
           ),
         ),
       ),
@@ -206,7 +207,4 @@ class BuildProductItem extends StatelessWidget {
       ),
     );
   }
-
-
-
 }

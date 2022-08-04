@@ -5,6 +5,7 @@ import 'package:lezate_khayati/Models/Home/products_model.dart';
 import 'package:lezate_khayati/Models/Training/Books/books_model.dart';
 import 'package:lezate_khayati/Plugins/get/get.dart';
 import 'package:lezate_khayati/Utils/Api/project_request_utils.dart';
+import 'package:lezate_khayati/Utils/routing_utils.dart';
 
 import '../../Models/Home/pricey_courses_model.dart';
 
@@ -65,8 +66,6 @@ class MainMoreController extends GetxController {
 
       update(['itemsList']);
 
-
-
       isLoaded(true);
     }
   }
@@ -105,5 +104,35 @@ class MainMoreController extends GetxController {
       update(['itemsList']);
       isLoaded(true);
     }
+  }
+
+  void goToPriceyCourse({
+    required PriceyCoursesModel course,
+    required int index,
+  }) {
+    Get.toNamed(RoutingUtils.singlePriceyCourse.name, arguments: {
+      'index': index,
+      'id': course.id,
+      'image':course.img,
+      'name':course.name,
+    });
+  }
+
+  void goToSingleProduct({required int index, required ProductsModel product}) {
+    Get.toNamed(RoutingUtils.singleProduct.name , arguments: {
+      'index': index,
+      'id': product.id,
+      'image':product.img,
+      'name':product.name,
+    });
+  }
+
+  void goToSingleBook({required BooksModel book, required int index}) {
+    Get.toNamed(RoutingUtils.singleBook.name , arguments: {
+      'index': index,
+      'id': book.id,
+      'image':book.img,
+      'name':book.name,
+    });
   }
 }

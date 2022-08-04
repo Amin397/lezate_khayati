@@ -49,7 +49,7 @@ class BuildMoreItemsWidget extends StatelessWidget {
         {
           return BuildMainPriceyItem(
             controller: controller,
-            pricyCourse: item,
+            priceyCourse: item,
             index: index,
           );
         }

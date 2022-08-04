@@ -14,26 +14,42 @@ class RequestsUtil extends GetConnect {
 
   static String baseRequestUrl = 'https://seeuland.com/api';
 
-  static String _makePath(WebControllers? webController, WebMethods? webMethod) {
-    if(webMethod == null){
-      return "${RequestsUtil.baseRequestUrl}/${webController.toString().split('.').last}";
-    }else{
-      return "${RequestsUtil.baseRequestUrl}/${webController.toString().split('.').last}/${webMethod.toString().split('.').last}";
+  static String _makePath({
+    required WebControllers? webController,
+    WebMethods? webMethod,
+    String? urlParams,
+  }) {
+    if (webMethod == null) {
+      if (urlParams is String) {
+        return "${RequestsUtil.baseRequestUrl}/${webController.toString().split('.').last}/$urlParams";
+      } else {
+        return "${RequestsUtil.baseRequestUrl}/${webController.toString().split('.').last}";
+      }
+    } else {
+      if (urlParams is String) {
+        return "${RequestsUtil.baseRequestUrl}/${webController.toString().split('.').last}/${webMethod.toString().split('.').last}/$urlParams";
+      } else {
+        return "${RequestsUtil.baseRequestUrl}/${webController.toString().split('.').last}/${webMethod.toString().split('.').last}";
+      }
     }
-
   }
 
   Future<ApiResult> makeRequest({
     WebControllers? webController,
     WebMethods? webMethod,
     required String type,
+    String? urlParams,
     Map<String, dynamic> body = const {},
     List<File> files = const [],
     Map<String, File?> indexFiles = const {},
     Map<String, String> header = const {},
     bool bearer = false,
   }) async {
-    String url = _makePath(webController, webMethod);
+    String url = _makePath(
+      webController: webController,
+      webMethod: webMethod,
+      urlParams: urlParams,
+    );
     // Response response =
     // await post(Uri.parse(url), body: body, headers: header);
     Map<String, String> myHeaders = {};
@@ -151,54 +167,67 @@ class RequestsUtil extends GetConnect {
 
   Future<ApiResult> getUser() async {
     return await makeRequest(
-      type: 'get',
-      webController: WebControllers.auth,
-      webMethod: WebMethods.profile,
-      bearer: true
-    );
+        type: 'get',
+        webController: WebControllers.auth,
+        webMethod: WebMethods.profile,
+        bearer: true);
   }
 
   Future<ApiResult> getProductsData() async {
     return await makeRequest(
-      type: 'get',
-      webController: WebControllers.products,
-      webMethod: WebMethods.archive,
-      bearer: true
-    );
+        type: 'get',
+        webController: WebControllers.products,
+        webMethod: WebMethods.archive,
+        bearer: true);
   }
 
   Future<ApiResult> getArticlesData() async {
     return await makeRequest(
-      type: 'post',
-      webController: WebControllers.posts,
-      bearer: true
-    );
+        type: 'post', webController: WebControllers.posts, bearer: true);
   }
 
   Future<ApiResult> getPriceyCoursesData() async {
     return await makeRequest(
-      type: 'get',
-      webController: WebControllers.courses,
-      webMethod: WebMethods.pricy,
-      bearer: true
-    );
+        type: 'get',
+        webController: WebControllers.courses,
+        webMethod: WebMethods.pricy,
+        bearer: true);
   }
 
   Future<ApiResult> getFreeCoursesData() async {
     return await makeRequest(
-      type: 'get',
-      webController: WebControllers.courses,
-      webMethod: WebMethods.free,
-      bearer: true
-    );
+        type: 'get',
+        webController: WebControllers.courses,
+        webMethod: WebMethods.free,
+        bearer: true);
   }
 
+  Future<ApiResult> singleBook({required String id}) async {
+    return await makeRequest(
+      type: 'get',
+      webController: WebControllers.books,
+      webMethod: WebMethods.single,
+      bearer: true,
+      urlParams: id,
+    );
+  }
 
   Future<ApiResult> getBooks() async {
     return await makeRequest(
       type: 'get',
       webController: WebControllers.books,
       webMethod: WebMethods.archive,
+    );
+  }
+
+  Future<ApiResult> singlePriceyCourse({
+    required String id,
+  }) async {
+    return await makeRequest(
+      type: 'get',
+      webController: WebControllers.courses,
+      webMethod: WebMethods.single,
+      urlParams: id,
     );
   }
 
@@ -243,12 +272,11 @@ class RequestsUtil extends GetConnect {
 
   Future<ApiResult> getMusics() async {
     return await makeRequest(
-        type: 'post',
-        webController: WebControllers.musics,
-        webMethod: WebMethods.archive,
+      type: 'post',
+      webController: WebControllers.musics,
+      webMethod: WebMethods.archive,
     );
   }
-
 }
 
 class ApiResult {

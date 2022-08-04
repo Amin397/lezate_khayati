@@ -21,29 +21,34 @@ class BuildMainBookItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.all(14.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: ViewUtils.neoShadow(),
-        borderRadius: radiusAll8,
-      ),
-      child: Stack(
-        children: [
-          _buildImage(),
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.black38,
-              borderRadius: radiusAll8,
+    return InkWell(
+      onTap: (){
+        controller.goToSingleBook(book:book,index:index,);
+      },
+      child: Container(
+        margin: EdgeInsets.all(14.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: ViewUtils.neoShadow(),
+          borderRadius: radiusAll8,
+        ),
+        child: Stack(
+          children: [
+            _buildImage(),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.black38,
+                borderRadius: radiusAll8,
+              ),
             ),
-          ),
-          _buildName(
-            book: book,
-          ),
-          _buildRateAndView(
-            book: book,
-          ),
-        ],
+            _buildName(
+              book: book,
+            ),
+            _buildRateAndView(
+              book: book,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -53,15 +58,18 @@ class BuildMainBookItem extends StatelessWidget {
     return SizedBox(
       height: double.maxFinite,
       width: double.maxFinite,
-      child: ClipRRect(
-        borderRadius: radiusAll10,
-        child: FadeInImage(
-          fit: BoxFit.cover,
-          image: NetworkImage(
-            book.img!,
-          ),
-          placeholder: AssetImage(
-            'assets/img/placeHolder.jpg',
+      child: Hero(
+        tag: 'book-$index',
+        child: ClipRRect(
+          borderRadius: radiusAll10,
+          child: FadeInImage(
+            fit: BoxFit.cover,
+            image: NetworkImage(
+              book.img!,
+            ),
+            placeholder: AssetImage(
+              'assets/img/placeHolder.jpg',
+            ),
           ),
         ),
       ),
