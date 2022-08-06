@@ -22,6 +22,12 @@ class SplashController extends GetxController {
     super.onInit();
   }
 
+  @override
+  void dispose() {
+    onDelete();
+    super.dispose();
+  }
+
   void getData() async{
     StorageUtils.getToken().then((value)async{
       if(value.length > 10){

@@ -5,8 +5,13 @@ import 'package:lezate_khayati/Views/Splash/splash_screen.dart';
 import 'package:lezate_khayati/Views/Training/Books/books_screen.dart';
 import 'package:lezate_khayati/Views/Training/PublicTraining/public_training.dart';
 
+import '../Views/EditProfile/edit_profile_screen.dart';
 import '../Views/Main/main_screen.dart';
 import '../Views/MainMore/main_more_screen.dart';
+import '../Views/MyClass/my_class_screen.dart';
+import '../Views/MyFavorite/my_favorite_screen.dart';
+import '../Views/MyOrder/my_order_screen.dart';
+import '../Views/MyQuestion/my_question_screen.dart';
 import '../Views/SingleBook/single_book_screen.dart';
 import '../Views/SinglePriceyCourse/single_pricey_course_screen.dart';
 import '../Views/SingleProduct/single_product_screen.dart';
@@ -68,6 +73,31 @@ class RoutingUtils {
   static GetPage singleBook = GetPage(
     name: '/singleBook',
     page: () => SingleBookScreen(),
+    transition: Transition.fadeIn,
+  );
+  static GetPage myClass = GetPage(
+    name: '/myClass',
+    page: () => MyClassScreen(),
+    transition: Transition.fadeIn,
+  );
+  static GetPage myOrder = GetPage(
+    name: '/myOrder',
+    page: () => MyOrderScreen(),
+    transition: Transition.fadeIn,
+  );
+  static GetPage myQuestion = GetPage(
+    name: '/myQuestion',
+    page: () => MyQuestionScreen(),
+    transition: Transition.fadeIn,
+  );
+  static GetPage myFavorite = GetPage(
+    name: '/myFavorite',
+    page: () => MyFavoriteScreen(),
+    transition: Transition.fadeIn,
+  );
+  static GetPage editProfile = GetPage(
+    name: '/editProfile',
+    page: () => EditProfileScreen(),
     transition: Transition.fadeIn,
   );
 }

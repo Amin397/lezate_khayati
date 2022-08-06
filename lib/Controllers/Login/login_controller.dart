@@ -18,6 +18,7 @@ class LoginController extends GetxController {
   Rx<TextEditingController> mobileController = (TextEditingController()).obs;
   TextEditingController codeController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
 
   FocusNode mobileFocusNode = FocusNode();
   FocusNode codeFocusNode = FocusNode();
@@ -42,13 +43,35 @@ class LoginController extends GetxController {
 
   // methods
 
-  void submit() {
+  void submit() async{
     if (isForgot.value == true) {
       forgot();
     } else if (isRegister.value == true) {
       register();
     } else if (isLogin.value == true) {
-      login();
+      EasyLoading.show();
+      ApiResult result = await requests.sendCode(
+        mobileNumber: mobileController.value.text,
+        code: codeController.text,
+        name: nameController.text,
+      );
+      EasyLoading.dismiss();
+      if (result.isDone) {
+        print(result.data);
+        // if (result.data['method'] == 'register') {
+          StorageUtils.saveToken(result.data['token']);
+        //   login();
+        //   ///register
+        // } else {
+        login();
+        //
+        //   ///login
+        // }
+      } else {
+        ViewUtils.showErrorDialog(
+          result.data.toString(),
+        );
+      }
     } else {
       start();
     }
@@ -61,40 +84,44 @@ class LoginController extends GetxController {
       );
       return;
     }
-    EasyLoading.show();
-    ApiResult result = await requests.sendCode(
-      mobileNumber: mobileController.value.text,
-      code: codeController.text,
+
+    bool isBack = await Get.dialog(
+      Directionality(
+        textDirection: TextDirection.rtl,
+        child: CompleteRegister(
+          mobile: mobileController.value.text,
+          code: codeController.value.text,
+          controller: this,
+        ),
+      ),
+      barrierColor: Colors.black.withOpacity(0.8),
+      barrierDismissible: false,
     );
 
-    EasyLoading.dismiss();
-    if (result.isDone) {
-      print(result.data);
-      if (result.data['method'] == 'register') {
-        StorageUtils.saveToken(result.data['token']);
-
-        ///register
-        Get.dialog(
-          Directionality(
-            textDirection: TextDirection.rtl,
-            child: CompleteRegister(
-              mobile: mobileController.value.text,
-              code: codeController.value.text,
-              controller: this,
-            ),
-          ),
-          barrierColor: Colors.black.withOpacity(0.8),
-          barrierDismissible: true,
-        );
-      } else {
-        login();
-
-        ///login
-      }
-    } else {
-      ViewUtils.showErrorDialog(
-        result.data.toString(),
+    if (isBack) {
+      EasyLoading.show();
+      ApiResult result = await requests.sendCode(
+        mobileNumber: mobileController.value.text,
+        code: codeController.text,
+        name: nameController.text,
       );
+      EasyLoading.dismiss();
+      if (result.isDone) {
+        print(result.data);
+        // if (result.data['method'] == 'register') {
+        //   StorageUtils.saveToken(result.data['token']);
+        //   login();
+        //   ///register
+        // } else {
+          login();
+        //
+        //   ///login
+        // }
+      } else {
+        ViewUtils.showErrorDialog(
+          result.data.toString(),
+        );
+      }
     }
   }
 
@@ -149,24 +176,33 @@ class LoginController extends GetxController {
       mobileNumber: mobileController.value.text,
     );
     EasyLoading.dismiss();
+
+    if (result.isDone) {
+      if (result.data['type'] == 'login') {
+        isLogin(true);
+      } else {
+        isRegister(true);
+      }
+    }
+
     // isLogin.value = result.data['status'] == 1;
     // if (isLogin.value) {
     //   passwordNode.requestFocus();
     // codeFocusNode.requestFocus();
     // }
-    isRegister(true);
+
     // isRegister.value =
     //     result.data['status'] == 0 || result.data['status'] == 'register';
-    if (isRegister.value == true) {
-      codeFocusNode.requestFocus();
-      // ViewUtils.showInfoDialog(
-      //   result.data?['message'],
-      // );
-    } else {
-      ViewUtils.showErrorDialog(
-        result.data?['message'],
-      );
-    }
+    // if (isRegister.value == true) {
+    //   codeFocusNode.requestFocus();
+    //   // ViewUtils.showInfoDialog(
+    //   //   result.data?['message'],
+    //   // );
+    // } else {
+    //   ViewUtils.showErrorDialog(
+    //     result.data?['message'],
+    //   );
+    // }
   }
 
   void forgotPassword() async {
@@ -231,5 +267,3 @@ class LoginController extends GetxController {
     });
   }
 }
-
-

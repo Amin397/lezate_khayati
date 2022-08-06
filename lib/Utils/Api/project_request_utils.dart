@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:developer' as dev;
 import 'dart:io';
 
+import 'package:lezate_khayati/Globals/Globals.dart';
+
 import '../../Plugins/get/get.dart';
 import '../storage_utils.dart';
 import 'WebControllers.dart';
@@ -154,6 +156,7 @@ class RequestsUtil extends GetConnect {
   Future<ApiResult> sendCode({
     required String mobileNumber,
     required String code,
+    required String name,
   }) async {
     return await makeRequest(
         webController: WebControllers.auth,
@@ -162,15 +165,18 @@ class RequestsUtil extends GetConnect {
         body: {
           'phone': mobileNumber,
           'code': code,
+          'name': name,
+          'refer': 'google',
         });
   }
 
   Future<ApiResult> getUser() async {
     return await makeRequest(
-        type: 'get',
-        webController: WebControllers.auth,
-        webMethod: WebMethods.profile,
-        bearer: true);
+      type: 'get',
+      webController: WebControllers.auth,
+      webMethod: WebMethods.profile,
+      bearer: true,
+    );
   }
 
   Future<ApiResult> getProductsData() async {
@@ -181,6 +187,16 @@ class RequestsUtil extends GetConnect {
         bearer: true);
   }
 
+  Future<ApiResult> getUserClass() async {
+    return await makeRequest(
+      type: 'get',
+      webController: WebControllers.courses,
+      webMethod: WebMethods.userCourses,
+      urlParams: Globals.userStream.user!.id.toString(),
+      bearer: true,
+    );
+  }
+
   Future<ApiResult> getArticlesData() async {
     return await makeRequest(
         type: 'post', webController: WebControllers.posts, bearer: true);
@@ -188,18 +204,20 @@ class RequestsUtil extends GetConnect {
 
   Future<ApiResult> getPriceyCoursesData() async {
     return await makeRequest(
-        type: 'get',
-        webController: WebControllers.courses,
-        webMethod: WebMethods.pricy,
-        bearer: true);
+      type: 'get',
+      webController: WebControllers.courses,
+      webMethod: WebMethods.pricy,
+      bearer: true,
+    );
   }
 
   Future<ApiResult> getFreeCoursesData() async {
     return await makeRequest(
-        type: 'get',
-        webController: WebControllers.courses,
-        webMethod: WebMethods.free,
-        bearer: true);
+      type: 'get',
+      webController: WebControllers.courses,
+      webMethod: WebMethods.free,
+      bearer: true,
+    );
   }
 
   Future<ApiResult> singleBook({required String id}) async {

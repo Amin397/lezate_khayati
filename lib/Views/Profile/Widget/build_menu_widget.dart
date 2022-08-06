@@ -31,33 +31,41 @@ class BuildMenuWidget extends StatelessWidget {
               child: SlideAnimation(
                 child: FadeInAnimation(
                   child: _buildMenuItem(
+                    func: (){
+                      controller.goToMyClass();
+                    },
                     id: 0,
                     title: 'کلاس های من',
                     image: 'assets/img/myClass.png',
+                    heroTag:'myClass',
                   ),
                 ),
               ),
             ),
+            // Divider(),
+            // AnimationConfiguration.synchronized(
+            //   child: SlideAnimation(
+            //     child: FadeInAnimation(
+            //       child: _buildMenuItem(
+            //         id: 1,
+            //         title: 'رویداد های آموزشی من',
+            //         image: 'assets/img/myTrainingEvent.png',
+            //       ),
+            //     ),
+            //   ),
+            // ),
             Divider(),
             AnimationConfiguration.synchronized(
               child: SlideAnimation(
                 child: FadeInAnimation(
                   child: _buildMenuItem(
+                    func: (){
+                      controller.goToMyOrders();
+                    },
                     id: 1,
-                    title: 'رویداد های آموزشی من',
-                    image: 'assets/img/myTrainingEvent.png',
-                  ),
-                ),
-              ),
-            ),
-            Divider(),
-            AnimationConfiguration.synchronized(
-              child: SlideAnimation(
-                child: FadeInAnimation(
-                  child: _buildMenuItem(
-                    id: 2,
                     title: 'سفارش های من',
                     image: 'assets/img/myOrder.png',
+                    heroTag: 'myOrder'
                   ),
                 ),
               ),
@@ -67,9 +75,13 @@ class BuildMenuWidget extends StatelessWidget {
               child: SlideAnimation(
                 child: FadeInAnimation(
                   child: _buildMenuItem(
-                    id: 3,
+                    func: (){
+                      controller.myQuestions();
+                    },
+                    id: 2,
                     title: 'پرسش های من',
                     image: 'assets/img/myQuestion.png',
+                    heroTag: 'myQuestion'
                   ),
                 ),
               ),
@@ -79,9 +91,13 @@ class BuildMenuWidget extends StatelessWidget {
               child: SlideAnimation(
                 child: FadeInAnimation(
                   child: _buildMenuItem(
-                    id: 4,
+                    func: (){
+                      controller.goToMyFavorite();
+                    },
+                    id: 3,
                     title: 'لیست علاقه مندی ها',
                     image: 'assets/img/favorite.png',
+                    heroTag: 'myFavorite'
                   ),
                 ),
               ),
@@ -91,9 +107,13 @@ class BuildMenuWidget extends StatelessWidget {
               child: SlideAnimation(
                 child: FadeInAnimation(
                   child: _buildMenuItem(
-                    id: 5,
+                    func: (){
+                      controller.goToEditProfile();
+                    },
+                    id: 4,
                     title: 'ویرایش پروفایل',
                     image: 'assets/img/editProfile.png',
+                    heroTag: 'editProfile'
                   ),
                 ),
               ),
@@ -127,29 +147,39 @@ class BuildMenuWidget extends StatelessWidget {
     required int id,
     required String image,
     required String title,
+    required String heroTag,
+    required Function func,
   }) {
-    return Container(
-      padding: paddingSymmetricH8,
-      width: Get.width,
-      height: Get.height * .06,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              Image(
-                image: AssetImage(
-                  image,
+    return InkWell(
+      onTap: (){
+        func();
+      },
+      child: Container(
+        padding: paddingSymmetricH8,
+        width: Get.width,
+        height: Get.height * .06,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Hero(
+                  tag: heroTag,
+                  child: Image(
+                    image: AssetImage(
+                      image,
+                    ),
+                  ),
                 ),
-              ),
-              SizedBox(
-                width: Get.width * .02,
-              ),
-              Text(title)
-            ],
-          ),
-          Icon(Icons.arrow_forward_ios)
-        ],
+                SizedBox(
+                  width: Get.width * .02,
+                ),
+                Text(title)
+              ],
+            ),
+            Icon(Icons.arrow_forward_ios)
+          ],
+        ),
       ),
     );
   }

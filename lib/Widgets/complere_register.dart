@@ -6,11 +6,8 @@ import 'package:lezate_khayati/Plugins/get/get.dart';
 import 'package:lezate_khayati/Utils/color_utils.dart';
 import 'package:lezate_khayati/Utils/widget_utils.dart';
 
-import '../Globals/Globals.dart';
-import '../Models/user_model.dart';
 import '../Utils/Api/project_request_utils.dart';
 import '../Utils/routing_utils.dart';
-import '../Utils/storage_utils.dart';
 import '../Utils/view_utils.dart';
 
 class CompleteRegister extends StatefulWidget {
@@ -122,7 +119,9 @@ class _CompleteRegisterState extends State<CompleteRegister> {
     TextAlign align = TextAlign.right,
   }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 10.0,
+      ),
       child: TextFormField(
         textAlign: align,
         controller: controller,
@@ -160,7 +159,7 @@ class _CompleteRegisterState extends State<CompleteRegister> {
 
   Widget name() {
     return _textInput(
-      controller: nameController,
+      controller: widget.controller.nameController,
       focusNode: nameFocusNode,
       name: "نام",
     );
@@ -175,33 +174,35 @@ class _CompleteRegisterState extends State<CompleteRegister> {
   }
 
   void finalize() {
-    EasyLoading.show();
-    widget.controller.requests
-        .completeRegister(
-      name: nameController.text,
-      refer: widget.controller.refer,
-    )
-        .then((ApiResult result) {
-      EasyLoading.dismiss();
-      if (result.isDone) {
-        print(result.data);
-        // StorageUtils.saveUser(widget.mobile.toString());
-        // Globals.userStream.changeUser(UserModel.fromJson(result.data['info']));
 
-      Future.delayed(Duration(seconds: 3),(){
-        Get.offAllNamed(
-          RoutingUtils.main.name,
-        );
-      });
-        ViewUtils.showSuccessDialog(
-          "ثبت نام با موفقیت انجام شد",
-        );
-      } else {
-        ViewUtils.showErrorDialog(
-          result.data['message'],
-        );
-      }
-    });
+    Get.back(result: true);
+    // EasyLoading.show();
+    // widget.controller.requests
+    //     .completeRegister(
+    //   name: nameController.text,
+    //   refer: widget.controller.refer,
+    // )
+    //     .then((ApiResult result) {
+    //   EasyLoading.dismiss();
+    //   if (result.isDone) {
+    //     print(result.data);
+    //     // StorageUtils.saveUser(widget.mobile.toString());
+    //     // Globals.userStream.changeUser(UserModel.fromJson(result.data['info']));
+    //
+    //     Future.delayed(Duration(seconds: 3), () {
+    //       Get.offAllNamed(
+    //         RoutingUtils.main.name,
+    //       );
+    //     });
+    //     ViewUtils.showSuccessDialog(
+    //       "ثبت نام با موفقیت انجام شد",
+    //     );
+    //   } else {
+    //     ViewUtils.showErrorDialog(
+    //       result.data['message'],
+    //     );
+    //   }
+    // });
   }
 
   Widget fromWhere() {
@@ -292,9 +293,12 @@ class _CompleteRegisterState extends State<CompleteRegister> {
                 width: double.maxFinite,
               ),
             ),
-            Text(refer , style: TextStyle(
-              color: Colors.white,
-            ),)
+            Text(
+              refer,
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            )
           ],
         ),
       ),

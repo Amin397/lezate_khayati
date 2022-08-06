@@ -39,9 +39,14 @@ void main() async {
         RoutingUtils.singlePriceyCourse,
         RoutingUtils.singleProduct,
         RoutingUtils.singleBook,
+        RoutingUtils.myClass,
+        RoutingUtils.myOrder,
+        RoutingUtils.myQuestion,
+        RoutingUtils.myFavorite,
+        RoutingUtils.editProfile,
       ],
       builder: EasyLoading.init(),
-      home: MainScreen(),
+      home: SplashScreen(),
     ),
   );
 }

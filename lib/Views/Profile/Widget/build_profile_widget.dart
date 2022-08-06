@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:lezate_khayati/Controllers/Profile/profile_controller.dart';
+import 'package:lezate_khayati/Globals/Globals.dart';
 import 'package:lezate_khayati/Plugins/get/get.dart';
 import 'package:lezate_khayati/Utils/Consts.dart';
 import 'package:lezate_khayati/Utils/color_utils.dart';
@@ -26,26 +27,31 @@ class BuildProfileWidget extends StatelessWidget {
           _buildNameAndPhone(),
           Flexible(
             flex: 1,
-            child: Container(
-              height: double.maxFinite,
-              width: double.maxFinite,
-              padding: paddingSymmetricH8,
-              child: Center(
-                child: Container(
-                  width: double.maxFinite,
-                  height: Get.height * .04,
-                  decoration: BoxDecoration(
-                    color: ColorUtils.red,
-                    borderRadius: radiusAll6
-                  ),
-                  child: Center(
-                    child: AutoSizeText(
-                      'خروج',
-                      maxLines: 1,
-                      maxFontSize: 16.0,
-                      minFontSize: 12.0,
-                      style: TextStyle(
-                        color: Colors.white,
+            child: InkWell(
+              onTap: (){
+                controller.exit();
+              },
+              child: Container(
+                height: double.maxFinite,
+                width: double.maxFinite,
+                padding: paddingSymmetricH8,
+                child: Center(
+                  child: Container(
+                    width: double.maxFinite,
+                    height: Get.height * .04,
+                    decoration: BoxDecoration(
+                      color: ColorUtils.red,
+                      borderRadius: radiusAll6
+                    ),
+                    child: Center(
+                      child: AutoSizeText(
+                        'خروج',
+                        maxLines: 1,
+                        maxFontSize: 16.0,
+                        minFontSize: 12.0,
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ),
@@ -85,55 +91,59 @@ class BuildProfileWidget extends StatelessWidget {
   }
 
   Widget _buildNameAndPhone() {
-    return Flexible(
-      flex: 2,
-      child: Container(
-        height: double.maxFinite,
-        width: double.maxFinite,
-        child: Column(
-          children: [
-            Flexible(
-              flex: 1,
-              child: SizedBox(
-                height: double.maxFinite,
-                width: double.maxFinite,
-                child: Align(
-                  alignment: Alignment.bottomRight,
-                  child: AutoSizeText(
-                    'امین خادمی',
-                    maxFontSize: 20.0,
-                    maxLines: 1,
-                    minFontSize: 14.0,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18.0,
+    return StreamBuilder(
+      stream: Globals.userStream.getStream,
+      builder: (x, c)=>Flexible(
+        flex: 2,
+        child: Container(
+          height: double.maxFinite,
+          width: double.maxFinite,
+          child: Column(
+            children: [
+              Flexible(
+                flex: 1,
+                child: SizedBox(
+                  height: double.maxFinite,
+                  width: double.maxFinite,
+                  child: Align(
+                    alignment: Alignment.bottomRight,
+                    child: AutoSizeText(
+                      Globals.userStream.user!.name!,
+                      maxFontSize: 20.0,
+                      maxLines: 1,
+                      minFontSize: 14.0,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18.0,
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-            SizedBox(height: 4.0,),
-            Flexible(
-              flex: 1,
-              child: SizedBox(
-                height: double.maxFinite,
-                width: double.maxFinite,
-                child: Align(
-                  alignment: Alignment.topRight,
-                  child: AutoSizeText(
-                    '09383974483',
-                    maxFontSize: 16.0,
-                    maxLines: 1,
-                    minFontSize: 10.0,
-                    style: TextStyle(
-                      color: ColorUtils.textColor,
-                      fontSize: 12.0,
+              SizedBox(height: 4.0,),
+              Flexible(
+                flex: 1,
+                child: SizedBox(
+                  height: double.maxFinite,
+                  width: double.maxFinite,
+                  child: Align(
+                    alignment: Alignment.topRight,
+                    child: AutoSizeText(
+                      Globals.userStream.user!.mobile!,
+
+                      maxFontSize: 16.0,
+                      maxLines: 1,
+                      minFontSize: 10.0,
+                      style: TextStyle(
+                        color: ColorUtils.textColor,
+                        fontSize: 12.0,
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
