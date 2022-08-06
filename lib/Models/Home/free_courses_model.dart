@@ -1,3 +1,5 @@
+import 'package:lezate_khayati/Plugins/get/get.dart';
+
 class FreeCoursesModel {
   FreeCoursesModel({
     this.id,
@@ -16,6 +18,7 @@ class FreeCoursesModel {
     this.update,
     this.reviews,
     this.reviewsRating,
+    required this.visible,
   });
 
   int? id;
@@ -35,12 +38,15 @@ class FreeCoursesModel {
   int? reviews;
   int? reviewsRating;
 
+  RxBool visible;
+
 
   static List<FreeCoursesModel> listFromJson(List data)=>data.map((e) => FreeCoursesModel.fromJson(e)).toList();
 
 
   factory FreeCoursesModel.fromJson(Map<String, dynamic> json) => FreeCoursesModel(
     id: json["id"],
+    visible: true.obs,
     name: json["name"],
     type: json["type"],
     slug: json["slug"],

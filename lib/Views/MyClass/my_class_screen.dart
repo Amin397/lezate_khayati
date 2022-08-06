@@ -5,7 +5,9 @@ import 'package:lezate_khayati/Plugins/get/get.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../Controllers/MyClass/my_class_controller.dart';
+import '../../Plugins/neu/src/widget/container.dart';
 import '../../Utils/Consts.dart';
+import '../../Utils/color_utils.dart';
 import '../../Utils/view_utils.dart';
 
 class MyClassScreen extends StatelessWidget {
@@ -20,13 +22,71 @@ class MyClassScreen extends StatelessWidget {
       body: Container(
         height: Get.height,
         width: Get.width,
-        child: Obx(
-          () =>
-              (controller.isLoaded.isTrue) ? _buildGridView() : _buildShimmer(),
+        child: Column(
+          children: [
+            _buildSearchBox(),
+            Expanded(
+              child: SizedBox(
+                height: double.maxFinite,
+                width: double.maxFinite,
+                child: Obx(
+                      () =>
+                  (controller.isLoaded.isTrue) ? _buildGridView() : _buildShimmer(),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
+
+  Widget _buildSearchBox() {
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Neumorphic(
+        style: NeumorphicStyle(
+          shape: NeumorphicShape.flat,
+          boxShape: NeumorphicBoxShape.roundRect(
+            BorderRadius.circular(12),
+          ),
+          depth: -3,
+          lightSource: LightSource.topLeft,
+          color: Colors.grey[100],
+        ),
+        margin: paddingAll10,
+        child: Container(
+          width: Get.width,
+          height: Get.height * .05,
+          padding: paddingAll4,
+          child: TextField(
+            onChanged: (s) {
+              controller.search(text: s);
+            },
+            controller: controller.searchTextController,
+            textAlign: TextAlign.start,
+            maxLines: 1,
+            cursorColor: Colors.black,
+            style: TextStyle(
+              color: ColorUtils.textColor,
+              fontSize: 15.0,
+            ),
+            decoration: InputDecoration(
+              suffixIcon: Icon(Icons.search),
+              hintText: 'جستجو',
+              hintStyle: TextStyle(
+                color: Colors.grey[500],
+              ),
+              border: InputBorder.none,
+            ),
+            textAlignVertical: TextAlignVertical.bottom,
+          ),
+        ),
+      ),
+    );
+  }
+
+
 
   AppBar _buildAppbar() {
     return AppBar(
@@ -195,9 +255,14 @@ class MyClassScreen extends StatelessWidget {
       ),
       shrinkWrap: true,
       itemBuilder: (_, index) => _buildCoursesItem(
-        course: controller.courseList[index],
+        course: controller.courseList
+            .where((element) => element.visible.isTrue)
+            .toList()[index],
       ),
-      itemCount: controller.courseList.length,
+      itemCount: controller.courseList
+          .where((element) => element.visible.isTrue)
+          .toList()
+          .length,
     );
   }
 

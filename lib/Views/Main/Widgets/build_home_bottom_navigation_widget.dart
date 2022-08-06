@@ -45,14 +45,14 @@ class BuildHomeBottomNavigationWidget extends StatelessWidget {
             selectedColor: Colors.purple,
           ),
 
-          SalomonBottomBarItem(
-            icon: Icon(
-              Icons.search,
-              color: Colors.red,
-            ),
-            title: Text("آموزش ها"),
-            selectedColor: Colors.red,
-          ),
+          // SalomonBottomBarItem(
+          //   icon: Icon(
+          //     Icons.search,
+          //     color: Colors.red,
+          //   ),
+          //   title: Text("آموزش ها"),
+          //   selectedColor: Colors.red,
+          // ),
           SalomonBottomBarItem(
             icon: Icon(
               Icons.person,

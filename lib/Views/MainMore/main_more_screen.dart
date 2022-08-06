@@ -26,10 +26,10 @@ class MainMoreScreen extends StatelessWidget {
             SizedBox(
               height: Get.height * .02,
             ),
-            _buildSearchBox(),
-            SizedBox(
-              height: Get.height * .01,
-            ),
+            // _buildSearchBox(),
+            // SizedBox(
+            //   height: Get.height * .01,
+            // ),
             Obx(
               () => (controller.isLoaded.isTrue)
                   ? BuildMoreItemsWidget(
@@ -62,6 +62,11 @@ class MainMoreScreen extends StatelessWidget {
           height: Get.height * .05,
           padding: paddingAll4,
           child: TextField(
+            onChanged: (s) {
+              controller.search(
+                text: s,
+              );
+            },
             controller: controller.searchTextController,
             textAlign: TextAlign.start,
             maxLines: 1,

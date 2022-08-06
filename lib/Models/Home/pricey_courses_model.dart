@@ -1,3 +1,5 @@
+import 'package:lezate_khayati/Plugins/get/get.dart';
+
 class PriceyCoursesModel {
   PriceyCoursesModel({
     this.id,
@@ -15,6 +17,7 @@ class PriceyCoursesModel {
     this.views,
     this.update,
     this.reviews,
+    required this.visible,
     this.reviewsRating,
   });
 
@@ -35,6 +38,8 @@ class PriceyCoursesModel {
   int? reviews;
   int? reviewsRating;
 
+  RxBool visible;
+
 
   static List<PriceyCoursesModel> listFromJson(List data)=>data.map((e) => PriceyCoursesModel.fromJson(e)).toList();
 
@@ -46,6 +51,7 @@ class PriceyCoursesModel {
     slug: json["slug"],
     teacher: json["teacher"],
     poster: json["poster"],
+    visible: true.obs,
     ispin: json["ispin"],
     description: json["description"],
     excerpt: json["excerpt"],

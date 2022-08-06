@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lezate_khayati/Controllers/Splash/splash_controller.dart';
 import 'package:lezate_khayati/Plugins/get/get.dart';
 import 'package:lezate_khayati/Utils/routing_utils.dart';
 
@@ -14,13 +15,13 @@ class ProfileController extends GetxController {
     Get.toNamed(RoutingUtils.myOrder.name);
   }
 
-  void myQuestions() {
-    Get.toNamed(RoutingUtils.myQuestion.name);
-  }
+  // void myQuestions() {
+  //   Get.toNamed(RoutingUtils.myQuestion.name);
+  // }
 
-  void goToMyFavorite() {
-    Get.toNamed(RoutingUtils.myFavorite.name);
-  }
+  // void goToMyFavorite() {
+  //   Get.toNamed(RoutingUtils.myFavorite.name);
+  // }
 
   void goToEditProfile() {
     Get.toNamed(RoutingUtils.editProfile.name);
@@ -37,6 +38,9 @@ class ProfileController extends GetxController {
       ),
     );
     if(exit){
+      Future.delayed(Duration(milliseconds: 500) , (){
+        Get.delete<SplashController>();
+      });
       StorageUtils.clearToken();
       Get.offAndToNamed(RoutingUtils.splash.name);
     }

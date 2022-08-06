@@ -31,7 +31,10 @@ class BuildMoreItemsWidget extends StatelessWidget {
               ),
               shrinkWrap: true,
               itemBuilder: (_, index) => _buildItem(
-                  index: index, item: controller.showMoreItem![index]),
+                index: index,
+                item: controller.showMoreItem![index],
+              ),
+              // itemCount: controller.showMoreItem!.length,
               itemCount: controller.showMoreItem!.length,
             ),
           );
@@ -77,13 +80,14 @@ class BuildMoreItemsWidget extends StatelessWidget {
             index: index,
           );
         }
-      default:{
-        return BuildArticleItem(
-          controller: controller,
-          index: index,
-          article: item,
-        );
-      }
+      default:
+        {
+          return BuildArticleItem(
+            controller: controller,
+            index: index,
+            article: item,
+          );
+        }
     }
   }
 }

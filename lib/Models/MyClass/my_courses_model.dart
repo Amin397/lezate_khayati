@@ -1,3 +1,5 @@
+import 'package:lezate_khayati/Plugins/get/get.dart';
+
 class MyCourseModel {
   MyCourseModel({
     this.id,
@@ -15,6 +17,7 @@ class MyCourseModel {
     this.update,
     this.reviews,
     this.reviewsRating,
+    required this.visible,
   });
 
   int? id;
@@ -32,6 +35,7 @@ class MyCourseModel {
   List<int>? update;
   int? reviews;
   int? reviewsRating;
+  RxBool visible;
 
 
   static List<MyCourseModel> listFromJson(List data){
@@ -50,6 +54,7 @@ class MyCourseModel {
     gradient: json["gradient"],
     price: json["price"],
     img: json["img"],
+    visible: true.obs,
     views: json["views"],
     update: List<int>.from(json["update"].map((x) => x)),
     reviews: json["reviews"],

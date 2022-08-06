@@ -1,3 +1,5 @@
+import 'package:lezate_khayati/Plugins/get/get.dart';
+
 class HomeArticlesModel {
   HomeArticlesModel({
     this.id,
@@ -8,6 +10,7 @@ class HomeArticlesModel {
     this.img,
     this.views,
     this.createdAt,
+    required this.visible,
     this.updatedAt,
   });
 
@@ -20,13 +23,14 @@ class HomeArticlesModel {
   String? views;
   DateTime? createdAt;
   DateTime? updatedAt;
-
+RxBool visible;
 
   static List<HomeArticlesModel> listFromJson(List data)=>data.map((e) => HomeArticlesModel.fromJson(e)).toList();
 
   factory HomeArticlesModel.fromJson(Map<String, dynamic> json) => HomeArticlesModel(
     id: json["id"],
     name: json["name"],
+    visible: true.obs,
     slug: json["slug"],
     catId: json["cat_id"],
     content: json["content"],

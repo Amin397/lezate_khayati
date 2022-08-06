@@ -197,13 +197,20 @@ class RequestsUtil extends GetConnect {
     );
   }
 
-
   Future<ApiResult> getMyOrders() async {
     return await makeRequest(
       type: 'get',
       webController: WebControllers.courses,
       webMethod: WebMethods.userProducts,
       urlParams: Globals.userStream.user!.id.toString(),
+      bearer: true,
+    );
+  }
+
+  Future<ApiResult> getChatRooms() async {
+    return await makeRequest(
+      type: 'get',
+      webController: WebControllers.chats,
       bearer: true,
     );
   }

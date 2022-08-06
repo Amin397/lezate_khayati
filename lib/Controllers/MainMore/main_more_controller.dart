@@ -63,7 +63,6 @@ class MainMoreController extends GetxController {
     ApiResult result = await RequestsUtil.instance.getPriceyCoursesData();
     if (result.isDone) {
       showMoreItem = PriceyCoursesModel.listFromJson(result.data);
-
       update(['itemsList']);
 
       isLoaded(true);
@@ -135,4 +134,25 @@ class MainMoreController extends GetxController {
       'name':book.name,
     });
   }
+
+
+  void search({required String text}) {
+    if (text.isEmpty) {
+      showMoreItem!.forEach((element) {
+        element.visible(true);
+      });
+    } else {
+      showMoreItem!.forEach((element) {
+        if (!element.name!.contains(text)) {
+          element.visible(false);
+        } else {
+          element.visible(true);
+        }
+      });
+    }
+  }
+
+
+
+
 }

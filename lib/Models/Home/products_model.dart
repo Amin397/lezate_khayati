@@ -1,3 +1,5 @@
+import 'package:lezate_khayati/Plugins/get/get.dart';
+
 class ProductsModel {
   ProductsModel({
     this.id,
@@ -10,6 +12,7 @@ class ProductsModel {
     this.views,
     this.createdAt,
     this.updatedAt,
+    required this.visible,
   });
 
   int? id;
@@ -23,10 +26,13 @@ class ProductsModel {
   DateTime? createdAt;
   DateTime? updatedAt;
 
+  RxBool visible;
+
   static List<ProductsModel> listFromJson(List data)=>data.map((e) => ProductsModel.fromJson(e)).toList();
 
   factory ProductsModel.fromJson(Map<String, dynamic> json) => ProductsModel(
     id: json["id"],
+    visible: true.obs,
     name: json["name"],
     slug: json["slug"],
     catId: json["cat_id"],

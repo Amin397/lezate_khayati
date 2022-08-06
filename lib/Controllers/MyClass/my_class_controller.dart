@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:lezate_khayati/Plugins/get/get.dart';
 import 'package:lezate_khayati/Utils/Api/project_request_utils.dart';
 
@@ -7,6 +8,9 @@ class MyClassController extends GetxController{
 
   List<MyCourseModel> courseList = [];
   RxBool isLoaded = false.obs;
+
+
+  TextEditingController searchTextController = TextEditingController();
 
   @override
   void onInit() {
@@ -21,4 +25,24 @@ class MyClassController extends GetxController{
       isLoaded(true);
     }
   }
+
+
+  void search({required String text}) {
+    if (text.isEmpty) {
+      courseList.forEach((element) {
+        element.visible(true);
+      });
+    } else {
+      courseList.forEach((element) {
+        if (!element.name!.contains(text)) {
+          element.visible(false);
+        } else {
+          element.visible(true);
+        }
+      });
+    }
+  }
+
+
+
 }

@@ -1,3 +1,5 @@
+import 'package:lezate_khayati/Plugins/get/get.dart';
+
 class BooksModel {
   BooksModel({
     this.id,
@@ -10,6 +12,7 @@ class BooksModel {
     this.updatedAt,
     this.reviews,
     this.reviewsRating,
+    required this.visible,
   });
 
   int? id;
@@ -22,6 +25,7 @@ class BooksModel {
   DateTime? updatedAt;
   int? reviews;
   int? reviewsRating;
+  RxBool visible;
 
   static List<BooksModel> listFromJson(List data) =>
       data.map((e) => BooksModel.fromJson(e)).toList();
@@ -33,6 +37,7 @@ class BooksModel {
         description: json["description"],
         views: json["views"],
         link: json["link"],
+        visible: true.obs,
         createdAt: json["created_at"],
         updatedAt: json["updated_at"],
         reviews: json["reviews"],

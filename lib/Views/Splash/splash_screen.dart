@@ -6,12 +6,18 @@ import 'package:lezate_khayati/Plugins/get/get.dart';
 
 import '../../Utils/color_utils.dart';
 
-class SplashScreen extends StatelessWidget {
+class SplashScreen extends StatefulWidget {
+
+  SplashScreen({Key? key}) : super(key: key);
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
   final SplashController controller = Get.put(
     SplashController(),
   );
-
-  SplashScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

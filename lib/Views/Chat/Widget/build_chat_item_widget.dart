@@ -14,7 +14,7 @@ class BuildChatItemWidget extends StatelessWidget {
       required this.item})
       : super(key: key);
 
-  final ChatModel item;
+  final ChatRoomsModel item;
   final int index;
   final ChatController controller;
 
@@ -89,37 +89,37 @@ class BuildChatItemWidget extends StatelessWidget {
                 child: Align(
                   alignment: Alignment.centerRight,
                   child: AutoSizeText(
-                    item.title,
+                    item.data!.name!,
                     maxLines: 1,
                     maxFontSize: 18.0,
                     minFontSize: 12.0,
                     style: TextStyle(
                       fontSize: 16.0,
-                      color: Color(0xffE81D46)
+                      color: Color(0xffE81D46),
                     ),
                   ),
                 ),
               ),
             ),
-            Flexible(
-              flex: 1,
-              child: SizedBox(
-                height: double.maxFinite,
-                width: double.maxFinite,
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: AutoSizeText(
-                    item.lastMessage,
-                    maxLines: 1,
-                    maxFontSize: 14.0,
-                    minFontSize: 10.0,
-                    style: TextStyle(
-                      fontSize: 12.0,
-                    ),
-                  ),
-                ),
-              ),
-            ),
+            // Flexible(
+            //   flex: 1,
+            //   child: SizedBox(
+            //     height: double.maxFinite,
+            //     width: double.maxFinite,
+            //     child: Align(
+            //       alignment: Alignment.centerRight,
+            //       child: AutoSizeText(
+            //         item.lastMessage,
+            //         maxLines: 1,
+            //         maxFontSize: 14.0,
+            //         minFontSize: 10.0,
+            //         style: TextStyle(
+            //           fontSize: 12.0,
+            //         ),
+            //       ),
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       ),

@@ -7,5 +7,6 @@ enum WebControllers {
   app,
   products,
   courses,
+  chats,
   theme,
 }

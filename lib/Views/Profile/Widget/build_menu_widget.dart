@@ -71,38 +71,38 @@ class BuildMenuWidget extends StatelessWidget {
               ),
             ),
             Divider(),
-            AnimationConfiguration.synchronized(
-              child: SlideAnimation(
-                child: FadeInAnimation(
-                  child: _buildMenuItem(
-                    func: (){
-                      controller.myQuestions();
-                    },
-                    id: 2,
-                    title: 'پرسش های من',
-                    image: 'assets/img/myQuestion.png',
-                    heroTag: 'myQuestion'
-                  ),
-                ),
-              ),
-            ),
-            Divider(),
-            AnimationConfiguration.synchronized(
-              child: SlideAnimation(
-                child: FadeInAnimation(
-                  child: _buildMenuItem(
-                    func: (){
-                      controller.goToMyFavorite();
-                    },
-                    id: 3,
-                    title: 'لیست علاقه مندی ها',
-                    image: 'assets/img/favorite.png',
-                    heroTag: 'myFavorite'
-                  ),
-                ),
-              ),
-            ),
-            Divider(),
+            // AnimationConfiguration.synchronized(
+            //   child: SlideAnimation(
+            //     child: FadeInAnimation(
+            //       child: _buildMenuItem(
+            //         func: (){
+            //           controller.myQuestions();
+            //         },
+            //         id: 2,
+            //         title: 'پرسش های من',
+            //         image: 'assets/img/myQuestion.png',
+            //         heroTag: 'myQuestion'
+            //       ),
+            //     ),
+            //   ),
+            // ),
+            // Divider(),
+            // AnimationConfiguration.synchronized(
+            //   child: SlideAnimation(
+            //     child: FadeInAnimation(
+            //       child: _buildMenuItem(
+            //         func: (){
+            //           controller.goToMyFavorite();
+            //         },
+            //         id: 3,
+            //         title: 'لیست علاقه مندی ها',
+            //         image: 'assets/img/favorite.png',
+            //         heroTag: 'myFavorite'
+            //       ),
+            //     ),
+            //   ),
+            // ),
+            // Divider(),
             AnimationConfiguration.synchronized(
               child: SlideAnimation(
                 child: FadeInAnimation(

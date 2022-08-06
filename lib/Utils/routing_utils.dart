@@ -85,16 +85,16 @@ class RoutingUtils {
     page: () => MyOrderScreen(),
     transition: Transition.fadeIn,
   );
-  static GetPage myQuestion = GetPage(
-    name: '/myQuestion',
-    page: () => MyQuestionScreen(),
-    transition: Transition.fadeIn,
-  );
-  static GetPage myFavorite = GetPage(
-    name: '/myFavorite',
-    page: () => MyFavoriteScreen(),
-    transition: Transition.fadeIn,
-  );
+  // static GetPage myQuestion = GetPage(
+  //   name: '/myQuestion',
+  //   page: () => MyQuestionScreen(),
+  //   transition: Transition.fadeIn,
+  // );
+  // static GetPage myFavorite = GetPage(
+  //   name: '/myFavorite',
+  //   page: () => MyFavoriteScreen(),
+  //   transition: Transition.fadeIn,
+  // );
   static GetPage editProfile = GetPage(
     name: '/editProfile',
     page: () => EditProfileScreen(),

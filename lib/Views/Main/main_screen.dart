@@ -29,7 +29,7 @@ class MainScreen extends StatelessWidget {
             MusicScreen(),
             ChatScreen(),
             HomeScreen(),
-            TrainingScreen(),
+            // TrainingScreen(),
             ProfileScreen(),
           ],
         ),
