@@ -6,6 +6,7 @@ enum WebMethods {
   profile,
   TopRightSlider,
   free,
+  userProducts,
   pricy,
   home,
   userCourses,

@@ -197,6 +197,17 @@ class RequestsUtil extends GetConnect {
     );
   }
 
+
+  Future<ApiResult> getMyOrders() async {
+    return await makeRequest(
+      type: 'get',
+      webController: WebControllers.courses,
+      webMethod: WebMethods.userProducts,
+      urlParams: Globals.userStream.user!.id.toString(),
+      bearer: true,
+    );
+  }
+
   Future<ApiResult> getArticlesData() async {
     return await makeRequest(
         type: 'post', webController: WebControllers.posts, bearer: true);
@@ -210,6 +221,7 @@ class RequestsUtil extends GetConnect {
       bearer: true,
     );
   }
+
 
   Future<ApiResult> getFreeCoursesData() async {
     return await makeRequest(
