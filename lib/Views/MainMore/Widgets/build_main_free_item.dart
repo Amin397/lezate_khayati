@@ -43,8 +43,6 @@ class BuildMainFreeItem extends StatelessWidget {
     );
   }
 
-
-
   Widget _buildRateAndView({required FreeCoursesModel course}) {
     return Align(
       alignment: Alignment.bottomCenter,
@@ -146,10 +144,6 @@ class BuildMainFreeItem extends StatelessWidget {
     );
   }
 
-
-
-
-
   Widget _buildCourseNameAndTeacherName() {
     return Directionality(
       textDirection: TextDirection.rtl,
@@ -230,10 +224,6 @@ class BuildMainFreeItem extends StatelessWidget {
     );
   }
 
-
-
-
-
   Widget _buildImage() {
     return SizedBox(
       height: double.maxFinite,
@@ -263,7 +253,5 @@ class BuildMainFreeItem extends StatelessWidget {
       ),
     );
   }
-
-
 
 }

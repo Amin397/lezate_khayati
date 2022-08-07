@@ -49,8 +49,6 @@ class SearchController extends GetxController {
   }
 
   void search({required String text}) async {
-
-
     if (text.isEmpty) {
       articlesList.clear();
       coursesList.clear();
@@ -59,7 +57,6 @@ class SearchController extends GetxController {
       tabList.forEach((element) {
         element.searchCount(0);
       });
-
     } else {
       EasyLoading.show();
       ApiResult result = await RequestsUtil.instance.search(
@@ -75,9 +72,6 @@ class SearchController extends GetxController {
         tabList.first.searchCount(articlesList.length);
         tabList[1].searchCount(coursesList.length);
         tabList.last.searchCount(booksList.length);
-
-
-
       }
     }
 
@@ -98,12 +92,21 @@ class SearchController extends GetxController {
     );
   }
 
-  void goToSingleBook({required BooksModel book ,required int index}) {
-    Get.toNamed(RoutingUtils.singleBook.name , arguments: {
+  void goToSingleBook({required BooksModel book, required int index}) {
+    Get.toNamed(RoutingUtils.singleBook.name, arguments: {
       'index': index,
       'id': book.id,
-      'image':book.img,
-      'name':book.name,
+      'image': book.img,
+      'name': book.name,
+    });
+  }
+
+  void goToSingleCourse({required SearchCourseModel course, required int index}) {
+    Get.toNamed(RoutingUtils.singlePriceyCourse.name, arguments: {
+      'index': index,
+      'id': course.id,
+      'image':course.img,
+      'name':course.name,
     });
   }
 }

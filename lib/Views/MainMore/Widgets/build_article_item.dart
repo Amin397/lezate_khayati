@@ -61,7 +61,6 @@ class BuildArticleItem extends StatelessWidget {
     );
   }
 
-
   Widget _buildView({required String view}) {
     return Flexible(
       flex: 1,
@@ -89,9 +88,6 @@ class BuildArticleItem extends StatelessWidget {
       ),
     );
   }
-
-
-
 
   Widget _buildImage() {
     return SizedBox(
@@ -155,10 +151,5 @@ class BuildArticleItem extends StatelessWidget {
       ),
     );
   }
-
-
-
-
-
 
 }

@@ -55,6 +55,7 @@ class SearchScreen extends StatelessWidget {
           height: Get.height * .05,
           padding: paddingAll4,
           child: TextField(
+            autofocus: true,
             onChanged: (s) {
               controller.search(text: s);
             },
