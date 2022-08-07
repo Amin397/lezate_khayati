@@ -44,6 +44,7 @@ void main() async {
         // RoutingUtils.myQuestion,
         // RoutingUtils.myFavorite,
         RoutingUtils.editProfile,
+        RoutingUtils.searchPage,
       ],
       builder: EasyLoading.init(),
       home: SplashScreen(),

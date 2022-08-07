@@ -12,6 +12,7 @@ import '../Views/MyClass/my_class_screen.dart';
 import '../Views/MyFavorite/my_favorite_screen.dart';
 import '../Views/MyOrder/my_order_screen.dart';
 import '../Views/MyQuestion/my_question_screen.dart';
+import '../Views/Search/search_screen.dart';
 import '../Views/SingleBook/single_book_screen.dart';
 import '../Views/SinglePriceyCourse/single_pricey_course_screen.dart';
 import '../Views/SingleProduct/single_product_screen.dart';
@@ -98,6 +99,11 @@ class RoutingUtils {
   static GetPage editProfile = GetPage(
     name: '/editProfile',
     page: () => EditProfileScreen(),
+    transition: Transition.fadeIn,
+  );
+  static GetPage searchPage = GetPage(
+    name: '/searchPage',
+    page: () => SearchScreen(),
     transition: Transition.fadeIn,
   );
 }

@@ -77,4 +77,10 @@ class HomeController extends GetxController {
       'title': title,
     });
   }
+
+  void goToSearchPage() {
+    Get.toNamed(
+      RoutingUtils.searchPage.name,
+    );
+  }
 }

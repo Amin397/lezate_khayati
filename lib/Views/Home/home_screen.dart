@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:lezate_khayati/Plugins/get/get.dart';
 import 'package:lezate_khayati/Plugins/neu/flutter_neumorphic.dart';
 import 'package:lezate_khayati/Utils/view_utils.dart';
@@ -6,7 +5,6 @@ import 'package:shimmer/shimmer.dart';
 
 import '../../Controllers/Home/home_controller.dart';
 import '../../Utils/Consts.dart';
-import '../../Utils/color_utils.dart';
 import 'Widgets/build_home_top_slider.dart';
 import 'Widgets/build_show_list_widget.dart';
 
@@ -51,23 +49,23 @@ class _HomeScreenState extends State<HomeScreen> {
                             SizedBox(
                               height: Get.height * .02,
                             ),
-                            if(controller.priceyCoursesList.isNotEmpty)
-                            BuildShowListWidget(
-                              controller: controller,
-                              title: 'دوره های ویژه',
-                              id: 0,
-                              list: controller.priceyCoursesList,
-                            ),
+                            if (controller.priceyCoursesList.isNotEmpty)
+                              BuildShowListWidget(
+                                controller: controller,
+                                title: 'دوره های ویژه',
+                                id: 0,
+                                list: controller.priceyCoursesList,
+                              ),
                             SizedBox(
                               height: Get.height * .02,
                             ),
-                            if(controller.freeCoursesList.isNotEmpty)
-                            BuildShowListWidget(
-                              controller: controller,
-                              title: 'دوره های رایگان',
-                              id: 1,
-                              list: controller.freeCoursesList,
-                            ),
+                            if (controller.freeCoursesList.isNotEmpty)
+                              BuildShowListWidget(
+                                controller: controller,
+                                title: 'دوره های رایگان',
+                                id: 1,
+                                list: controller.freeCoursesList,
+                              ),
                             SizedBox(
                               height: Get.height * .02,
                             ),
@@ -75,33 +73,33 @@ class _HomeScreenState extends State<HomeScreen> {
                             SizedBox(
                               height: Get.height * .02,
                             ),
-                            if(controller.productsList.isNotEmpty)
-                            BuildShowListWidget(
-                              controller: controller,
-                              title: 'محصولات',
-                              id: 2,
-                              list: controller.productsList,
-                            ),
+                            if (controller.productsList.isNotEmpty)
+                              BuildShowListWidget(
+                                controller: controller,
+                                title: 'محصولات',
+                                id: 2,
+                                list: controller.productsList,
+                              ),
                             SizedBox(
                               height: Get.height * .02,
                             ),
-                            if(controller.booksList.isNotEmpty)
-                            BuildShowListWidget(
-                              controller: controller,
-                              title: 'کتاب ها',
-                              id: 3,
-                              list: controller.booksList,
-                            ),
+                            if (controller.booksList.isNotEmpty)
+                              BuildShowListWidget(
+                                controller: controller,
+                                title: 'کتاب ها',
+                                id: 3,
+                                list: controller.booksList,
+                              ),
                             SizedBox(
                               height: Get.height * .02,
                             ),
-                            if(controller.articlesList.isNotEmpty)
-                            BuildShowListWidget(
-                              controller: controller,
-                              title: 'مقالات',
-                              id: 4,
-                              list: controller.articlesList,
-                            ),
+                            if (controller.articlesList.isNotEmpty)
+                              BuildShowListWidget(
+                                controller: controller,
+                                title: 'مقالات',
+                                id: 4,
+                                list: controller.articlesList,
+                              ),
                           ],
                         ),
                       ),
@@ -126,28 +124,35 @@ class _HomeScreenState extends State<HomeScreen> {
         color: Colors.grey[100],
       ),
       margin: paddingSymmetricH8,
-      child: Container(
-        width: Get.width,
-        height: Get.height * .05,
-        padding: paddingAll4,
-        child: TextField(
-          controller: controller.searchTextController,
-          textAlign: TextAlign.start,
-          maxLines: 1,
-          cursorColor: Colors.black,
-          style: TextStyle(
-            color: ColorUtils.textColor,
-            fontSize: 15.0,
+      child: InkWell(
+        onTap: (){
+          controller.goToSearchPage();
+        },
+        child: Container(
+          width: Get.width,
+          height: Get.height * .05,
+          padding: paddingAll4,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Hero(
+                tag:'search',
+                child: Text(
+                  'جستجو',
+                  style: TextStyle(
+                    color: Colors.grey.shade700,
+                  ),
+                ),
+              ),
+              Hero(
+                tag: 'searchIcon',
+                child: Icon(
+                  Icons.search,
+                  color: Colors.grey.shade700,
+                ),
+              )
+            ],
           ),
-          decoration: InputDecoration(
-            suffixIcon: Icon(Icons.search),
-            hintText: 'جستجو',
-            hintStyle: TextStyle(
-              color: Colors.grey[500],
-            ),
-            border: InputBorder.none,
-          ),
-          textAlignVertical: TextAlignVertical.bottom,
         ),
       ),
     );

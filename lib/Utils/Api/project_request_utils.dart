@@ -215,6 +215,17 @@ class RequestsUtil extends GetConnect {
     );
   }
 
+  Future<ApiResult> search({
+    required String text,
+  }) async {
+    return await makeRequest(
+      type: 'get',
+      webController: WebControllers.search,
+      bearer: true,
+      urlParams: text,
+    );
+  }
+
   Future<ApiResult> getArticlesData() async {
     return await makeRequest(
         type: 'post', webController: WebControllers.posts, bearer: true);
@@ -228,7 +239,6 @@ class RequestsUtil extends GetConnect {
       bearer: true,
     );
   }
-
 
   Future<ApiResult> getFreeCoursesData() async {
     return await makeRequest(
