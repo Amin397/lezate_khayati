@@ -139,7 +139,7 @@ class BuildSearchBooksWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             _buildRateBar(
-              rate: book.reviewsRating!,
+              rate: book.reviewsrating!,
             ),
             _buildView(
               view: book.reviews!,

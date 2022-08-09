@@ -63,7 +63,7 @@ class SingleBookScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           _buildRateBar(
-            rate: controller.model.reviewsRating!,
+            rate: controller.model.reviewsrating!,
           ),
           _buildView(
             view: controller.model.reviews!,
@@ -319,36 +319,141 @@ class SingleBookScreen extends StatelessWidget {
         width: double.maxFinite,
         child: Align(
           alignment: Alignment.bottomCenter,
-          child: Container(
-            height: Get.height * .05,
-            width: Get.width,
-            margin: paddingAll12,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: radiusAll10,
-              boxShadow: ViewUtils.neoShadow(),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.download),
-                SizedBox(
-                  width: Get.width * .05,
-                ),
-                AutoSizeText(
-                  'بارگیری فایل',
-                  maxFontSize: 20.0,
-                  minFontSize: 12.0,
-                  maxLines: 1,
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 16.0,
+          child: (controller.isDownloadStart.isTrue)
+              ? _buildCancel()
+              : InkWell(
+                  onTap: () {
+                    controller.downloadFile(
+                      fileUrl: controller.model.link,
+                      filename: controller.model.name,
+                    );
+                  },
+                  child: Container(
+                    height: Get.height * .05,
+                    width: Get.width,
+                    margin: paddingAll12,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: radiusAll10,
+                      boxShadow: ViewUtils.neoShadow(),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.download,
+                        ),
+                        SizedBox(
+                          width: Get.width * .05,
+                        ),
+                        AutoSizeText(
+                          'بارگیری فایل',
+                          maxFontSize: 20.0,
+                          minFontSize: 12.0,
+                          maxLines: 1,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16.0,
+                          ),
+                        )
+                      ],
+                    ),
                   ),
-                )
-              ],
+                ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCancel() {
+    return Container(
+      height: Get.height * .05,
+      width: Get.width,
+      margin: paddingAll12,
+      child: Row(
+        children: [
+          Obx(
+            () => Container(
+              width: Get.width * .1,
+              height: double.maxFinite,
+              child: Stack(
+                children: [
+                  Center(
+                    child: CircularProgressIndicator(
+                      backgroundColor: Colors.grey.withOpacity(.2),
+                      color: Colors.green.shade700,
+                      value: controller.progress.value,
+                    ),
+                  ),
+                  Center(
+                    child: AutoSizeText(
+                      (controller.progress * 100).toInt().toString() + '%',
+                      maxFontSize: 14.0,
+                      maxLines: 1,
+                      minFontSize: 10.0,
+                      style: TextStyle(
+                        color: Colors.grey.shade600,
+                        fontSize: 12.0,
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
-        ),
+          SizedBox(
+            width: Get.width * .05,
+          ),
+          Expanded(
+            child: InkWell(
+              onTap: () {
+                if (controller.isDownloadCompleted.isTrue) {
+                  controller.openFile();
+                } else {
+                  controller.cancelRequest();
+                }
+              },
+              child: AnimatedContainer(
+                duration: Duration(
+                  milliseconds: 300,
+                ),
+                width: double.maxFinite,
+                height: double.maxFinite,
+                decoration: BoxDecoration(
+                  color: (controller.isDownloadCompleted.isTrue)
+                      ? Colors.blue.shade700
+                      : Colors.red,
+                  borderRadius: radiusAll8,
+                ),
+                child: (controller.isDownloadCompleted.isTrue)
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.check,
+                            color: Colors.white,
+                          ),
+                          Text(
+                            'باز کردن فایل',
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          )
+                        ],
+                      )
+                    : Center(
+                        child: AutoSizeText(
+                          'انصراف',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16.0,
+                          ),
+                        ),
+                      ),
+              ),
+            ),
+          )
+        ],
       ),
     );
   }

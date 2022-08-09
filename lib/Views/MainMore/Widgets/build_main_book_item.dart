@@ -87,12 +87,14 @@ class BuildMainBookItem extends StatelessWidget {
       child: Container(
         width: Get.width,
         height: Get.height * .06,
+        padding: paddingAll6,
         child: Center(
           child: AutoSizeText(
             book.name!,
             maxLines: 2,
             maxFontSize: 20.0,
             minFontSize: 10.0,
+              textDirection: TextDirection.rtl,
             style: TextStyle(
               color: Colors.white,
               fontSize: 16.0,
@@ -115,7 +117,7 @@ class BuildMainBookItem extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             _buildRateBar(
-              rate: book.reviewsRating!,
+              rate: book.reviewsrating!,
             ),
             _buildView(
               view: book.reviews!,

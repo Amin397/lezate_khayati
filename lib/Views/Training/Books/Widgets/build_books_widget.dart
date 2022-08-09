@@ -102,6 +102,7 @@ class BuildBooksWidget extends StatelessWidget {
           child: AutoSizeText(
             book.name!,
             maxLines: 2,
+            textDirection: TextDirection.rtl,
             maxFontSize: 20.0,
             minFontSize: 10.0,
             style: TextStyle(
@@ -126,7 +127,7 @@ class BuildBooksWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             _buildRateBar(
-              rate: book.reviewsRating!,
+              rate: book.reviewsrating!,
             ),
             _buildView(
               view: book.reviews!,

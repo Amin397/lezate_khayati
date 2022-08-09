@@ -56,6 +56,10 @@ dependencies:
   audioplayers: ^1.0.1
   shimmer: ^2.0.0
   flutter_money_formatter: ^0.8.3
+  permission_handler: ^10.0.0
+  path_provider: ^2.0.11
+  dio: ^4.0.6
+  open_file: ^3.2.1
 
 
 dev_dependencies:

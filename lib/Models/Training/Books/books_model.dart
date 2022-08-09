@@ -1,4 +1,4 @@
-import 'package:lezate_khayati/Plugins/get/get.dart';
+import '../../../Plugins/get/get.dart';
 
 class BooksModel {
   BooksModel({
@@ -11,7 +11,7 @@ class BooksModel {
     this.createdAt,
     this.updatedAt,
     this.reviews,
-    this.reviewsRating,
+    this.reviewsrating,
     required this.visible,
   });
 
@@ -24,36 +24,35 @@ class BooksModel {
   DateTime? createdAt;
   DateTime? updatedAt;
   int? reviews;
-  int? reviewsRating;
+  int? reviewsrating;
   RxBool visible;
 
-  static List<BooksModel> listFromJson(List data) =>
-      data.map((e) => BooksModel.fromJson(e)).toList();
+  static List<BooksModel> listFromJson(List data)=>data.map((e) => BooksModel.fromJson(e)).toList();
 
   factory BooksModel.fromJson(Map<String, dynamic> json) => BooksModel(
-        id: json["id"],
-        name: json["name"],
-        img: json["img"],
-        description: json["description"],
-        views: json["views"],
-        link: json["link"],
-        visible: true.obs,
-        createdAt: json["created_at"],
-        updatedAt: json["updated_at"],
-        reviews: json["reviews"],
-        reviewsRating: json["reviewsrating"],
-      );
+    id: json["id"],
+    name: json["name"],
+    img: json["img"],
+    description: json["description"],
+    views: json["views"],
+    visible: true.obs,
+    link: json["link"],
+    createdAt:json['created_at'] == null?DateTime.now(): DateTime.parse(json["created_at"]),
+    updatedAt: json['updated_at'] == null?DateTime.now():DateTime.parse(json["updated_at"]),
+    reviews: json["reviews"],
+    reviewsrating: json["reviewsrating"],
+  );
 
   Map<String, dynamic> toJson() => {
-        "id": id,
-        "name": name,
-        "img": img,
-        "description": description,
-        "views": views,
-        "link": link,
-        "created_at": createdAt,
-        "updated_at": updatedAt,
-        "reviews": reviews,
-        "reviewsrating": reviewsRating,
-      };
+    "id": id,
+    "name": name,
+    "img": img,
+    "description": description,
+    "views": views,
+    "link": link,
+    "created_at": createdAt!.toIso8601String(),
+    "updated_at": updatedAt!.toIso8601String(),
+    "reviews": reviews,
+    "reviewsrating": reviewsrating,
+  };
 }
