@@ -11,4 +11,5 @@ enum WebMethods {
   home,
   userCourses,
   single,
+  buy,
 }

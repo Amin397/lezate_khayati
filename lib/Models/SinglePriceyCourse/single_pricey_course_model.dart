@@ -1,3 +1,5 @@
+import 'dart:io';
+
 class SinglePriceyCourseModel {
   SinglePriceyCourseModel({
     this.id,
@@ -38,8 +40,8 @@ class SinglePriceyCourseModel {
   List<int>? update;
   int? reviews;
   int? reviewsRating;
-  List<dynamic>? videos;
-  List<dynamic>? comments;
+  List<Video>? videos;
+  List<Comment>? comments;
 
   factory SinglePriceyCourseModel.fromJson(Map<String, dynamic> json) => SinglePriceyCourseModel(
     id: json["id"],
@@ -59,8 +61,8 @@ class SinglePriceyCourseModel {
     update: List<int>.from(json["update"].map((x) => x)),
     reviews: json["reviews"],
     reviewsRating: json["reviewsRating"],
-    videos: List<dynamic>.from(json["videos"].map((x) => x)),
-    comments: List<dynamic>.from(json["comments"].map((x) => x)),
+    videos: List<Video>.from(json["videos"].map((x) => Video.fromJson(x))),
+    comments: List<Comment>.from(json["comments"].map((x) => Comment.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -81,7 +83,109 @@ class SinglePriceyCourseModel {
     "update": List<dynamic>.from(update!.map((x) => x)),
     "reviews": reviews,
     "reviewsRating": reviewsRating,
-    "videos": List<dynamic>.from(videos!.map((x) => x)),
-    "comments": List<dynamic>.from(comments!.map((x) => x)),
+    "videos": List<dynamic>.from(videos!.map((x) => x.toJson())),
+    "comments": List<dynamic>.from(comments!.map((x) => x.toJson())),
+  };
+}
+
+class Comment {
+  Comment({
+    this.id,
+    this.userId,
+    this.courseId,
+    this.parentId,
+    this.text,
+    this.createdAt,
+    this.updatedAt,
+    this.user,
+  });
+
+  int? id;
+  String? userId;
+  String? courseId;
+  String? parentId;
+  String? text;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+  User? user;
+
+  factory Comment.fromJson(Map<String, dynamic> json) => Comment(
+    id: json["id"],
+    userId: json["user_id"],
+    courseId: json["course_id"],
+    parentId: json["parent_id"] == null ? null : json["parent_id"],
+    text: json["text"],
+    createdAt:(json["created_at"] != null)? DateTime.parse(json["created_at"]):DateTime.now(),
+    updatedAt: (json["updated_at"] != null)?DateTime.parse(json["updated_at"]):DateTime.now(),
+    user: User.fromJson(json["user"]),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "user_id": userId,
+    "course_id": courseId,
+    "parent_id": parentId == null ? null : parentId,
+    "text": text,
+    "created_at": createdAt,
+    "updated_at": updatedAt,
+    "user": user!.toJson(),
+  };
+}
+
+class User {
+  User({
+    this.id,
+    this.name,
+  });
+
+  int? id;
+  String? name;
+
+  factory User.fromJson(Map<String, dynamic> json) => User(
+    id: json["id"],
+    name: json["name"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "name": name,
+  };
+}
+
+class Video {
+  Video({
+    this.id,
+    this.courseId,
+    this.name,
+    this.url,
+    this.createdAt,
+    this.updatedAt,
+    this.thumb,
+  });
+
+  int? id;
+  String? courseId;
+  String? name;
+  String? url;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+  File? thumb;
+
+  factory Video.fromJson(Map<String, dynamic> json) => Video(
+    id: json["id"],
+    courseId: json["course_id"],
+    name: json["name"],
+    url: json["url"],
+    createdAt: DateTime.parse(json["created_at"]),
+    updatedAt: DateTime.parse(json["updated_at"]),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "course_id": courseId,
+    "name": name,
+    "url": url,
+    "created_at": createdAt!.toIso8601String(),
+    "updated_at": updatedAt!.toIso8601String(),
   };
 }

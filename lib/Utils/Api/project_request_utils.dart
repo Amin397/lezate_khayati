@@ -179,6 +179,16 @@ class RequestsUtil extends GetConnect {
     );
   }
 
+  Future<ApiResult> buyCourse({required String courseId ,}) async {
+    return await makeRequest(
+      type: 'get',
+      webController: WebControllers.products,
+      webMethod: WebMethods.buy,
+      urlParams: '$courseId/${Globals.userStream.user!.id.toString()}',
+      bearer: true,
+    );
+  }
+
   Future<ApiResult> getProductsData() async {
     return await makeRequest(
         type: 'get',
