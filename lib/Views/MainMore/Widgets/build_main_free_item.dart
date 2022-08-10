@@ -21,24 +21,32 @@ class BuildMainFreeItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: double.maxFinite,
-      width: double.maxFinite,
-      margin: paddingAll12,
-      decoration: BoxDecoration(
-        borderRadius: radiusAll10,
-        boxShadow: ViewUtils.neoShadow(),
-      ),
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          _buildImage(),
-          _buildShadow(),
-          _buildRateAndView(
-            course: freeItem,
-          ),
-          _buildCourseNameAndTeacherName(),
-        ],
+    return InkWell(
+      onTap: (){
+        controller.goToFreeCourse(
+          course: freeItem,
+          index: index,
+        );
+      },
+      child: Container(
+        height: double.maxFinite,
+        width: double.maxFinite,
+        margin: paddingAll12,
+        decoration: BoxDecoration(
+          borderRadius: radiusAll10,
+          boxShadow: ViewUtils.neoShadow(),
+        ),
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            _buildImage(),
+            _buildShadow(),
+            _buildRateAndView(
+              course: freeItem,
+            ),
+            _buildCourseNameAndTeacherName(),
+          ],
+        ),
       ),
     );
   }

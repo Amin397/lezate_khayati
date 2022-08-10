@@ -114,6 +114,20 @@ class MainMoreController extends GetxController {
       'id': course.id,
       'image':course.img,
       'name':course.name,
+      'free':false,
+    });
+  }
+
+  void goToFreeCourse({
+    required FreeCoursesModel course,
+    required int index,
+  }) {
+    Get.toNamed(RoutingUtils.singlePriceyCourse.name, arguments: {
+      'index': index,
+      'id': course.id,
+      'image':course.img,
+      'name':course.name,
+      'free':true,
     });
   }
 

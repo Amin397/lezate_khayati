@@ -9,12 +9,14 @@ import 'package:path_provider/path_provider.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
 import '../../Views/SinglePriceyCourse/Widgets/build_bought_video_alert.dart';
+import '../../Views/SinglePriceyCourse/Widgets/build_more_videos_modal.dart';
 
 class SinglePriceyCourseController extends GetxController {
   late final int index;
   late final int id;
   late final String image;
   late final String name;
+  late final bool free;
 
   late final SinglePriceyCourseModel model;
 
@@ -26,6 +28,7 @@ class SinglePriceyCourseController extends GetxController {
     id = Get.arguments['id'];
     image = Get.arguments['image'];
     name = Get.arguments['name'];
+    free = Get.arguments['free'];
 
     getData();
     super.onInit();
@@ -45,8 +48,8 @@ class SinglePriceyCourseController extends GetxController {
 
   void getData() async {
     ApiResult result = await RequestsUtil.instance.singlePriceyCourse(
-      // id: id.toString(),
-      id: '18',
+      id: id.toString(),
+      // id: '18',
     );
     if (result.isDone) {
       model = SinglePriceyCourseModel.fromJson(result.data);
@@ -59,6 +62,9 @@ class SinglePriceyCourseController extends GetxController {
           update(['videoThumb']);
           isLoaded(true);
         });
+      } else {
+        update(['videoThumb']);
+        isLoaded(true);
       }
     }
   }
@@ -76,18 +82,28 @@ class SinglePriceyCourseController extends GetxController {
       ),
     );
 
-
-    if(buy){
+    if (buy) {
       buyCourse();
     }
   }
 
-  void buyCourse() async{
+  void buyCourse() async {
     EasyLoading.show();
-    ApiResult result = await RequestsUtil.instance.buyCourse(courseId:model.id.toString());
+    ApiResult result =
+        await RequestsUtil.instance.buyCourse(courseId: model.id.toString());
     EasyLoading.dismiss();
-    if(result.status == 200){
+    if (result.status == 200) {}
+  }
 
-    }
+  void showMoreVideos() async {
+    showModalBottomSheet(
+      context: Get.context!,
+      backgroundColor: Colors.transparent,
+      enableDrag: true,
+      isScrollControlled: true,
+      builder: (BuildContext context) => BuildMoreVideosModal(
+        controller: this,
+      ),
+    );
   }
 }

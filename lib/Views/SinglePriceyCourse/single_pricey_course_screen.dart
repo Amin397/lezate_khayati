@@ -46,7 +46,8 @@ class SinglePriceyCourseScreen extends StatelessWidget {
                             _buildUpdate(),
                             if (controller.model.videos!.isNotEmpty)
                               _buildVideos(),
-                            if (!controller.model.isBought!) _buildBuyButton()
+                            if (!controller.model.isBought! && !controller.free)
+                              _buildBuyButton()
                           ],
                         ),
                       ),
@@ -156,40 +157,41 @@ class SinglePriceyCourseScreen extends StatelessWidget {
                 ],
               ),
             ),
-            Expanded(
-              child: Container(
-                height: double.maxFinite,
-                width: double.maxFinite,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    AutoSizeText(
-                      ViewUtils.moneyFormat(
-                        double.parse(
-                          controller.model.price!,
+            if (!controller.free)
+              Expanded(
+                child: Container(
+                  height: double.maxFinite,
+                  width: double.maxFinite,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      AutoSizeText(
+                        ViewUtils.moneyFormat(
+                          double.parse(
+                            controller.model.price!,
+                          ),
+                        ),
+                        maxLines: 1,
+                        maxFontSize: 18.0,
+                        minFontSize: 14.0,
+                        style: TextStyle(
+                          fontSize: 16.0,
                         ),
                       ),
-                      maxLines: 1,
-                      maxFontSize: 18.0,
-                      minFontSize: 14.0,
-                      style: TextStyle(
-                        fontSize: 16.0,
+                      SizedBox(
+                        width: 6.0,
                       ),
-                    ),
-                    SizedBox(
-                      width: 6.0,
-                    ),
-                    AutoSizeText(
-                      'تومان',
-                      style: TextStyle(
-                        fontSize: 12.0,
-                        color: Colors.grey,
+                      AutoSizeText(
+                        'تومان',
+                        style: TextStyle(
+                          fontSize: 12.0,
+                          color: Colors.grey,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
           ],
         ),
       ),
@@ -321,20 +323,22 @@ class SinglePriceyCourseScreen extends StatelessWidget {
       height: Get.height * .24,
       child: Column(
         children: [
-          // (controller.model.videos!.length < 0)
-          Align(
-            alignment: Alignment.centerLeft,
-            child: InkWell(
-              onTap: () {},
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: AutoSizeText(
-                  'بیشتر',
-                  style: TextStyle(fontSize: 12.0, color: Colors.blue),
+          if (controller.model.videos!.length >=4)
+            Align(
+              alignment: Alignment.centerLeft,
+              child: InkWell(
+                onTap: () {
+                  controller.showMoreVideos();
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: AutoSizeText(
+                    'بیشتر',
+                    style: TextStyle(fontSize: 12.0, color: Colors.blue),
+                  ),
                 ),
               ),
             ),
-          ),
           // : SizedBox(),
           Expanded(
             child: Directionality(
@@ -345,7 +349,9 @@ class SinglePriceyCourseScreen extends StatelessWidget {
                 child: ListView.builder(
                   physics: const BouncingScrollPhysics(),
                   scrollDirection: Axis.horizontal,
-                  itemCount: controller.model.videos!.length,
+                  itemCount: (controller.model.videos!.length > 4)
+                      ? controller.model.videos!.getRange(0, 3).length
+                      : controller.model.videos!.length,
                   itemBuilder: (BuildContext context, int index) {
                     return _buildVideoItem(
                       video: controller.model.videos![index],
@@ -462,26 +468,29 @@ class SinglePriceyCourseScreen extends StatelessWidget {
   Widget _buildBuyButton() {
     return Expanded(
       child: InkWell(
-        onTap: (){
+        onTap: () {
           controller.buyCourse();
         },
-        child: Container(
-          height: double.maxFinite,
-          width: double.maxFinite,
-          decoration: BoxDecoration(
-            color: Colors.green.shade700,
-            borderRadius: radiusAll8,
-          ),
-          margin: paddingAll10,
-          child: Center(
-            child: AutoSizeText(
-              'خرید دوره',
-              maxFontSize: 18.0,
-              maxLines: 1,
-              minFontSize: 14.0,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16.0,
+        child: Align(
+          alignment: Alignment.bottomCenter,
+          child: Container(
+            height: Get.height * .05,
+            width: double.maxFinite,
+            decoration: BoxDecoration(
+              color: Colors.green.shade700,
+              borderRadius: radiusAll8,
+            ),
+            margin: paddingAll10,
+            child: Center(
+              child: AutoSizeText(
+                'خرید دوره',
+                maxFontSize: 18.0,
+                maxLines: 1,
+                minFontSize: 14.0,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16.0,
+                ),
               ),
             ),
           ),
