@@ -46,6 +46,7 @@ class SinglePriceyCourseScreen extends StatelessWidget {
                             _buildUpdate(),
                             if (controller.model.videos!.isNotEmpty)
                               _buildVideos(),
+                            if (!controller.model.isBought!) _buildBuyButton()
                           ],
                         ),
                       ),
@@ -91,7 +92,7 @@ class SinglePriceyCourseScreen extends StatelessWidget {
   Widget _buildDescription() {
     return Container(
       width: Get.width,
-      height: Get.height * .08,
+      height: Get.height * .07,
       margin: paddingAll16,
       child: Align(
         alignment: Alignment.topRight,
@@ -114,39 +115,81 @@ class SinglePriceyCourseScreen extends StatelessWidget {
       textDirection: TextDirection.rtl,
       child: Container(
         width: Get.width,
-        height: Get.height * .03,
+        height: Get.height * .04,
         margin: paddingAll16,
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Text(
-              'بروز شده در :',
-              style: TextStyle(
-                color: Colors.grey.shade800,
-                fontSize: 10.0,
-              ),
-            ),
             SizedBox(
-              width: Get.width * .03,
-            ),
-            Expanded(
-              child: SizedBox(
-                height: double.maxFinite,
-                width: double.maxFinite,
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: AutoSizeText(
-                    '${controller.model.update!.first}/${controller.model.update![1]}/${controller.model.update!.last}',
-                    maxLines: 1,
-                    maxFontSize: 18.0,
-                    minFontSize: 12.0,
+              height: Get.height * .03,
+              width: Get.width * .35,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    'بروز شده در :',
                     style: TextStyle(
-                      fontSize: 16.0,
+                      color: Colors.grey.shade800,
+                      fontSize: 10.0,
                     ),
                   ),
+                  SizedBox(
+                    width: Get.width * .03,
+                  ),
+                  Expanded(
+                    child: SizedBox(
+                      height: double.maxFinite,
+                      width: double.maxFinite,
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: AutoSizeText(
+                          '${controller.model.update!.first}/${controller.model.update![1]}/${controller.model.update!.last}',
+                          maxLines: 1,
+                          maxFontSize: 18.0,
+                          minFontSize: 12.0,
+                          style: TextStyle(
+                            fontSize: 16.0,
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+            Expanded(
+              child: Container(
+                height: double.maxFinite,
+                width: double.maxFinite,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    AutoSizeText(
+                      ViewUtils.moneyFormat(
+                        double.parse(
+                          controller.model.price!,
+                        ),
+                      ),
+                      maxLines: 1,
+                      maxFontSize: 18.0,
+                      minFontSize: 14.0,
+                      style: TextStyle(
+                        fontSize: 16.0,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 6.0,
+                    ),
+                    AutoSizeText(
+                      'تومان',
+                      style: TextStyle(
+                        fontSize: 12.0,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -275,7 +318,7 @@ class SinglePriceyCourseScreen extends StatelessWidget {
   Widget _buildVideos() {
     return Container(
       width: Get.width,
-      height: Get.height * .25,
+      height: Get.height * .24,
       child: Column(
         children: [
           // (controller.model.videos!.length < 0)
@@ -326,11 +369,15 @@ class SinglePriceyCourseScreen extends StatelessWidget {
       init: controller,
       id: 'videoThumb',
       builder: (ctx) => InkWell(
-        onTap: (){
-          if(controller.model.isBought!){
-            controller.openVideo(video:video,);
-          }else{
-            controller.showBoughtAlert(video:video,);
+        onTap: () {
+          if (controller.model.isBought!) {
+            controller.openVideo(
+              video: video,
+            );
+          } else {
+            controller.showBoughtAlert(
+              video: video,
+            );
           }
         },
         child: Container(
@@ -406,6 +453,37 @@ class SinglePriceyCourseScreen extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBuyButton() {
+    return Expanded(
+      child: InkWell(
+        onTap: (){
+          controller.buyCourse();
+        },
+        child: Container(
+          height: double.maxFinite,
+          width: double.maxFinite,
+          decoration: BoxDecoration(
+            color: Colors.green.shade700,
+            borderRadius: radiusAll8,
+          ),
+          margin: paddingAll10,
+          child: Center(
+            child: AutoSizeText(
+              'خرید دوره',
+              maxFontSize: 18.0,
+              maxLines: 1,
+              minFontSize: 14.0,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16.0,
+              ),
+            ),
           ),
         ),
       ),

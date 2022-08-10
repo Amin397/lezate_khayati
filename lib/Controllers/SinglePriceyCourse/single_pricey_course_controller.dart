@@ -60,9 +60,6 @@ class SinglePriceyCourseController extends GetxController {
           isLoaded(true);
         });
       }
-      // Future.delayed(Duration(seconds: 1) , (){
-      //
-      // });
     }
   }
 
@@ -79,14 +76,14 @@ class SinglePriceyCourseController extends GetxController {
       ),
     );
 
-    EasyLoading.show();
-    if(buy){
 
+    if(buy){
       buyCourse();
     }
   }
 
   void buyCourse() async{
+    EasyLoading.show();
     ApiResult result = await RequestsUtil.instance.buyCourse(courseId:model.id.toString());
     EasyLoading.dismiss();
     if(result.status == 200){
