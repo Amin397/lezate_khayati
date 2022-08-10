@@ -179,12 +179,26 @@ class RequestsUtil extends GetConnect {
     );
   }
 
-  Future<ApiResult> buyCourse({required String courseId ,}) async {
+  Future<ApiResult> buyCourse({
+    required String courseId,
+  }) async {
+    return await makeRequest(
+      type: 'get',
+      webController: WebControllers.courses,
+      webMethod: WebMethods.buy,
+      urlParams: '$courseId/${Globals.userStream.user!.id.toString()}',
+      bearer: true,
+    );
+  }
+
+  Future<ApiResult> buyProduct({
+    required String productId,
+  }) async {
     return await makeRequest(
       type: 'get',
       webController: WebControllers.products,
       webMethod: WebMethods.buy,
-      urlParams: '$courseId/${Globals.userStream.user!.id.toString()}',
+      urlParams: '$productId/${Globals.userStream.user!.id.toString()}',
       bearer: true,
     );
   }
@@ -203,6 +217,18 @@ class RequestsUtil extends GetConnect {
       webController: WebControllers.courses,
       webMethod: WebMethods.userCourses,
       urlParams: Globals.userStream.user!.id.toString(),
+      bearer: true,
+    );
+  }
+
+  Future<ApiResult> singleProduct({
+    required String productId,
+  }) async {
+    return await makeRequest(
+      type: 'get',
+      webController: WebControllers.products,
+      webMethod: WebMethods.single,
+      urlParams: productId,
       bearer: true,
     );
   }

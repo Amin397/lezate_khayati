@@ -12,6 +12,7 @@ class ProductsModel {
     this.views,
     this.createdAt,
     this.updatedAt,
+    this.date,
     required this.visible,
   });
 
@@ -25,7 +26,7 @@ class ProductsModel {
   String? views;
   DateTime? createdAt;
   DateTime? updatedAt;
-
+  List<int>? date;
   RxBool visible;
 
   static List<ProductsModel> listFromJson(List data)=>data.map((e) => ProductsModel.fromJson(e)).toList();
@@ -39,6 +40,7 @@ class ProductsModel {
     content: json["content"],
     img: json["img"],
     price: json["price"],
+    date: List<int>.from(json["date"].map((x) => x)),
     views: json["views"],
     createdAt: DateTime.parse(json["created_at"]),
     updatedAt: DateTime.parse(json["updated_at"]),
