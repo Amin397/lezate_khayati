@@ -112,9 +112,9 @@ class MainMoreController extends GetxController {
     Get.toNamed(RoutingUtils.singlePriceyCourse.name, arguments: {
       'index': index,
       'id': course.id,
-      'image':course.img,
-      'name':course.name,
-      'free':false,
+      'image': course.img,
+      'name': course.name,
+      'free': false,
     });
   }
 
@@ -125,30 +125,47 @@ class MainMoreController extends GetxController {
     Get.toNamed(RoutingUtils.singlePriceyCourse.name, arguments: {
       'index': index,
       'id': course.id,
-      'image':course.img,
-      'name':course.name,
-      'free':true,
+      'image': course.img,
+      'name': course.name,
+      'free': true,
     });
   }
 
-  void goToSingleProduct({required int index, required ProductsModel product}) {
-    Get.toNamed(RoutingUtils.singleProduct.name , arguments: {
+  void goToSingleProduct({
+    required int index,
+    required ProductsModel product,
+  }) {
+    Get.toNamed(RoutingUtils.singleProduct.name, arguments: {
       'index': index,
       'id': product.id,
-      'image':product.img,
-      'name':product.name,
+      'image': product.img,
+      'name': product.name,
     });
   }
 
-  void goToSingleBook({required BooksModel book, required int index}) {
-    Get.toNamed(RoutingUtils.singleBook.name , arguments: {
+  void goToSingleBook({
+    required BooksModel book,
+    required int index,
+  }) {
+    Get.toNamed(RoutingUtils.singleBook.name, arguments: {
       'index': index,
       'id': book.id,
-      'image':book.img,
-      'name':book.name,
+      'image': book.img,
+      'name': book.name,
     });
   }
 
+  void goToSingleArticle({
+    required HomeArticlesModel article,
+    required int index,
+  }) {
+    Get.toNamed(RoutingUtils.singleArticle.name, arguments: {
+      'index': index,
+      'id': article.id,
+      'image': article.img,
+      'name': article.name,
+    });
+  }
 
   void search({required String text}) {
     if (text.isEmpty) {
@@ -165,8 +182,4 @@ class MainMoreController extends GetxController {
       });
     }
   }
-
-
-
-
 }

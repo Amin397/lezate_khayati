@@ -20,21 +20,28 @@ class BuildChatItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: Get.width,
-      height: Get.height * .1,
-      margin: EdgeInsets.symmetric(
-        horizontal: Get.width * .03,
-        // vertical: Get.height * .01,
-      ),
-      child: Row(
-        children: [
-          _buildChatAvatar(),
-          SizedBox(
-            width: Get.width * .02,
-          ),
-          _buildChatBody(),
-        ],
+    return InkWell(
+      onTap: () {
+        controller.goToSingleChat(
+          item: item,
+        );
+      },
+      child: Container(
+        width: Get.width,
+        height: Get.height * .1,
+        margin: EdgeInsets.symmetric(
+          horizontal: Get.width * .03,
+          // vertical: Get.height * .01,
+        ),
+        child: Row(
+          children: [
+            _buildChatAvatar(),
+            SizedBox(
+              width: Get.width * .02,
+            ),
+            _buildChatBody(),
+          ],
+        ),
       ),
     );
   }
@@ -71,7 +78,6 @@ class BuildChatItemWidget extends StatelessWidget {
         ),
       ),
     );
-
   }
 
   Widget _buildChatBody() {

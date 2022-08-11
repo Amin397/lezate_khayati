@@ -1,6 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:lezate_khayati/Models/Training/Books/articles_model.dart';
 
 import '../../../Controllers/MainMore/main_more_controller.dart';
 import '../../../Models/Home/home_articles_model.dart';
@@ -22,22 +21,30 @@ class BuildArticleItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.all(14.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: ViewUtils.neoShadow(),
-        borderRadius: radiusAll8,
-      ),
-      child: Stack(
-        children: [
-          _buildImage(),
-          _buildShadow(),
-          _buildName(),
-          _buildViewPart(
-            productView: article.views!,
-          ),
-        ],
+    return InkWell(
+      onTap: () {
+        controller.goToSingleArticle(
+          index: index,
+          article: article,
+        );
+      },
+      child: Container(
+        margin: EdgeInsets.all(14.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: ViewUtils.neoShadow(),
+          borderRadius: radiusAll8,
+        ),
+        child: Stack(
+          children: [
+            _buildImage(),
+            _buildShadow(),
+            _buildName(),
+            _buildViewPart(
+              productView: article.views!,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -93,15 +100,18 @@ class BuildArticleItem extends StatelessWidget {
     return SizedBox(
       height: double.maxFinite,
       width: double.maxFinite,
-      child: ClipRRect(
-        borderRadius: radiusAll10,
-        child: FadeInImage(
-          fit: BoxFit.cover,
-          image: NetworkImage(
-            article.img!,
-          ),
-          placeholder: AssetImage(
-            'assets/img/placeHolder.jpg',
+      child: Hero(
+        tag: 'article-$index',
+        child: ClipRRect(
+          borderRadius: radiusAll10,
+          child: FadeInImage(
+            fit: BoxFit.cover,
+            image: NetworkImage(
+              article.img!,
+            ),
+            placeholder: AssetImage(
+              'assets/img/placeHolder.jpg',
+            ),
           ),
         ),
       ),
@@ -151,5 +161,4 @@ class BuildArticleItem extends StatelessWidget {
       ),
     );
   }
-
 }

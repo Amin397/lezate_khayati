@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lezate_khayati/Plugins/get/get.dart';
 import 'package:lezate_khayati/Utils/Api/project_request_utils.dart';
+import 'package:lezate_khayati/Utils/routing_utils.dart';
 
 import '../../Models/Chat/chat_model.dart';
 
@@ -40,5 +41,12 @@ class ChatController extends GetxController {
         }
       });
     }
+  }
+
+  void goToSingleChat({required ChatRoomsModel item}) {
+    Get.toNamed(RoutingUtils.singleChat.name , arguments: {
+      'id':item.id,
+      'title':item.data!.name,
+    });
   }
 }

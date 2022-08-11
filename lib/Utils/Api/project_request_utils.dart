@@ -179,6 +179,16 @@ class RequestsUtil extends GetConnect {
     );
   }
 
+  Future<ApiResult> getMessages({required String chatId}) async {
+    return await makeRequest(
+      type: 'post',
+      webController: WebControllers.chats,
+      webMethod: WebMethods.messages,
+      bearer: true,
+      urlParams: chatId,
+    );
+  }
+
   Future<ApiResult> buyCourse({
     required String courseId,
   }) async {
@@ -187,6 +197,22 @@ class RequestsUtil extends GetConnect {
       webController: WebControllers.courses,
       webMethod: WebMethods.buy,
       urlParams: '$courseId/${Globals.userStream.user!.id.toString()}',
+      bearer: true,
+    );
+  }
+
+  Future<ApiResult> sendMessage({
+    required String chatId,
+    required String message,
+  }) async {
+    return await makeRequest(
+      type: 'post',
+      webController: WebControllers.chats,
+      webMethod: WebMethods.newmessage,
+      body: {
+        'body': message,
+        'chat_id': chatId,
+      },
       bearer: true,
     );
   }
@@ -211,6 +237,18 @@ class RequestsUtil extends GetConnect {
         bearer: true);
   }
 
+  Future<ApiResult> sendToken({required String token}) async {
+    return await makeRequest(
+      type: 'post',
+      webController: WebControllers.auth,
+      webMethod: WebMethods.fcmUpdate,
+      body: {
+        'token':token,
+      },
+      bearer: true,
+    );
+  }
+
   Future<ApiResult> getUserClass() async {
     return await makeRequest(
       type: 'get',
@@ -229,6 +267,18 @@ class RequestsUtil extends GetConnect {
       webController: WebControllers.products,
       webMethod: WebMethods.single,
       urlParams: productId,
+      bearer: true,
+    );
+  }
+
+  Future<ApiResult> getSingleArticle({
+    required String articleId,
+  }) async {
+    return await makeRequest(
+      type: 'get',
+      webController: WebControllers.posts,
+      webMethod: WebMethods.single,
+      urlParams: articleId,
       bearer: true,
     );
   }

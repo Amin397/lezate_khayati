@@ -12,4 +12,7 @@ enum WebMethods {
   userCourses,
   single,
   buy,
+  messages,
+  newmessage,
+  fcmUpdate,
 }

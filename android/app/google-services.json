@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "912433652910",
+    "project_id": "lezatkhayati-3f092",
+    "storage_bucket": "lezatkhayati-3f092.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:912433652910:android:d321610e8c187b2a42393f",
+        "android_client_info": {
+          "package_name": "com.example.lezate_khayati"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "912433652910-7kh994c076h65upm9g9768gqf5pjp0ck.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCdekFzujxUM27uWbDoJc_Amgv5DU7BjFA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "912433652910-7kh994c076h65upm9g9768gqf5pjp0ck.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

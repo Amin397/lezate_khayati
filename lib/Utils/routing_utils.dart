@@ -13,7 +13,9 @@ import '../Views/MyFavorite/my_favorite_screen.dart';
 import '../Views/MyOrder/my_order_screen.dart';
 import '../Views/MyQuestion/my_question_screen.dart';
 import '../Views/Search/search_screen.dart';
+import '../Views/SingleArticle/single_article_screen.dart';
 import '../Views/SingleBook/single_book_screen.dart';
+import '../Views/SingleChat/single_chat_screen.dart';
 import '../Views/SinglePriceyCourse/single_pricey_course_screen.dart';
 import '../Views/SingleProduct/single_product_screen.dart';
 import '../Views/Training/Classes/classes_screen.dart';
@@ -104,6 +106,16 @@ class RoutingUtils {
   static GetPage searchPage = GetPage(
     name: '/searchPage',
     page: () => SearchScreen(),
+    transition: Transition.fadeIn,
+  );
+  static GetPage singleArticle = GetPage(
+    name: '/singleArticle',
+    page: () => SingleArticleScreen(),
+    transition: Transition.fadeIn,
+  );
+  static GetPage singleChat = GetPage(
+    name: '/singleChat',
+    page: () => SingleChatScreen(),
     transition: Transition.fadeIn,
   );
 }

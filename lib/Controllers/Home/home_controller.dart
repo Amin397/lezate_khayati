@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:lezate_khayati/Models/Home/free_courses_model.dart';
 import 'package:lezate_khayati/Models/Home/home_articles_model.dart';
@@ -34,6 +35,7 @@ class HomeController extends GetxController {
       viewportFraction: .85,
     );
     getHomeData();
+
     super.onInit();
   }
 
