@@ -9,6 +9,7 @@ class MessagesModel {
     this.updatedAt,
     this.isMe,
     this.user,
+    this.files,
   });
 
   int? id;
@@ -19,7 +20,7 @@ class MessagesModel {
   DateTime? updatedAt;
   bool? isMe;
   User? user;
-
+  FilesClass? files;
 
   static List<MessagesModel> listFromJson(List data)=>data.map((e) => MessagesModel.fromJson(e)).toList();
 
@@ -32,6 +33,7 @@ class MessagesModel {
     updatedAt: DateTime.parse(json["updated_at"]),
     isMe: json["isMe"],
     user: User.fromJson(json["user"]),
+    files: FilesClass.fromJson(json["files"]),
   );
 
   Map<String, dynamic> toJson() => {
@@ -77,8 +79,8 @@ class User {
     role: json["role"],
     fcmToken: json["fcm_token"],
     phone: json["phone"],
-    createdAt: DateTime.parse(json["created_at"]),
-    updatedAt: DateTime.parse(json["updated_at"]),
+    createdAt: (json["created_at"] != null)?DateTime.parse(json["created_at"]):DateTime.now(),
+    updatedAt: (json["updated_at"] != null)?DateTime.parse(json["updated_at"]):DateTime.now(),
   );
 
   Map<String, dynamic> toJson() => {
@@ -93,3 +95,52 @@ class User {
     "updated_at": updatedAt!.toIso8601String(),
   };
 }
+
+
+class FilesClass {
+  FilesClass({
+    this.id,
+    this.messageId,
+    this.chatId,
+    this.userId,
+    this.input,
+    this.type,
+    this.createdAt,
+    this.updatedAt,
+  });
+
+  int? id;
+  String? messageId;
+  String? chatId;
+  String? userId;
+  String? input;
+  String? type;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+
+  factory FilesClass.fromJson(Map<String, dynamic> json) => FilesClass(
+    id: json["id"],
+    messageId: json["message_id"],
+    chatId: json["chat_id"],
+    userId: json["user_id"],
+    input: json["input"],
+    type: json["type"],
+    createdAt: DateTime.parse(json["created_at"]),
+    updatedAt: DateTime.parse(json["updated_at"]),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "message_id": messageId,
+    "chat_id": chatId,
+    "user_id": userId,
+    "input": input,
+    "type": type,
+    "created_at": createdAt!.toIso8601String(),
+    "updated_at": updatedAt!.toIso8601String(),
+  };
+}
+
+
+
+
