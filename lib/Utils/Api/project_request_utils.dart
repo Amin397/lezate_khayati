@@ -157,6 +157,11 @@ class RequestsUtil extends GetConnect {
     required String mobileNumber,
     required String code,
     required String name,
+    required String city,
+    required String postalCode,
+    required String gender,
+    required String address,
+    required String birthday,
   }) async {
     return await makeRequest(
         webController: WebControllers.auth,
@@ -167,6 +172,11 @@ class RequestsUtil extends GetConnect {
           'code': code,
           'name': name,
           'refer': 'google',
+          'postal_code':postalCode,
+          'city':city,
+          'birthday':birthday,
+          'gender':gender,
+          'address':address,
         });
   }
 

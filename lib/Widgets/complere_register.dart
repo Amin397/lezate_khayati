@@ -1,14 +1,11 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:lezate_khayati/Controllers/Login/login_controller.dart';
 import 'package:lezate_khayati/Plugins/get/get.dart';
+import 'package:lezate_khayati/Utils/Consts.dart';
 import 'package:lezate_khayati/Utils/color_utils.dart';
 import 'package:lezate_khayati/Utils/widget_utils.dart';
-
-import '../Utils/Api/project_request_utils.dart';
-import '../Utils/routing_utils.dart';
-import '../Utils/view_utils.dart';
 
 class CompleteRegister extends StatefulWidget {
   final String mobile;
@@ -30,9 +27,54 @@ class _CompleteRegisterState extends State<CompleteRegister> {
   TextEditingController lastNameController = TextEditingController();
 
   FocusNode nameFocusNode = FocusNode();
+  FocusNode postalCodeFocusNode = FocusNode();
+  FocusNode addressFocusNode = FocusNode();
+  FocusNode birthDayFocusNode = FocusNode();
+  FocusNode cityFocusNode = FocusNode();
   FocusNode lastNameFocusNode = FocusNode();
 
   String refer = '';
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: Get.height * .7,
+      width: Get.width,
+      // margin: paddingAll10,
+      decoration: BoxDecoration(
+        borderRadius: radiusAll10,
+        color: Colors.white,
+      ),
+      child: Column(
+        children: [
+          SizedBox(
+            height: Get.height / 48,
+          ),
+          header(),
+          SizedBox(
+            height: Get.height / 48,
+          ),
+          // Expanded(
+          //   child: body(),
+          // ),
+          name(),
+          city(),
+          postalCode(),
+          address(),
+          _buildBirthDay(),
+          _buildGender(),
+          fromWhere(),
+          SizedBox(
+            height: Get.height / 48,
+          ),
+          finalBtn(),
+          SizedBox(
+            height: Get.height / 48,
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget header() {
     return Row(
@@ -42,51 +84,9 @@ class _CompleteRegisterState extends State<CompleteRegister> {
           'تکمیل اطلاعات',
           style: TextStyle(
             fontSize: 15.0,
-            color: Colors.white,
           ),
         ),
       ],
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        height: Get.height * .3,
-        width: Get.width / 1.1,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-        child: Material(
-          color: ColorUtils.black,
-          borderRadius: BorderRadius.circular(10.0),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
-            child: Column(
-              children: [
-                SizedBox(
-                  height: Get.height / 48,
-                ),
-                header(),
-                SizedBox(
-                  height: Get.height / 48,
-                ),
-                Expanded(
-                  child: body(),
-                ),
-                SizedBox(
-                  height: Get.height / 48,
-                ),
-                finalBtn(),
-                SizedBox(
-                  height: Get.height / 48,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
     );
   }
 
@@ -95,18 +95,6 @@ class _CompleteRegisterState extends State<CompleteRegister> {
       title: "ثبت نام",
       onTap: () => finalize(),
       enabled: true,
-    );
-  }
-
-  Widget body() {
-    return Column(
-      children: [
-        name(),
-        SizedBox(
-          height: Get.height / 48,
-        ),
-        fromWhere(),
-      ],
     );
   }
 
@@ -119,9 +107,7 @@ class _CompleteRegisterState extends State<CompleteRegister> {
     TextAlign align = TextAlign.right,
   }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 10.0,
-      ),
+      padding: paddingSymmetricH12,
       child: TextFormField(
         textAlign: align,
         controller: controller,
@@ -133,8 +119,8 @@ class _CompleteRegisterState extends State<CompleteRegister> {
             maxLen,
           ),
         ],
-        style: const TextStyle(
-          color: Colors.white,
+        style: TextStyle(
+          color: Colors.black,
         ),
         cursorColor: ColorUtils.yellow,
         decoration: InputDecoration(
@@ -146,12 +132,12 @@ class _CompleteRegisterState extends State<CompleteRegister> {
           ),
           enabledBorder: const UnderlineInputBorder(
             borderSide: BorderSide(
-              color: Colors.white,
+              color: Colors.grey,
             ),
           ),
-          labelStyle: TextStyle(
-            color: Colors.white.withOpacity(0.7),
-          ),
+          // labelStyle: TextStyle(
+          //   color: Colors.white.withOpacity(0.7),
+          // ),
         ),
       ),
     );
@@ -161,7 +147,39 @@ class _CompleteRegisterState extends State<CompleteRegister> {
     return _textInput(
       controller: widget.controller.nameController,
       focusNode: nameFocusNode,
-      name: "نام",
+      name: "نام و نام خانوادگی",
+    );
+  }
+
+  Widget postalCode() {
+    return _textInput(
+      controller: widget.controller.postalCodeController,
+      focusNode: postalCodeFocusNode,
+      name: "کد پستی",
+    );
+  }
+
+  Widget address() {
+    return _textInput(
+      controller: widget.controller.addressController,
+      focusNode: addressFocusNode,
+      name: "آدرس",
+    );
+  }
+
+  // Widget birthDay() {
+  //   return _textInput(
+  //     controller: widget.controller.birthDayController,
+  //     focusNode: birthDayFocusNode,
+  //     name: "روز تولد",
+  //   );
+  // }
+
+  Widget city() {
+    return _textInput(
+      controller: widget.controller.cityController,
+      focusNode: cityFocusNode,
+      name: "شهر",
     );
   }
 
@@ -174,7 +192,6 @@ class _CompleteRegisterState extends State<CompleteRegister> {
   }
 
   void finalize() {
-
     Get.back(result: true);
     // EasyLoading.show();
     // widget.controller.requests
@@ -210,12 +227,13 @@ class _CompleteRegisterState extends State<CompleteRegister> {
       child: Container(
         width: Get.width,
         height: double.maxFinite,
+        padding: paddingAll10,
         child: Row(
           children: [
             Text(
               'نحوه آشنایی :',
               style: TextStyle(
-                color: Colors.white,
+                color: Colors.grey.shade700,
               ),
             ),
             PopupMenuButton<int>(
@@ -296,9 +314,122 @@ class _CompleteRegisterState extends State<CompleteRegister> {
             Text(
               refer,
               style: TextStyle(
-                color: Colors.white,
+                color: Colors.grey.shade700,
               ),
             )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBirthDay() {
+    return InkWell(
+      onTap: () {
+        widget.controller.openDatePicker();
+      },
+      child: GetBuilder(
+        id: 'birthDay',
+        init: widget.controller,
+        builder: (ctx) => Container(
+          width: Get.width,
+          height: Get.height * .06,
+          margin: paddingAll10,
+          padding: paddingAll10,
+          decoration: BoxDecoration(
+            borderRadius: radiusAll10,
+            border: Border.all(
+              color: Colors.grey,
+            ),
+          ),
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: AutoSizeText(
+              widget.controller.birthDay,
+              style: TextStyle(
+                color: Colors.black,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildGender() {
+    return GetBuilder(
+      init: widget.controller,
+      id: 'gender',
+      builder: (ctx) => Container(
+        width: Get.width,
+        height: Get.height * .07,
+        padding: paddingAll10,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(
+              children: [
+                Radio<String>(
+                    value: "male",
+                    groupValue: widget.controller.selectedGender,
+                    onChanged: (value) {
+                      widget.controller.changeGender(value: value!);
+                    }),
+                Text(
+                  'مرد',
+                  style: TextStyle(
+                    color: Colors.grey.shade700,
+                  ),
+                )
+              ],
+            ),
+            Row(
+              children: [
+                Radio<String>(
+                    value: "female",
+                    groupValue: widget.controller.selectedGender,
+                    onChanged: (value) {
+                      widget.controller.changeGender(value: value!);
+                    }),
+                Text(
+                  'زن',
+                  style: TextStyle(
+                    color: Colors.grey.shade700,
+                  ),
+                )
+              ],
+            ),
+            // RadioListTile<String>(
+            //     title: const Text('male'),
+            //     value: widget.controller.selectedGender,
+            //     groupValue: widget.controller.selectedGender,
+            //     onChanged: (value) {
+            //       widget.controller.changeGender(value:value!);
+            //       // setState(() {
+            //       //   _result = value;
+            //       // });
+            //     })
+            // ListTile(
+            //   leading: Radio<String>(
+            //     value: 'male',
+            //     groupValue: widget.controller.selectedGender,
+            //     onChanged: (value) {
+            //       widget.controller.changeGender(value:value!);
+            //     },
+            //   ),
+            //   title: const Text('Male'),
+            // ),
+            // ListTile(
+            //   leading: Radio<String>(
+            //     value: 'female',
+            //     groupValue: widget.controller.selectedGender,
+            //     onChanged: (value) {
+            //
+            //       widget.controller.changeGender(value:value!);
+            //     },
+            //   ),
+            //   title: const Text('Female'),
+            // )
           ],
         ),
       ),

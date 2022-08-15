@@ -3,6 +3,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:lezate_khayati/Plugins/get/get.dart';
 import 'package:lezate_khayati/Utils/Api/project_request_utils.dart';
 import 'package:lezate_khayati/Utils/view_utils.dart';
+import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 
 import '../../Globals/Globals.dart';
 import '../../Models/user_model.dart';
@@ -19,10 +20,18 @@ class LoginController extends GetxController {
   TextEditingController codeController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController nameController = TextEditingController();
+  TextEditingController postalCodeController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
+  String birthDay = 'تاریخ تولد';
+  TextEditingController cityController = TextEditingController();
 
   FocusNode mobileFocusNode = FocusNode();
   FocusNode codeFocusNode = FocusNode();
   FocusNode passwordNode = FocusNode();
+
+
+  Jalali? birthDatePicked;
+
 
   final RequestsUtil requests = RequestsUtil();
 
@@ -43,7 +52,7 @@ class LoginController extends GetxController {
 
   // methods
 
-  void submit() async{
+  void submit() async {
     if (isForgot.value == true) {
       forgot();
     } else if (isRegister.value == true) {
@@ -54,12 +63,17 @@ class LoginController extends GetxController {
         mobileNumber: mobileController.value.text,
         code: codeController.text,
         name: nameController.text,
+        birthday: '${birthDatePicked!.year}-${birthDatePicked!.month}-${birthDatePicked!.day}',
+        address: addressController.text,
+        city: cityController.text,
+        gender: selectedGender,
+        postalCode: postalCodeController.text,
       );
       EasyLoading.dismiss();
       if (result.isDone) {
         print(result.data);
         // if (result.data['method'] == 'register') {
-          StorageUtils.saveToken(result.data['token']);
+        StorageUtils.saveToken(result.data['token']);
         //   login();
         //   ///register
         // } else {
@@ -85,17 +99,21 @@ class LoginController extends GetxController {
       return;
     }
 
-    bool isBack = await Get.dialog(
-      Directionality(
-        textDirection: TextDirection.rtl,
-        child: CompleteRegister(
-          mobile: mobileController.value.text,
-          code: codeController.value.text,
-          controller: this,
-        ),
-      ),
-      barrierColor: Colors.black.withOpacity(0.8),
+    bool isBack = await showDialog(
+      context: Get.context!,
       barrierDismissible: false,
+      builder: (BuildContext context) => AlertDialog(
+        contentPadding: EdgeInsets.zero,
+        content: Directionality(
+          textDirection: TextDirection.rtl,
+          child: CompleteRegister(
+            mobile: mobileController.value.text,
+            code: codeController.value.text,
+            controller: this,
+          ),
+        ),
+        backgroundColor: Colors.transparent,
+      ),
     );
 
     if (isBack) {
@@ -104,16 +122,21 @@ class LoginController extends GetxController {
         mobileNumber: mobileController.value.text,
         code: codeController.text,
         name: nameController.text,
+        birthday: '${birthDatePicked!.year}-${birthDatePicked!.month}-${birthDatePicked!.day}',
+        address: addressController.text,
+        city: cityController.text,
+        gender: selectedGender,
+        postalCode: postalCodeController.text,
       );
       EasyLoading.dismiss();
       if (result.isDone) {
         print(result.data);
         // if (result.data['method'] == 'register') {
-        //   StorageUtils.saveToken(result.data['token']);
+          StorageUtils.saveToken(result.data['token']);
         //   login();
         //   ///register
         // } else {
-          login();
+        login();
         //
         //   ///login
         // }
@@ -266,4 +289,27 @@ class LoginController extends GetxController {
       );
     });
   }
+
+  void openDatePicker() async {
+    birthDatePicked = await showPersianDatePicker(
+      context: context,
+      initialDate: Jalali.now(),
+      firstDate: Jalali(1300, 1),
+      lastDate: Jalali(1450, 9),
+    );
+
+    birthDay = birthDatePicked!.formatFullDate();
+    update(['birthDay']);
+  }
+
+
+  String selectedGender = 'male';
+
+  void changeGender({required String value}) {
+    selectedGender = value;
+    update(['gender']);
+  }
+
+
+
 }
