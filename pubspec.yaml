@@ -65,6 +65,10 @@ dependencies:
   flutter_local_notifications: ^9.7.0
   overlay_support: ^2.0.1
   persian_datetime_picker: ^2.5.0
+  file_picker: any
+  just_audio: ^0.9.28
+  record: ^4.3.3
+
 
 
 dev_dependencies:

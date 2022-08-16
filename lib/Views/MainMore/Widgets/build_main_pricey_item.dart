@@ -74,7 +74,7 @@ class BuildMainPriceyItem extends StatelessWidget {
     );
   }
 
-  Widget _buildRateBar({required double rate}) {
+  Widget _buildRateBar({required int rate}) {
     return Flexible(
       flex: 1,
       child: SizedBox(

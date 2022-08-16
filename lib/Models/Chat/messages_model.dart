@@ -1,6 +1,7 @@
+import 'dart:io';
 
-class MessagesModel {
-  MessagesModel({
+class MessageModel {
+  MessageModel({
     this.id,
     this.userId,
     this.chatId,
@@ -20,11 +21,14 @@ class MessagesModel {
   DateTime? updatedAt;
   bool? isMe;
   User? user;
-  FilesClass? files;
+  Files? files;
 
-  static List<MessagesModel> listFromJson(List data)=>data.map((e) => MessagesModel.fromJson(e)).toList();
 
-  factory MessagesModel.fromJson(Map<String, dynamic> json) => MessagesModel(
+  static List<MessageModel> listFromJson(List data){
+    return data.map((e) => MessageModel.fromJson(e)).toList();
+  }
+
+  factory MessageModel.fromJson(Map<String, dynamic> json) => MessageModel(
     id: json["id"],
     userId: json["user_id"],
     chatId: json["chat_id"],
@@ -33,7 +37,7 @@ class MessagesModel {
     updatedAt: DateTime.parse(json["updated_at"]),
     isMe: json["isMe"],
     user: User.fromJson(json["user"]),
-    files: FilesClass.fromJson(json["files"]),
+    files:(json["files"] == null)?Files(): Files.fromJson(json["files"]),
   );
 
   Map<String, dynamic> toJson() => {
@@ -45,60 +49,12 @@ class MessagesModel {
     "updated_at": updatedAt!.toIso8601String(),
     "isMe": isMe,
     "user": user!.toJson(),
+    "files": files!.toJson(),
   };
 }
 
-class User {
-  User({
-    this.id,
-    this.name,
-    this.avatar,
-    this.refer,
-    this.role,
-    this.fcmToken,
-    this.phone,
-    this.createdAt,
-    this.updatedAt,
-  });
-
-  int? id;
-  String? name;
-  String? avatar;
-  String? refer;
-  String? role;
-  String? fcmToken;
-  String? phone;
-  DateTime? createdAt;
-  DateTime? updatedAt;
-
-  factory User.fromJson(Map<String, dynamic> json) => User(
-    id: json["id"],
-    name: json["name"],
-    avatar: json["avatar"],
-    refer: json["refer"],
-    role: json["role"],
-    fcmToken: json["fcm_token"],
-    phone: json["phone"],
-    createdAt: (json["created_at"] != null)?DateTime.parse(json["created_at"]):DateTime.now(),
-    updatedAt: (json["updated_at"] != null)?DateTime.parse(json["updated_at"]):DateTime.now(),
-  );
-
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "name": name,
-    "avatar": avatar,
-    "refer": refer,
-    "role": role,
-    "fcm_token": fcmToken,
-    "phone": phone,
-    "created_at": createdAt!.toIso8601String(),
-    "updated_at": updatedAt!.toIso8601String(),
-  };
-}
-
-
-class FilesClass {
-  FilesClass({
+class Files {
+  Files({
     this.id,
     this.messageId,
     this.chatId,
@@ -107,6 +63,7 @@ class FilesClass {
     this.type,
     this.createdAt,
     this.updatedAt,
+    this.file,
   });
 
   int? id;
@@ -117,8 +74,9 @@ class FilesClass {
   String? type;
   DateTime? createdAt;
   DateTime? updatedAt;
+  File? file;
 
-  factory FilesClass.fromJson(Map<String, dynamic> json) => FilesClass(
+  factory Files.fromJson(Map<String, dynamic> json) => Files(
     id: json["id"],
     messageId: json["message_id"],
     chatId: json["chat_id"],
@@ -141,6 +99,74 @@ class FilesClass {
   };
 }
 
+class User {
+  User({
+    this.id,
+    this.name,
+    this.avatar,
+    this.city,
+    this.gender,
+    this.address,
+    this.postalCode,
+    this.birthday,
+    this.justified,
+    this.refer,
+    this.role,
+    this.fcmToken,
+    this.phone,
+    this.createdAt,
+    this.updatedAt,
+  });
 
+  int? id;
+  String? name;
+  String? avatar;
+  String? city;
+  String? gender;
+  String? address;
+  String? postalCode;
+  String? birthday;
+  int? justified;
+  String? refer;
+  String? role;
+  String? fcmToken;
+  String? phone;
+  DateTime? createdAt;
+  DateTime? updatedAt;
 
+  factory User.fromJson(Map<String, dynamic> json) => User(
+    id: json["id"],
+    name: json["name"],
+    avatar: json["avatar"],
+    city: json["city"],
+    gender: json["gender"],
+    address: json["address"],
+    postalCode: json["postal_code"],
+    birthday: json["birthday"],
+    justified: json["justified"],
+    refer: json["refer"],
+    role: json["role"],
+    fcmToken: json["fcm_token"],
+    phone: json["phone"],
+    createdAt: DateTime.parse(json["created_at"]),
+    updatedAt: DateTime.parse(json["updated_at"]),
+  );
 
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "name": name,
+    "avatar": avatar,
+    "city": city,
+    "gender": gender,
+    "address": address,
+    "postal_code": postalCode,
+    "birthday": birthday,
+    "justified": justified,
+    "refer": refer,
+    "role": role,
+    "fcm_token": fcmToken,
+    "phone": phone,
+    "created_at": createdAt!.toIso8601String(),
+    "updated_at": updatedAt!.toIso8601String(),
+  };
+}

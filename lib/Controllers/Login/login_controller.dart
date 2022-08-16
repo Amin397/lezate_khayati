@@ -62,12 +62,7 @@ class LoginController extends GetxController {
       ApiResult result = await requests.sendCode(
         mobileNumber: mobileController.value.text,
         code: codeController.text,
-        name: nameController.text,
-        birthday: '${birthDatePicked!.year}-${birthDatePicked!.month}-${birthDatePicked!.day}',
-        address: addressController.text,
-        city: cityController.text,
-        gender: selectedGender,
-        postalCode: postalCodeController.text,
+        login: true,
       );
       EasyLoading.dismiss();
       if (result.isDone) {
@@ -119,6 +114,7 @@ class LoginController extends GetxController {
     if (isBack) {
       EasyLoading.show();
       ApiResult result = await requests.sendCode(
+        login: false,
         mobileNumber: mobileController.value.text,
         code: codeController.text,
         name: nameController.text,

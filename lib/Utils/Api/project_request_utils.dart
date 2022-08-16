@@ -156,28 +156,35 @@ class RequestsUtil extends GetConnect {
   Future<ApiResult> sendCode({
     required String mobileNumber,
     required String code,
-    required String name,
-    required String city,
-    required String postalCode,
-    required String gender,
-    required String address,
-    required String birthday,
+    required bool login,
+    String? name,
+    String? city,
+    String? postalCode,
+    String? gender,
+    String? address,
+    String? birthday,
   }) async {
     return await makeRequest(
-        webController: WebControllers.auth,
-        webMethod: WebMethods.sendcode,
-        type: 'post',
-        body: {
-          'phone': mobileNumber,
-          'code': code,
-          'name': name,
-          'refer': 'google',
-          'postal_code':postalCode,
-          'city':city,
-          'birthday':birthday,
-          'gender':gender,
-          'address':address,
-        });
+      webController: WebControllers.auth,
+      webMethod: WebMethods.sendcode,
+      type: 'post',
+      body: (login)
+          ? {
+              'phone': mobileNumber,
+              'code': code,
+            }
+          : {
+              'phone': mobileNumber,
+              'code': code,
+              'name': name,
+              'refer': 'google',
+              'postal_code': postalCode,
+              'city': city,
+              'birthday': birthday,
+              'gender': gender,
+              'address': address,
+            },
+    );
   }
 
   Future<ApiResult> getUser() async {
@@ -214,17 +221,36 @@ class RequestsUtil extends GetConnect {
   Future<ApiResult> sendMessage({
     required String chatId,
     required String message,
+    File? file,
+    String? type,
   }) async {
-    return await makeRequest(
-      type: 'post',
-      webController: WebControllers.chats,
-      webMethod: WebMethods.newmessage,
-      body: {
-        'body': message,
-        'chat_id': chatId,
-      },
-      bearer: true,
-    );
+    if (file is File) {
+      print(file.path);
+      print(file.path);
+      return await makeRequest(
+        type: 'post',
+        webController: WebControllers.chats,
+        webMethod: WebMethods.newmessage,
+        files: [file],
+        body: {
+          'body': message,
+          'chat_id': chatId,
+          'type': type,
+        },
+        bearer: true,
+      );
+    } else {
+      return await makeRequest(
+        type: 'post',
+        webController: WebControllers.chats,
+        webMethod: WebMethods.newmessage,
+        body: {
+          'body': message,
+          'chat_id': chatId,
+        },
+        bearer: true,
+      );
+    }
   }
 
   Future<ApiResult> buyProduct({
@@ -253,7 +279,7 @@ class RequestsUtil extends GetConnect {
       webController: WebControllers.auth,
       webMethod: WebMethods.fcmUpdate,
       body: {
-        'token':token,
+        'token': token,
       },
       bearer: true,
     );

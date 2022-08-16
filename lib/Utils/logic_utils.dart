@@ -30,6 +30,15 @@ class LogicUtils {
     return price.toInt().toString().seRagham() + (showText ? " تومان" : '');
   }
 
+  static String durationToMinHour(Duration difference) {
+    int min = difference.inMinutes;
+    int seconds = difference.inSeconds - (difference.inMinutes * 60);
+    String second = seconds >= 10 ? seconds.toString() : "0${seconds}";
+    return "$min:$second";
+  }
+
+
+
 
 
   static void onChange({
