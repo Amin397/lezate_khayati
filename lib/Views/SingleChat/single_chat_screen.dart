@@ -179,23 +179,25 @@ class SingleChatScreen extends StatelessWidget {
                     ),
                     AnimatedContainer(
                       duration: Duration(milliseconds: 300),
-                      height: (controller.isRecording.isTrue)?100.0:30.0,
-                      width: (controller.isRecording.isTrue)?100.0:30.0,
+                      height: (controller.isRecording.isTrue) ? 100.0 : 30.0,
+                      width: (controller.isRecording.isTrue) ? 100.0 : 30.0,
                       // color: Colors.red,
-                      margin: EdgeInsets.symmetric(vertical: Get.height * .02),
+                      margin: EdgeInsets.symmetric(
+                        vertical: Get.height * .02,
+                      ),
                       child: Stack(
                         clipBehavior: Clip.none,
                         children: [
                           (controller.isRecording.isTrue)
                               ? Center(
-                                child: Container(
-                                  child: Lottie.asset(
+                                  child: Container(
+                                    child: Lottie.asset(
                                       'assets/animations/voiceWave.json',
                                       height: 100.0,
                                       width: 100.0,
                                     ),
-                                ),
-                              )
+                                  ),
+                                )
                               : SizedBox(),
                           Center(
                             child: GestureDetector(
@@ -275,7 +277,7 @@ class SingleChatScreen extends StatelessWidget {
                           itemCount: controller.chats.length,
                           itemBuilder: (BuildContext context, int index) =>
                               ChatBubble(
-                            file: controller.chats[index].files!.file,
+                            file: (controller.chats[index].files != null)?controller.chats[index].files!.file : null,
                             model: controller.chats[index],
                             isCurrentUser: controller.chats[index].isMe!,
                           ),

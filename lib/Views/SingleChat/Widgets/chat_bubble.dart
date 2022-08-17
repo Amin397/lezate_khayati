@@ -29,9 +29,9 @@ class ChatBubble extends StatelessWidget {
         vertical: 8.0,
       ),
       width: Get.width,
-      height: (model!.files!.type! == 'voice')
-          ? Get.height * .125
-          : Get.height * .31,
+      // height: (model!.files!.type! == 'voice')
+      //     ? Get.height * .125
+      //     : Get.height * .31,
       child: Row(
         mainAxisAlignment:
             !isCurrentUser ? MainAxisAlignment.start : MainAxisAlignment.end,
@@ -185,7 +185,7 @@ class ChatBubble extends StatelessWidget {
               child: FadeInImage(
                 fit: BoxFit.cover,
                 image: NetworkImage(
-                  model!.files!.input!,
+                  model!.user!.avatar!,
                 ),
                 placeholder: AssetImage(
                   'assets/img/placeHolder.jpg',

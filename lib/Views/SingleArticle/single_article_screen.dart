@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:html/parser.dart';
 import 'package:lezate_khayati/Plugins/get/get.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -93,7 +94,8 @@ class SingleArticleScreen extends StatelessWidget {
       child: Align(
         alignment: Alignment.topRight,
         child: AutoSizeText(
-          controller.model.content!,
+          // controller.model.content!,
+          parse(parse(controller.model.content!).body!.text).documentElement!.text,
           maxFontSize: 16.0,
           minFontSize: 10.0,
           maxLines: 5,

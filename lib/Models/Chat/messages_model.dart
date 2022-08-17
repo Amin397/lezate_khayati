@@ -37,7 +37,7 @@ class MessageModel {
     updatedAt: DateTime.parse(json["updated_at"]),
     isMe: json["isMe"],
     user: User.fromJson(json["user"]),
-    files:(json["files"] == null)?Files(): Files.fromJson(json["files"]),
+    files:(json["files"] == null)?null: Files.fromJson(json["files"]),
   );
 
   Map<String, dynamic> toJson() => {

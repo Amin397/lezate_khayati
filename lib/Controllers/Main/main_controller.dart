@@ -83,34 +83,34 @@ class MainController extends GetxController {
     // });
     super.onInit();
 
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('MMMMMMMMMMMMMMMMMMMMMMMM');
-      // PushNotification notification = PushNotification(
-      //   title: message.notification?.title,
-      //   body: message.notification?.body,
-      // );
-
-      showSimpleNotification(
-        Text("this is a message from simple notification"),
-        background: Colors.green,
-        contentPadding: paddingAll10
-      );
-
-      // flutterLocalNotificationsPlugin.show(
-      //   notification.hashCode,
-      //   notification.title,
-      //   notification.body,
-      //   NotificationDetails(
-      //     android: AndroidNotificationDetails(
-      //       channel.id,
-      //       channel.name,
-      //       channelDescription: channel.description,
-      //       // TODO add a proper drawable resource to android, for now using
-      //       //      one that already exists in example app.
-      //       icon: 'launch_background',
-      //     ),
-      //   ),
-      // );
-    });
+    // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    //   print('MMMMMMMMMMMMMMMMMMMMMMMM');
+    //   // PushNotification notification = PushNotification(
+    //   //   title: message.notification?.title,
+    //   //   body: message.notification?.body,
+    //   // );
+    //
+    //   showSimpleNotification(
+    //     Text("this is a message from simple notification"),
+    //     background: Colors.green,
+    //     contentPadding: paddingAll10
+    //   );
+    //
+    //   // flutterLocalNotificationsPlugin.show(
+    //   //   notification.hashCode,
+    //   //   notification.title,
+    //   //   notification.body,
+    //   //   NotificationDetails(
+    //   //     android: AndroidNotificationDetails(
+    //   //       channel.id,
+    //   //       channel.name,
+    //   //       channelDescription: channel.description,
+    //   //       // TODO add a proper drawable resource to android, for now using
+    //   //       //      one that already exists in example app.
+    //   //       icon: 'launch_background',
+    //   //     ),
+    //   //   ),
+    //   // );
+    // });
   }
 }

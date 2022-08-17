@@ -40,42 +40,47 @@ class SingleChatController extends GetxController
     animationController = AnimationController(
       vsync: this,
     );
-    getData();
+    getData(notification: false);
+    super.onInit();
 
-    FirebaseMessaging.instance
-        .getInitialMessage()
-        .then((RemoteMessage? message) {
-      if (message != null) {
-        print('MMMMMMMMMMMMMMMMMMMMMMMM');
-        print(message.data);
-        print('MMMMMMMMMMMMMMMMMMMMMMMM');
-      }
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('MMMMMMMMMMMMMMMMMMMMMMMM');
+      getData(notification: true);
+      // showSimpleNotification(
+      //     Text("jooon"),
+      //     background: Colors.green,
+      //     contentPadding: paddingAll10
+      // );
     });
 
-    super.onInit();
+    record.hasPermission().then((value) {});
   }
 
-  void getData() async {
+  void getData({required bool notification}) async {
     ApiResult result = await RequestsUtil.instance.getMessages(
       chatId: id.toString(),
     );
 
     if (result.isDone) {
-      chats = MessageModel.listFromJson(result.data);
-
-      isLoaded(true);
+      if (notification) {
+        chats.clear();
+        chats = MessageModel.listFromJson(result.data);
+        isLoaded(false);
+        isLoaded(true);
+      } else {
+        chats = MessageModel.listFromJson(result.data);
+        isLoaded(true);
+      }
+      Future.delayed(Duration(milliseconds: 500), () {
+        scrollController.animateTo(
+          scrollController.position.maxScrollExtent + 100,
+          duration: const Duration(
+            milliseconds: 200,
+          ),
+          curve: Curves.easeInOut,
+        );
+      });
     }
-
-    Future.delayed(Duration(milliseconds: 500), () {
-      scrollController.animateTo(
-        scrollController.position.maxScrollExtent + 300,
-        duration: const Duration(
-          milliseconds: 600,
-        ),
-        curve: Curves.easeInOut,
-      );
-    });
-    refresh();
   }
 
   void sendMessage({File? file}) async {

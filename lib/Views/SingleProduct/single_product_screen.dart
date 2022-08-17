@@ -1,11 +1,14 @@
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:html/parser.dart';
 import 'package:lezate_khayati/Plugins/get/get.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../Controllers/SingleProduct/single_product_controller.dart';
 import '../../Utils/Consts.dart';
 import '../../Utils/view_utils.dart';
+
 
 class SingleProductScreen extends StatelessWidget {
   SingleProductScreen({Key? key}) : super(key: key);
@@ -177,7 +180,7 @@ class SingleProductScreen extends StatelessWidget {
       child: Align(
         alignment: Alignment.topRight,
         child: AutoSizeText(
-          controller.model.content!,
+          parse(parse(controller.model.content!).body!.text).documentElement!.text,
           maxFontSize: 16.0,
           minFontSize: 10.0,
           maxLines: 5,
