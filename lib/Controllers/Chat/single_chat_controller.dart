@@ -44,13 +44,7 @@ class SingleChatController extends GetxController
     super.onInit();
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('MMMMMMMMMMMMMMMMMMMMMMMM');
       getData(notification: true);
-      // showSimpleNotification(
-      //     Text("jooon"),
-      //     background: Colors.green,
-      //     contentPadding: paddingAll10
-      // );
     });
 
     record.hasPermission().then((value) {});

@@ -28,7 +28,7 @@ class BuildProfileWidget extends StatelessWidget {
           Flexible(
             flex: 1,
             child: InkWell(
-              onTap: (){
+              onTap: () {
                 controller.exit();
               },
               child: Container(
@@ -40,9 +40,7 @@ class BuildProfileWidget extends StatelessWidget {
                     width: double.maxFinite,
                     height: Get.height * .04,
                     decoration: BoxDecoration(
-                      color: ColorUtils.red,
-                      borderRadius: radiusAll6
-                    ),
+                        color: ColorUtils.red, borderRadius: radiusAll6),
                     child: Center(
                       child: AutoSizeText(
                         'خروج',
@@ -67,24 +65,43 @@ class BuildProfileWidget extends StatelessWidget {
   Widget _buildAvatar() {
     return Flexible(
       flex: 1,
-      child: Container(
-        height: double.maxFinite,
-        width: double.maxFinite,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: Colors.blueAccent,
-          border: Border.all(
-            color: Colors.grey.shade800,
-            width: 3.0,
+      child: StreamBuilder(
+        stream: Globals.userStream.getStream,
+        builder: (c, t) => Container(
+          height: double.maxFinite,
+          width: double.maxFinite,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.blueAccent,
+            border: Border.all(
+              color: Colors.grey.shade800,
+              width: 3.0,
+            ),
           ),
-        ),
-        margin: paddingAll6,
-        child: Center(
-          child: Icon(
-            Icons.person,
-            color: Colors.white,
-            size: 50.0,
-          ),
+          margin: paddingAll6,
+          child: (Globals.userStream.user!.avatar is String)
+              ? Hero(
+            tag: 'profileTag',
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(100.0),
+                    child: FadeInImage(
+                      fit: BoxFit.cover,
+                      image: NetworkImage(
+                        Globals.userStream.user!.avatar!,
+                      ),
+                      placeholder: AssetImage(
+                        'assets/img/placeHolder.jpg',
+                      ),
+                    ),
+                  ),
+              )
+              : Center(
+                  child: Icon(
+                    Icons.person,
+                    color: Colors.white,
+                    size: 50.0,
+                  ),
+                ),
         ),
       ),
     );
@@ -93,7 +110,7 @@ class BuildProfileWidget extends StatelessWidget {
   Widget _buildNameAndPhone() {
     return StreamBuilder(
       stream: Globals.userStream.getStream,
-      builder: (x, c)=>Flexible(
+      builder: (x, c) => Flexible(
         flex: 2,
         child: Container(
           height: double.maxFinite,
@@ -120,7 +137,9 @@ class BuildProfileWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 4.0,),
+              SizedBox(
+                height: 4.0,
+              ),
               Flexible(
                 flex: 1,
                 child: SizedBox(
@@ -129,8 +148,7 @@ class BuildProfileWidget extends StatelessWidget {
                   child: Align(
                     alignment: Alignment.topRight,
                     child: AutoSizeText(
-                      Globals.userStream.user!.mobile!,
-
+                      Globals.userStream.user!.phone!,
                       maxFontSize: 16.0,
                       maxLines: 1,
                       minFontSize: 10.0,

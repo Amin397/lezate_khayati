@@ -183,14 +183,6 @@ class _CompleteRegisterState extends State<CompleteRegister> {
     );
   }
 
-  Widget lastName() {
-    return _textInput(
-      controller: lastNameController,
-      focusNode: lastNameFocusNode,
-      name: "نام خانوادگی",
-    );
-  }
-
   void finalize() {
     Get.back(result: true);
     // EasyLoading.show();

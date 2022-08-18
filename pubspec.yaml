@@ -69,6 +69,7 @@ dependencies:
   just_audio: ^0.9.28
   record: ^4.3.3
   html: ^0.15.0
+  image_picker: ^0.8.5+3
 
 
 
