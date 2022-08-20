@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:lezate_khayati/Globals/Globals.dart';
 import 'package:lezate_khayati/Plugins/get/get.dart';
+import 'package:lezate_khayati/Utils/view_utils.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../Controllers/Chat/chat_controller.dart';
@@ -33,6 +35,18 @@ class _ChatScreenState extends State<ChatScreen> {
             _buildSearchBox(),
             SizedBox(
               height: Get.height * .04,
+            ),
+            StreamBuilder(
+              stream: Globals.liveStream.getStream,
+              builder: (c, r) {
+                if (Globals.userStream.user!.role == 'admin') {
+                  return _buildLiveIcon();
+                } else if (Globals.liveStream.liveStarted) {
+                  return _buildLiveIcon();
+                } else {
+                  return SizedBox();
+                }
+              },
             ),
             (controller.isLoaded.isTrue) ? _buildChatList() : _buildShimmer(),
             SizedBox(
@@ -120,7 +134,7 @@ class _ChatScreenState extends State<ChatScreen> {
         width: double.maxFinite,
         child: ListView.builder(
           itemCount: 6,
-          itemBuilder: (BuildContext context , int index)=>_buildShimmerItem(),
+          itemBuilder: (BuildContext context, int index) => _buildShimmerItem(),
         ),
       ),
     );
@@ -142,6 +156,43 @@ class _ChatScreenState extends State<ChatScreen> {
             color: Colors.grey[200],
             borderRadius: radiusAll12,
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLiveIcon() {
+    return InkWell(
+      onTap: () {
+        controller.goToLive();
+      },
+      child: Container(
+        height: Get.height * .06,
+        width: Get.width * .5,
+        padding: paddingSymmetricH12,
+        decoration: BoxDecoration(
+          color: Colors.orange.shade700,
+          borderRadius: radiusAll10,
+          boxShadow: ViewUtils.neoShadow(),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.live_tv,
+              color: Colors.white,
+            ),
+            SizedBox(
+              width: 8.0,
+            ),
+            Text(
+              'ویدئو کنفرانس',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16.0,
+              ),
+            ),
+          ],
         ),
       ),
     );

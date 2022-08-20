@@ -39,7 +39,7 @@ class SinglePriceyCourseModel {
   bool? isBought;
   List<int>? update;
   int? reviews;
-  int? reviewsRating;
+  dynamic reviewsRating;
   List<Video>? videos;
   List<Comment>? comments;
 

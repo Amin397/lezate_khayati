@@ -218,6 +218,29 @@ class RequestsUtil extends GetConnect {
     );
   }
 
+  Future<ApiResult> addNewSubscribeToLive() async {
+    return await makeRequest(
+      type: 'post',
+      webController: WebControllers.admin,
+      webMethod: WebMethods.live,
+      urlParams: 'request',
+      body: {
+        'token': Globals.userStream.user!.fcmToken,
+      },
+      bearer: true,
+    );
+  }
+
+  Future<ApiResult> startLive() async {
+    return await makeRequest(
+      type: 'post',
+      webController: WebControllers.admin,
+      webMethod: WebMethods.live,
+      urlParams: 'whisper',
+      bearer: true,
+    );
+  }
+
   Future<ApiResult> sendMessage({
     required String chatId,
     required String message,
@@ -398,6 +421,54 @@ class RequestsUtil extends GetConnect {
       webMethod: WebMethods.single,
       urlParams: id,
     );
+  }
+
+  Future<ApiResult> updateProfile({
+    required String name,
+    required String address,
+    required String postalCode,
+    required String gender,
+    required String birthDay,
+    required String city,
+    String? avatarPath,
+  }) async {
+    if (avatarPath is String) {
+
+      print('FFFIIIIILLLLLEEEEE');
+      return await makeRequest(
+        type: 'post',
+        webController: WebControllers.auth,
+        webMethod: WebMethods.updateProfile,
+        bearer: true,
+        body: {
+          'name': name,
+          'city': city,
+          'gender': gender,
+          'postal_code': postalCode,
+          'birthday': birthDay,
+          'address': address,
+        },
+        indexFiles: {
+          'avatar':File(avatarPath)
+        },
+        // files: [File(avatarPath)],
+      );
+    } else {
+      return await makeRequest(
+          type: 'post',
+          webController: WebControllers.auth,
+          webMethod: WebMethods.updateProfile,
+          bearer: true,
+          body: {
+            'name': name,
+            'city': city,
+            'gender': gender,
+            'postal_code': postalCode,
+            'birthday': birthDay,
+            'address': address,
+
+          });
+    }
   }
 
   Future<ApiResult> getHomeData() async {

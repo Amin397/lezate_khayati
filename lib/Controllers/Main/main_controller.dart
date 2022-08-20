@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:lezate_khayati/Controllers/Chat/chat_controller.dart';
 import 'package:lezate_khayati/Controllers/Home/home_controller.dart';
 import 'package:lezate_khayati/Controllers/Profile/profile_controller.dart';
+import 'package:lezate_khayati/Globals/Globals.dart';
 import 'package:lezate_khayati/Plugins/get/get.dart';
 import 'package:lezate_khayati/Utils/Consts.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -69,6 +70,10 @@ class MainController extends GetxController {
     pageController = PageController(
       initialPage: currentIndex.value,
     );
+
+
+
+
 
     // FirebaseMessaging.instance
     //     .getInitialMessage()

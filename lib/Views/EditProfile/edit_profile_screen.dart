@@ -23,7 +23,9 @@ class EditProfileScreen extends StatelessWidget {
       appBar: _buildAppbar(),
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: Colors.orange.shade700,
-        onPressed: () {},
+        onPressed: () {
+          controller.save();
+        },
         label: Row(
           children: [
             Icon(Icons.check),

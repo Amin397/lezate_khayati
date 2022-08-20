@@ -82,23 +82,31 @@ class BuildShowListWidget extends StatelessWidget {
     required item,
     required int index,
   }) {
-    return Container(
-      width: Get.width * .2,
-      height: Get.width * .2,
-      margin: paddingAll12,
-      decoration: BoxDecoration(
-        boxShadow: ViewUtils.neoShadow(),
-        borderRadius: radiusAll8,
-      ),
-      child: ClipRRect(
-        borderRadius: radiusAll12,
-        child: FadeInImage(
-          fit: BoxFit.cover,
-          image: NetworkImage(
-            item.img!,
-          ),
-          placeholder: AssetImage(
-            'assets/img/placeHolder.jpg',
+    return InkWell(
+      onTap: () {
+        controller.goToSingle(
+          id: id,
+          index: index,
+        );
+      },
+      child: Container(
+        width: Get.width * .2,
+        height: Get.width * .2,
+        margin: paddingAll12,
+        decoration: BoxDecoration(
+          boxShadow: ViewUtils.neoShadow(),
+          borderRadius: radiusAll8,
+        ),
+        child: ClipRRect(
+          borderRadius: radiusAll12,
+          child: FadeInImage(
+            fit: BoxFit.cover,
+            image: NetworkImage(
+              item.img!,
+            ),
+            placeholder: AssetImage(
+              'assets/img/placeHolder.jpg',
+            ),
           ),
         ),
       ),

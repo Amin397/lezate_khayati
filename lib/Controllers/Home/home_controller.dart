@@ -1,4 +1,3 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:lezate_khayati/Models/Home/free_courses_model.dart';
 import 'package:lezate_khayati/Models/Home/home_articles_model.dart';
@@ -84,5 +83,115 @@ class HomeController extends GetxController {
     Get.toNamed(
       RoutingUtils.searchPage.name,
     );
+  }
+
+  void goToSingle({
+    required int id,
+    required int index,
+  }) {
+    switch (id) {
+      case 0:
+        {
+          goToPriceyCourse(
+            index: index,
+            course: priceyCoursesList[index],
+          );
+          break;
+        }
+      case 1:
+        {
+          goToFreeCourse(
+            index: index,
+            course: freeCoursesList[index],
+          );
+          break;
+        }
+      case 2:
+        {
+          goToSingleProduct(
+            index: index,
+            product: productsList[index],
+          );
+          break;
+        }
+      case 3:
+        {
+          goToSingleBook(
+            index: index,
+            book: booksList[index],
+          );
+          break;
+        }
+      case 4:
+        {
+          goToSingleArticle(
+            index: index,
+            article: articlesList[index],
+          );
+          break;
+        }
+    }
+  }
+
+  void goToPriceyCourse({
+    required PriceyCoursesModel course,
+    required int index,
+  }) {
+    Get.toNamed(RoutingUtils.singlePriceyCourse.name, arguments: {
+      'index': index,
+      'id': course.id,
+      'image': course.img,
+      'name': course.name,
+      'free': false,
+    });
+  }
+
+  void goToFreeCourse({
+    required FreeCoursesModel course,
+    required int index,
+  }) {
+    Get.toNamed(RoutingUtils.singlePriceyCourse.name, arguments: {
+      'index': index,
+      'id': course.id,
+      'image': course.img,
+      'name': course.name,
+      'free': true,
+    });
+  }
+
+  void goToSingleProduct({
+    required int index,
+    required ProductsModel product,
+  }) {
+    Get.toNamed(RoutingUtils.singleProduct.name, arguments: {
+      'index': index,
+      'id': product.id,
+      'image': product.img,
+      'name': product.name,
+    });
+  }
+
+  void goToSingleBook({
+    required BooksModel book,
+    required int index,
+  }) {
+    Get.toNamed(RoutingUtils.singleBook.name, arguments: {
+      'index': index,
+      'id': book.id,
+      'image': book.img,
+      'name': book.name,
+    });
+  }
+
+  void goToSingleArticle({
+    required HomeArticlesModel article,
+    required int index,
+  }) {
+    Get.toNamed(RoutingUtils.singleArticle.name, arguments: {
+      'index': index,
+      'id': article.id,
+      'image': article.img,
+      'name': article.name,
+    });
   }
 }

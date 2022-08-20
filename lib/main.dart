@@ -9,6 +9,7 @@ import 'package:lezate_khayati/Utils/routing_utils.dart';
 import 'package:lezate_khayati/Views/Splash/splash_screen.dart';
 import 'package:overlay_support/overlay_support.dart';
 
+import 'Globals/Globals.dart';
 import 'Plugins/get/get.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -26,7 +27,19 @@ void main() async {
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+
+  );
+
+
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    print('SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS');
+    print(message.data);
+
+    if(message.data['title']== 'کنفرانس'){
+      Globals.liveStream.setTrue();
+    }
+  });
 
   runApp(
     OverlaySupport.global(
@@ -64,6 +77,8 @@ void main() async {
           RoutingUtils.searchPage,
           RoutingUtils.singleArticle,
           RoutingUtils.singleChat,
+          RoutingUtils.live,
+          RoutingUtils.joinLive,
         ],
         builder: EasyLoading.init(),
         home: SplashScreen(),

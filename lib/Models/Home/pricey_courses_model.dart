@@ -36,7 +36,7 @@ class PriceyCoursesModel {
   String? views;
   List<int>? update;
   int? reviews;
-  int? reviewsRating;
+  dynamic reviewsRating;
 
   RxBool visible;
 

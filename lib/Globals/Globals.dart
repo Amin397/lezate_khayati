@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:lezate_khayati/Models/user_model.dart';
+import 'package:lezate_khayati/Views/Live/live_screen.dart';
 
 import '../Plugins/get/get.dart';
 
@@ -23,8 +24,34 @@ class UserStream {
   }
 }
 
+
+class LiveStream {
+  // ignore: close_sinks
+  final streamController = StreamController<bool>.broadcast();
+
+  /// The [getStream] getter would be used to expose our stream to other classes
+  Stream<bool> get getStream => streamController.stream;
+
+  bool liveStarted = false;
+
+  void setTrue() {
+    this.liveStarted = true;
+    sync();
+  }
+
+  void setFalse() {
+    this.liveStarted = false;
+    sync();
+  }
+
+  void sync() {
+    streamController.sink.add(liveStarted!);
+  }
+}
+
 class Globals {
   static UserStream userStream = UserStream();
+  static LiveStream liveStream = LiveStream();
   static double fontSize20 = Get.width > 400 ? 20.0 : 16.0;
   static double fontSize18 = Get.width > 400 ? 18.0 : 14.0;
   static double fontSize16 = Get.width > 400 ? 16.0 : 12.0;
