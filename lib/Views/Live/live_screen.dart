@@ -69,20 +69,21 @@ class LiveScreen extends StatelessWidget {
                                     ),
                                     Center(
                                       child: Container(
-                                        height: 50.0,
-                                        width: 50.0,
+                                        height: 20.0,
+                                        width: 20.0,
                                         color: Colors.red,
                                         child: Center(
                                           child: AutoSizeText(
-                                              controller.subStreams.length.toString()
+                                            controller.subStreams.length.toString()
                                           ),
                                         ),
                                       ),
-                                    )
+                                    ),
                                   ],
                                 ),
                               );
-                            })
+                            },
+                          )
                         : GridView.builder(
                             gridDelegate:
                                 SliverGridDelegateWithFixedCrossAxisCount(
@@ -125,7 +126,18 @@ class LiveScreen extends StatelessWidget {
                                         objectFit: wbrtc.RTCVideoViewObjectFit
                                             .RTCVideoViewObjectFitCover,
                                         mirror: true),
-
+                                    Center(
+                                      child: Container(
+                                        height: 20.0,
+                                        width: 20.0,
+                                        color: Colors.red,
+                                        child: Center(
+                                          child: AutoSizeText(
+                                              controller.subStreams.length.toString()
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                   ],
                                 ),
                               );
@@ -164,6 +176,7 @@ class LiveScreen extends StatelessWidget {
             Obx(
               () => controller.showUsers.value
                   ? SubscribersScreen(
+                      controller: controller,
                       subscripers: controller.subStreams,
                       callback: () {
                         controller.showUsers.value = false;
@@ -189,6 +202,26 @@ class LiveScreen extends StatelessWidget {
         ),
       ),
       actions: [
+        GetBuilder(
+          init: controller,
+          id: 'live',
+          builder: (ctx) => Row(
+            children: [
+              Text(
+                controller.subscribersList.length.toString(),
+                style: TextStyle(
+                  fontSize: 12.0,
+                  color: Colors.white60,
+                ),
+              ),
+              Icon(
+                Icons.visibility_outlined,
+                color: Colors.white60,
+                size: 16.0,
+              )
+            ],
+          ),
+        ),
         Lottie.asset('assets/animations/liveAlert.json')
       ],
     );

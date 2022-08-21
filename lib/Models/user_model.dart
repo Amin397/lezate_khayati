@@ -33,39 +33,42 @@ class UserModel {
   DateTime? createdAt;
   DateTime? updatedAt;
 
+  static List<UserModel> listFromJsonLive(List data) =>
+      data.map((e) => UserModel.fromJson(e['user'])).toList();
+
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
-    id: json["id"],
-    name: json["name"],
-    avatar: json["avatar"],
-    city: json["city"],
-    gender: json["gender"],
-    address: json["address"],
-    postalCode: json["postal_code"],
-    birthday: json["birthday"],
-    justified: json["justified"],
-    refer: json["refer"],
-    role: json["role"],
-    fcmToken: json["fcm_token"],
-    phone: json["phone"],
-    createdAt: DateTime.parse(json["created_at"]),
-    updatedAt: DateTime.parse(json["updated_at"]),
-  );
+        id: json["id"],
+        name: json["name"],
+        avatar: json["avatar"],
+        city: json["city"],
+        gender: json["gender"],
+        address: json["address"],
+        postalCode: json["postal_code"],
+        birthday: json["birthday"],
+        justified: json["justified"],
+        refer: json["refer"],
+        role: json["role"],
+        fcmToken: json["fcm_token"],
+        phone: json["phone"],
+        createdAt: DateTime.parse(json["created_at"]),
+        updatedAt: DateTime.parse(json["updated_at"]),
+      );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "name": name,
-    "avatar": avatar,
-    "city": city,
-    "gender": gender,
-    "address": address,
-    "postal_code": postalCode,
-    "birthday": birthday,
-    "justified": justified,
-    "refer": refer,
-    "role": role,
-    "fcm_token": fcmToken,
-    "phone": phone,
-    "created_at": createdAt!.toIso8601String(),
-    "updated_at": updatedAt!.toIso8601String(),
-  };
+        "id": id,
+        "name": name,
+        "avatar": avatar,
+        "city": city,
+        "gender": gender,
+        "address": address,
+        "postal_code": postalCode,
+        "birthday": birthday,
+        "justified": justified,
+        "refer": refer,
+        "role": role,
+        "fcm_token": fcmToken,
+        "phone": phone,
+        "created_at": createdAt!.toIso8601String(),
+        "updated_at": updatedAt!.toIso8601String(),
+      };
 }

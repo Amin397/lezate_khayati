@@ -10,5 +10,6 @@ enum WebControllers {
   search,
   admin,
   chats,
+  live,
   theme,
 }

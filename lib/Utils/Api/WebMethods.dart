@@ -10,6 +10,7 @@ enum WebMethods {
   pricy,
   updateProfile,
   home,
+  users,
   userCourses,
   single,
   live,

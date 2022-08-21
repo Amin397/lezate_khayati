@@ -218,14 +218,27 @@ class RequestsUtil extends GetConnect {
     );
   }
 
-  Future<ApiResult> addNewSubscribeToLive() async {
+  Future<ApiResult> joinToLive() async {
+    return await makeRequest(
+      type: 'post',
+      webController: WebControllers.live,
+      webMethod: WebMethods.users,
+      urlParams: 'join',
+      body: {
+        'live_id':Globals.liveStream.liveId,
+      },
+      bearer: true,
+    );
+  }
+
+  Future<ApiResult> addNewSubscribeToLive({required String fcmToken}) async {
     return await makeRequest(
       type: 'post',
       webController: WebControllers.admin,
       webMethod: WebMethods.live,
       urlParams: 'request',
       body: {
-        'token': Globals.userStream.user!.fcmToken,
+        'token': fcmToken,
       },
       bearer: true,
     );
@@ -233,12 +246,12 @@ class RequestsUtil extends GetConnect {
 
   Future<ApiResult> startLive() async {
     return await makeRequest(
-      type: 'post',
-      webController: WebControllers.admin,
-      webMethod: WebMethods.live,
-      urlParams: 'whisper',
-      bearer: true,
-    );
+        type: 'post',
+        webController: WebControllers.admin,
+        webMethod: WebMethods.live,
+        urlParams: 'whisper',
+        bearer: true,
+        body: {'name': ''});
   }
 
   Future<ApiResult> sendMessage({
@@ -294,6 +307,16 @@ class RequestsUtil extends GetConnect {
         webController: WebControllers.products,
         webMethod: WebMethods.archive,
         bearer: true);
+  }
+
+  Future<ApiResult> getLiveJoinedUser({required String liveId}) async {
+    return await makeRequest(
+      type: 'get',
+      webController: WebControllers.live,
+      webMethod: WebMethods.users,
+      urlParams: liveId,
+      bearer: true,
+    );
   }
 
   Future<ApiResult> sendToken({required String token}) async {
@@ -433,7 +456,6 @@ class RequestsUtil extends GetConnect {
     String? avatarPath,
   }) async {
     if (avatarPath is String) {
-
       print('FFFIIIIILLLLLEEEEE');
       return await makeRequest(
         type: 'post',
@@ -448,9 +470,7 @@ class RequestsUtil extends GetConnect {
           'birthday': birthDay,
           'address': address,
         },
-        indexFiles: {
-          'avatar':File(avatarPath)
-        },
+        indexFiles: {'avatar': File(avatarPath)},
         // files: [File(avatarPath)],
       );
     } else {
@@ -466,7 +486,6 @@ class RequestsUtil extends GetConnect {
             'postal_code': postalCode,
             'birthday': birthDay,
             'address': address,
-
           });
     }
   }

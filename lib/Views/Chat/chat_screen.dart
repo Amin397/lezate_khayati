@@ -36,6 +36,7 @@ class _ChatScreenState extends State<ChatScreen> {
             SizedBox(
               height: Get.height * .04,
             ),
+            // _buildLiveIcon(),
             StreamBuilder(
               stream: Globals.liveStream.getStream,
               builder: (c, r) {

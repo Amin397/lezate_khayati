@@ -33,11 +33,11 @@ void main() async {
 
 
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    print('SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS');
+    print('wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww');
     print(message.data);
 
     if(message.data['title']== 'کنفرانس'){
-      Globals.liveStream.setTrue();
+      Globals.liveStream.setTrue(id:message.data['id'].toString());
     }
   });
 

@@ -4,16 +4,14 @@ import 'package:lezate_khayati/Plugins/get/get.dart';
 import 'package:lezate_khayati/Utils/Consts.dart';
 import 'package:lottie/lottie.dart';
 
-import '../../../Globals/Globals.dart';
-
-class StartVideoConferenceModal extends StatelessWidget {
-  const StartVideoConferenceModal({Key? key}) : super(key: key);
+class BuildInviteAlert extends StatelessWidget {
+  const BuildInviteAlert({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        Get.back(result: 0);
+        Get.back(result: false);
         return false;
       },
       child: Container(
@@ -21,7 +19,7 @@ class StartVideoConferenceModal extends StatelessWidget {
         height: Get.height * .3,
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: radiusAll12,
+          borderRadius: radiusAll10,
         ),
         child: Column(
           children: [
@@ -31,9 +29,8 @@ class StartVideoConferenceModal extends StatelessWidget {
               padding: paddingAll10,
               child: Center(
                 child: AutoSizeText(
-                  (Globals.userStream.user!.role == 'admin')?
-                  'در صورت شروع ویدئو کنفرانس \n پیامی حاوی لینک عضویت برای کاربران ارسال میشود':'شما میتوانید وارد ویدئو کنفرانس شوید',
-                  maxLines: 2,
+                  'شما به ویدئو کنفرانس دعوت شده اید\nبرای وصل شدن به ویدئو کنفرانس دکمه ی اتصال را لمس کنید',
+                  maxLines: 3,
                   maxFontSize: 18.0,
                   minFontSize: 12.0,
                   textAlign: TextAlign.center,
@@ -58,8 +55,8 @@ class StartVideoConferenceModal extends StatelessWidget {
                     Flexible(
                       flex: 1,
                       child: InkWell(
-                        onTap: (){
-                          Get.back(result: 0);
+                        onTap: () {
+                          Get.back(result: false);
                         },
                         child: Container(
                           height: double.maxFinite,
@@ -88,12 +85,8 @@ class StartVideoConferenceModal extends StatelessWidget {
                     Flexible(
                       flex: 2,
                       child: InkWell(
-                        onTap: (){
-                          if(Globals.userStream.user!.role == 'admin'){
-                            Get.back(result: 1);
-                          }else{
-                            Get.back(result: 2);
-                          }
+                        onTap: () {
+                          Get.back(result: true);
                         },
                         child: Container(
                           height: double.maxFinite,
@@ -111,7 +104,7 @@ class StartVideoConferenceModal extends StatelessWidget {
                           ),
                           child: Center(
                             child: AutoSizeText(
-                              'شروع ویدئو کنفرانس',
+                              'اتصال',
                               maxFontSize: 18.0,
                               minFontSize: 12.0,
                               maxLines: 1,

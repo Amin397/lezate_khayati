@@ -27,15 +27,17 @@ class UserStream {
 
 class LiveStream {
   // ignore: close_sinks
-  final streamController = StreamController<bool>.broadcast();
+  final streamController = StreamController.broadcast();
 
   /// The [getStream] getter would be used to expose our stream to other classes
-  Stream<bool> get getStream => streamController.stream;
+  Stream get getStream => streamController.stream;
 
   bool liveStarted = false;
+  String liveId = '0';
 
-  void setTrue() {
+  void setTrue({required String id}) {
     this.liveStarted = true;
+    this.liveId = id;
     sync();
   }
 
@@ -45,7 +47,8 @@ class LiveStream {
   }
 
   void sync() {
-    streamController.sink.add(liveStarted!);
+    streamController.sink.add(liveStarted);
+    streamController.sink.add(liveId);
   }
 }
 

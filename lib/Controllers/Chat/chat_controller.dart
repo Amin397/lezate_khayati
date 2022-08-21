@@ -65,11 +65,8 @@ class ChatController extends GetxController {
 
     if (startLive == 1) {
       liveRequest();
-
     } else if(startLive == 2){
-      Get.toNamed(
-        RoutingUtils.joinLive.name,
-      );
+      joinToLive();
     }
   }
 
@@ -79,8 +76,23 @@ class ChatController extends GetxController {
     EasyLoading.dismiss();
 
     if (result.isDone) {
+      print(result.data['live_id']);
       Get.toNamed(
         RoutingUtils.live.name,
+        arguments: {
+          'liveId':result.data['live_id'],
+        }
+      );
+    }
+  }
+
+  void joinToLive() async{
+    EasyLoading.show();
+    ApiResult result = await RequestsUtil.instance.joinToLive();
+    EasyLoading.dismiss();
+    if(result.isDone){
+      Get.toNamed(
+        RoutingUtils.joinLive.name,
       );
     }
   }
