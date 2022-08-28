@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart' as wbrtc;
 import 'package:janus_client/janus_client.dart';
@@ -38,7 +37,7 @@ class JoinLiveController extends GetxController {
 
   // LiveController liveController = Get.put(LiveController());
 
- Future<void> initialize() async {
+  initialize() async {
     ws = WebSocketJanusTransport(url: servermap['janus_ws']);
     j = JanusClient(transport: ws, isUnifiedPlan: true, iceServers: [
       RTCIceServer(
@@ -94,37 +93,52 @@ class JoinLiveController extends GetxController {
           RemoteStream temp = RemoteStream(feedId.toString());
           await temp.init();
           // setState(() {
-            remoteStreams.putIfAbsent(feedId, () => temp);
+          remoteStreams.putIfAbsent(feedId, () => temp);
           // });
-          update(['joinLive']);
         }
         if (event.track != null && event.flowing == true) {
           remoteStreams[feedId]?.video.addTrack(event.track!);
           remoteStreams[feedId]?.videoRenderer.srcObject =
               remoteStreams[feedId]?.video;
-          if (kIsWeb) {
-            remoteStreams[feedId]?.videoRenderer.muted = false;
-          }
+          // if (kIsWeb) {
+          //   remoteStreams[feedId]?.videoRenderer.muted = false;
+          // }
         }
       }
+    });
+    update(['joinLive']);
+    Future.delayed(Duration(seconds: 5), () {
+      update(['joinLive']);
     });
     return;
   }
 
   Future<void> joinRoom() async {
-    // await plugin.initializeMediaDevices();
-    // RemoteStream mystr = RemoteStream('0');
-    //await mystr.init();
-    // plugin.createAnswer(audioSend: false,videoSend: false);
+    var devices = await wbrtc.navigator.mediaDevices.enumerateDevices();
+    Map<String, dynamic> constrains = {};
+    print(devices.first.label);
+    print(devices.first.groupId);
+    print(devices.first.deviceId);
+    print(devices.first.kind);
 
-    // mystr.videoRenderer.srcObject = plugin.webRTCHandle!.localStream;
+    devices.map((e) => e.kind.toString()).forEach((element) {
+      String dat = element.split('input')[0];
+      dat = dat.split('output')[0];
+      constrains.putIfAbsent(dat, () => true);
+    });
+
+    RemoteStream mystr = RemoteStream('1');
+    // await mystr.init();
+    //
     // setState(() {
-      // remoteStreams.putIfAbsent(0, () => mystr);
+    //   remoteStreams.putIfAbsent(0, () => mystr);
     // });
-    update(['joinLive']);
-    await plugin.joinPublisher(myRoom, displayName: "Shivansh");
+    await plugin.joinPublisher(myRoom, displayName: displayname);
+
     plugin.typedMessages?.listen((event) async {
       Object data = event.event.plugindata?.data;
+      log(data.runtimeType.toString());
+
       if (data is VideoRoomJoinedEvent) {
         (await plugin.publishMedia(bitrate: 3000000));
         List<Map<String, dynamic>> publisherStreams = [];
@@ -137,7 +151,14 @@ class JoinLiveController extends GetxController {
             };
             publisherStreams.add({"feed": publisher.id, ...stream.toJson()});
             if (publisher.id != null && stream.mid != null) {
-              subStreams[stream.mid!] = publisher.id!;
+              subStreams[stream.mid!] = {
+                "id": publisher.id,
+                "display": publisher.display,
+                "streams": publisher.streams,
+                "name":displayname,
+                "img":imageAvatar,
+                "userId":userId
+              };
               print("substreams is:");
               print(subStreams);
             }
@@ -153,6 +174,7 @@ class JoinLiveController extends GetxController {
             "display": publisher.display,
             "streams": publisher.streams
           };
+
           for (Streams stream in publisher.streams ?? []) {
             publisherStreams.add({"feed": publisher.id, ...stream.toJson()});
             if (publisher.id != null && stream.mid != null) {
@@ -175,12 +197,16 @@ class JoinLiveController extends GetxController {
         print('typed event with jsep' + event.jsep.toString());
         await plugin.handleRemoteJsep(event.jsep);
       }
+
       update(['joinLive']);
     }, onError: (error, trace) {
       if (error is JanusError) {
         print(error.toMap());
       }
     });
+
+
+    update(['joinLive']);
   }
 
   Future<void> unSubscribeStream(int id) async {
@@ -266,10 +292,10 @@ class JoinLiveController extends GetxController {
       }
     });
 
-    initialize().then((value) => joinRoom());
-    // Future.delayed(Duration(seconds: 3), () {
-    //   joinRoom();
-    // });
+    initialize();
+    Future.delayed(Duration(seconds: 3), () {
+      joinRoom();
+    });
     super.onInit();
   }
 
@@ -397,8 +423,6 @@ class JoinLiveController extends GetxController {
 
   }*/
 
-
-
   Future<void> joinToChat() async {
     var devices = await wbrtc.navigator.mediaDevices.enumerateDevices();
     Map<String, dynamic> constrains = {};
@@ -474,14 +498,12 @@ class JoinLiveController extends GetxController {
         await plugin.handleRemoteJsep(event.jsep);
         update(['live']);
       }
-      update(['live','joinLive']);
-
     }, onError: (error, trace) {
       if (error is JanusError) {
         print(error.toMap());
       }
     });
-    update(['live','joinLive']);
+    update(['live']);
   }
 
   @override
@@ -490,10 +512,24 @@ class JoinLiveController extends GetxController {
     print('dispose called');
     await remoteHandle?.dispose();
     await plugin.dispose();
+    Get.delete<JoinLiveController>();
     session.dispose();
 
+    ws.dispose();
+    myStream?.dispose();
 
 
+    remoteStreams.forEach((key, value) {
+      value.dispose();
+    });    feedStreams.forEach((key, value) {
+      value?.dispose();
+    });
+    subStreams.forEach((key, value) {
+      value?.dispose();
+    }); mediaStreams.forEach((key, value) {
+      value?.dispose();
+    });
+     myStream2?.dispose();
   }
 
   void showInviteAlert() async {
