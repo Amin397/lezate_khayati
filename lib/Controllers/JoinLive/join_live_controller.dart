@@ -20,6 +20,8 @@ class JoinLiveController extends GetxController {
   String userId = '45454545';
   late RestJanusTransport rest;
   late WebSocketJanusTransport ws;
+  wbrtc.MediaStream? myStream;
+
   late JanusSession session;
   late JanusVideoRoomPlugin plugin;
   JanusVideoRoomPlugin? remoteHandle;
@@ -281,6 +283,7 @@ class JoinLiveController extends GetxController {
 
   @override
   void onInit() {
+    print('----------------------- On init called ------------------------');
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       print('88888888888888888888888888888888');
       if (message.data['title'] == 'کنفرانس') {
@@ -296,7 +299,7 @@ class JoinLiveController extends GetxController {
     super.onInit();
   }
 
-  Future<void> joinToChat() async {
+/*  Future<void> joinToChat() async {
     var devices = await wbrtc.navigator.mediaDevices.enumerateDevices();
     Map<String, dynamic> constrains = {};
     print(devices.first.label);
@@ -418,17 +421,119 @@ class JoinLiveController extends GetxController {
     });
 
 
+  }*/
+
+  Future<void> joinToChat() async {
+    var devices = await wbrtc.navigator.mediaDevices.enumerateDevices();
+    Map<String, dynamic> constrains = {};
+    devices.map((e) => e.kind.toString()).forEach((element) {
+      String dat = element.split('input')[0];
+      dat = dat.split('output')[0];
+      constrains.putIfAbsent(dat, () => true);
+    });
+    myStream =
+    await plugin.initializeMediaDevices(mediaConstraints: constrains);
+    RemoteStream mystr = RemoteStream('0');
+    await mystr.init();
+    mystr.videoRenderer.srcObject = myStream;
+    // setState(() {
+    remoteStreams.putIfAbsent(0, () => mystr);
+    // });
+    await plugin.joinPublisher(myRoom, displayName: "Shivansh");
+    print('----------------------------------------');
+    plugin.typedMessages?.listen((event) async {
+      Object data = event.event.plugindata?.data;
+      if (data is VideoRoomJoinedEvent) {
+        (await plugin.publishMedia(bitrate: 3000000));
+        List<Map<String, dynamic>> publisherStreams = [];
+        for (Publishers publisher in data.publishers ?? []) {
+          for (Streams stream in publisher.streams ?? []) {
+            feedStreams[publisher.id!] = {
+              "id": publisher.id,
+              "display": publisher.display,
+              "streams": publisher.streams
+            };
+            publisherStreams.add({"feed": publisher.id, ...stream.toJson()});
+            if (publisher.id != null && stream.mid != null) {
+              subStreams[stream.mid!] = publisher.id!;
+              print("substreams is:");
+              print(subStreams);
+            }
+          }
+        }
+        update(['live']);
+        subscribeTo(publisherStreams);
+        update(['live']);
+      }
+      if (data is VideoRoomNewPublisherEvent) {
+        List<Map<String, dynamic>> publisherStreams = [];
+        for (Publishers publisher in data.publishers ?? []) {
+          feedStreams[publisher.id!] = {
+            "id": publisher.id,
+            "display": publisher.display,
+            "streams": publisher.streams
+          };
+          for (Streams stream in publisher.streams ?? []) {
+            publisherStreams.add({"feed": publisher.id, ...stream.toJson()});
+            if (publisher.id != null && stream.mid != null) {
+              subStreams[stream.mid!] = publisher.id!;
+              print("substreams is:");
+              print(subStreams);
+            }
+          }
+        }
+        print('got new publishers');
+        print(publisherStreams);
+        subscribeTo(publisherStreams);
+        update(['live']);
+      }
+      if (data is VideoRoomLeavingEvent) {
+        print('publisher is leaving');
+        print(data.leaving);
+        unSubscribeStream(data.leaving!);
+        update(['live']);
+      }
+      if (data is VideoRoomConfigured) {
+        print('typed event with jsep' + event.jsep.toString());
+        await plugin.handleRemoteJsep(event.jsep);
+        update(['live']);
+      }
+    }, onError: (error, trace) {
+      if (error is JanusError) {
+        print(error.toMap());
+      }
+    });
+    update(['live']);
   }
 
   @override
   void dispose() async {
     super.dispose();
+    print('dispose called');
     await remoteHandle?.dispose();
     await plugin.dispose();
+    Get.delete<JoinLiveController>();
     session.dispose();
+
+    ws.dispose();
+    myStream?.dispose();
+
+
+    remoteStreams.forEach((key, value) {
+      value.dispose();
+    });    feedStreams.forEach((key, value) {
+      value?.dispose();
+    });
+    subStreams.forEach((key, value) {
+      value?.dispose();
+    }); mediaStreams.forEach((key, value) {
+      value?.dispose();
+    });
+     myStream2?.dispose();
   }
 
   void showInviteAlert() async {
+    print('-------------------------- show dialog -------------------');
     bool accept = await showDialog(
       context: Get.context!,
       barrierDismissible: false,
@@ -440,7 +545,8 @@ class JoinLiveController extends GetxController {
     );
 
     if(accept){
-      callEnd();
+      joinToChat();
+    //  callEnd();
       // LiveController liveController = Get.put(LiveController());
     //  joinToChat();
     }

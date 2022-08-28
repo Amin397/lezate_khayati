@@ -19,7 +19,6 @@ class JoinLiveScreen extends StatelessWidget {
         height: Get.height,
         width: Get.width,
         child: GetBuilder(
-          init: controller,
           id: 'joinLive',
           builder: (ctx) => Column(
             children: [
@@ -140,6 +139,7 @@ class JoinLiveScreen extends StatelessWidget {
         IconButton(
           onPressed: () {
             controller.endCallAndExit();
+            controller.dispose();
           },
           icon: Icon(Icons.call),
         )
