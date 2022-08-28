@@ -139,7 +139,7 @@ class JoinLiveScreen extends StatelessWidget {
       actions: [
         IconButton(
           onPressed: () {
-            // controller.callEnd();
+            controller.endCallAndExit();
           },
           icon: Icon(Icons.call),
         )

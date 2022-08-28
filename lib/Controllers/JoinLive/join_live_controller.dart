@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart' as wbrtc;
@@ -130,8 +132,11 @@ class JoinLiveController extends GetxController {
     //   remoteStreams.putIfAbsent(0, () => mystr);
     // });
     await plugin.joinPublisher(myRoom, displayName: displayname);
+
     plugin.typedMessages?.listen((event) async {
       Object data = event.event.plugindata?.data;
+      log(data.runtimeType.toString());
+
       if (data is VideoRoomJoinedEvent) {
         (await plugin.publishMedia(bitrate: 3000000));
         List<Map<String, dynamic>> publisherStreams = [];
@@ -190,6 +195,8 @@ class JoinLiveController extends GetxController {
         print('typed event with jsep' + event.jsep.toString());
         await plugin.handleRemoteJsep(event.jsep);
       }
+
+      update(['joinLive']);
     }, onError: (error, trace) {
       if (error is JanusError) {
         print(error.toMap());
@@ -197,7 +204,7 @@ class JoinLiveController extends GetxController {
     });
 
 
-    update(['']);
+    update(['joinLive']);
   }
 
   Future<void> unSubscribeStream(int id) async {
@@ -227,6 +234,30 @@ class JoinLiveController extends GetxController {
     for (int i = 0; i < feedStreams.keys.length; i++) {
       await unSubscribeStream(feedStreams.keys.elementAt(i));
     }
+    // remoteStreams.forEach((key, value) async {
+    //   value.dispose();
+    // });
+    // setState(() {
+    remoteStreams = {};
+    // });
+    subStreams.clear();
+    subscriptions.clear();
+    // stop all tracks and then dispose
+
+    await plugin.dispose();
+    await remoteHandle?.dispose();
+
+
+    // joinToChat();
+    log('jooooooooooooon to room as publisher');
+    joinToChat();
+    // liveController.joinRoom();
+  }
+  endCallAndExit() async {
+    await plugin.hangup();
+    for (int i = 0; i < feedStreams.keys.length; i++) {
+      await unSubscribeStream(feedStreams.keys.elementAt(i));
+    }
     remoteStreams.forEach((key, value) async {
       value.dispose();
     });
@@ -242,7 +273,9 @@ class JoinLiveController extends GetxController {
 
 
     // joinToChat();
-    joinToChat();
+    log('jooooooooooooon to room as publisher');
+    // joinToChat();
+    Get.back();
     // liveController.joinRoom();
   }
 
@@ -290,6 +323,7 @@ class JoinLiveController extends GetxController {
       Object data = event.event.plugindata?.data;
       print(data);
       print('------------------ listen ------------------');
+      print('------------------ ${data.runtimeType} ------------------');
       print(feedStreams.entries.map((e) => e.value).toList().length);
       print(subscriptions.entries.map((e) => e.value).toList().length);
       print(feeds.entries.map((e) => e.value).toList().length);
@@ -408,7 +442,7 @@ class JoinLiveController extends GetxController {
     if(accept){
       callEnd();
       // LiveController liveController = Get.put(LiveController());
-      joinToChat();
+    //  joinToChat();
     }
   }
 }
