@@ -88,6 +88,7 @@ class ChatController extends GetxController {
 
   void joinToLive() async{
     EasyLoading.show();
+    print('hello requestteeed');
     ApiResult result = await RequestsUtil.instance.joinToLive();
     EasyLoading.dismiss();
     if(result.isDone){
