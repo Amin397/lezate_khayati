@@ -195,6 +195,9 @@ class JoinLiveController extends GetxController {
         print(error.toMap());
       }
     });
+
+
+    update(['']);
   }
 
   Future<void> unSubscribeStream(int id) async {
@@ -239,7 +242,7 @@ class JoinLiveController extends GetxController {
 
 
     // joinToChat();
-    LiveController liveController = Get.put(LiveController());
+    joinToChat();
     // liveController.joinRoom();
   }
 
@@ -403,7 +406,7 @@ class JoinLiveController extends GetxController {
     );
 
     if(accept){
-      // callEnd();
+      callEnd();
       // LiveController liveController = Get.put(LiveController());
       joinToChat();
     }

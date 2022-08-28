@@ -36,47 +36,23 @@ class LiveController extends GetxController {
   Future<void> joinRoom() async {
     var devices = await wbrtc.navigator.mediaDevices.enumerateDevices();
     Map<String, dynamic> constrains = {};
-    // print(devices.first.label);
-    // print(devices.first.groupId);
-    // print("device id" + devices.first.deviceId);
-    // print(devices.first.kind);
-
     devices.map((e) => e.kind.toString()).forEach((element) {
       String dat = element.split('input')[0];
       dat = dat.split('output')[0];
       constrains.putIfAbsent(dat, () => true);
     });
     myStream =
-        await plugin.initializeMediaDevices(mediaConstraints: constrains);
+    await plugin.initializeMediaDevices(mediaConstraints: constrains);
     RemoteStream mystr = RemoteStream('0');
     await mystr.init();
     mystr.videoRenderer.srcObject = myStream;
     // setState(() {
-    remoteStreams.putIfAbsent(0, () => mystr);
+      remoteStreams.putIfAbsent(0, () => mystr);
     // });
-    // await plugin.initializeWebRTCStack();
-    await plugin.joinPublisher(myRoom, displayName: displayname);
+    await plugin.joinPublisher(myRoom, displayName: "Shivansh");
     plugin.typedMessages?.listen((event) async {
       Object data = event.event.plugindata?.data;
-      // print(data);
-      // print('------------------ listen ------------------');
-      // print(feedStreams.entries.map((e) => e.value).toList().length);
-      // print(subscriptions.entries.map((e) => e.value).toList().length);
-      // print(feeds.entries.map((e) => e.value).toList().length);
-      // print(subStreams.entries.map((e) => e.value).toList().length);
-      // for (int i = 0;
-      //     i < subStreams.entries.map((e) => e.value).toList().length;
-      //     i++) {
-      //   print(subStreams.entries.map((e) => e.value).toList()[i]);
-      // }
-      // print(mediaStreams.entries.map((e) => e.value).toList().length);
-      // print('------------------------------------');
-
       if (data is VideoRoomJoinedEvent) {
-        print(
-            'AAAAAAAAAAAAAAAAAAAMMMMMMMMMMMMMMMMMMMIIIIIIIIIIIIIINNNNNNNNNN${subStreams.length}');
-        // print('------------------1------------------');
-
         (await plugin.publishMedia(bitrate: 3000000));
         List<Map<String, dynamic>> publisherStreams = [];
         for (Publishers publisher in data.publishers ?? []) {
@@ -84,28 +60,21 @@ class LiveController extends GetxController {
             feedStreams[publisher.id!] = {
               "id": publisher.id,
               "display": publisher.display,
-              "streams": publisher.streams,
+              "streams": publisher.streams
             };
             publisherStreams.add({"feed": publisher.id, ...stream.toJson()});
             if (publisher.id != null && stream.mid != null) {
-              subStreams[stream.mid!] = {
-                "id": publisher.id,
-                "display": publisher.display,
-                "streams": publisher.streams,
-                "name": displayname,
-                "img": imageAvatar,
-                "userId": userId
-              };
-              // print("substreams is:");
-              // print(subStreams);
+              subStreams[stream.mid!] = publisher.id!;
+              print("substreams is:");
+              print(subStreams);
             }
           }
         }
+        update(['live']);
         subscribeTo(publisherStreams);
+        update(['live']);
       }
       if (data is VideoRoomNewPublisherEvent) {
-        // print('------------------2------------------');
-
         List<Map<String, dynamic>> publisherStreams = [];
         for (Publishers publisher in data.publishers ?? []) {
           feedStreams[publisher.id!] = {
@@ -113,7 +82,6 @@ class LiveController extends GetxController {
             "display": publisher.display,
             "streams": publisher.streams
           };
-
           for (Streams stream in publisher.streams ?? []) {
             publisherStreams.add({"feed": publisher.id, ...stream.toJson()});
             if (publisher.id != null && stream.mid != null) {
@@ -123,39 +91,28 @@ class LiveController extends GetxController {
             }
           }
         }
-        // print('got new publishers');
-        // print(publisherStreams);
-        // subscribeTo(publisherStreams);
+        print('got new publishers');
+        print(publisherStreams);
+        subscribeTo(publisherStreams);
+        update(['live']);
       }
       if (data is VideoRoomLeavingEvent) {
-        // print('publisher is leaving');
-        // print('------------------3------------------');
-        //
-        // print(data.leaving);
+        print('publisher is leaving');
+        print(data.leaving);
         unSubscribeStream(data.leaving!);
+        update(['live']);
       }
       if (data is VideoRoomConfigured) {
-        // print('------------------4------------------');
-        //
-        // print('typed event with jsep' + event.jsep.toString());
+        print('typed event with jsep' + event.jsep.toString());
         await plugin.handleRemoteJsep(event.jsep);
-      } else {
-        // print('------------------${data.runtimeType}------------------');
-        // print('------------------4------------------');
+        update(['live']);
       }
-      refresh();
-      update(['live']);
     }, onError: (error, trace) {
       if (error is JanusError) {
         print(error.toMap());
       }
     });
-    refresh();
     update(['live']);
-    Future.delayed(Duration(seconds: 15), () {
-      refresh();
-      update(['live']);
-    });
   }
 
   Future<void> unSubscribeStream(int id) async {
@@ -339,5 +296,9 @@ class LiveController extends GetxController {
         showUsers(false);
       });
     }
+  }
+
+  void switchCamera() {
+    remoteHandle!.switchCamera();
   }
 }

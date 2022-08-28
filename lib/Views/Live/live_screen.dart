@@ -25,128 +25,120 @@ class LiveScreen extends StatelessWidget {
             GetBuilder(
               init: controller,
               id: 'live',
-              builder: (ctx) => Column(
-                children: [
-                  Flexible(
-                    flex: 1,
-                    child: controller.remoteStreams.entries
-                                .map((e) => e.value)
-                                .toList()
-                                .length ==
-                            1
-                        ? ListView.builder(
-                            itemCount: controller.remoteStreams.entries
-                                .map((e) => e.value)
-                                .toList()
-                                .length,
-                            itemBuilder: (context, index) {
-                              List<RemoteStream> items = controller
-                                  .remoteStreams.entries
-                                  .map((e) => e.value)
-                                  .toList();
-                              // print(
-                              //     'items length -----------> ${items.length}');
-                              RemoteStream remoteStream = items[index];
-                              return Container(
-                                color: Colors.black,
-                                width: MediaQuery.of(context).size.width,
-                                height: MediaQuery.of(context).size.height,
-                                child: Stack(
-                                  children: [
-                                    wbrtc.RTCVideoView(
-                                      remoteStream.audioRenderer,
-                                      filterQuality: FilterQuality.medium,
-                                      objectFit: wbrtc.RTCVideoViewObjectFit
-                                          .RTCVideoViewObjectFitContain,
-                                      mirror: true,
+              builder: (ctx) => controller.remoteStreams.entries
+                          .map((e) => e.value)
+                          .toList()
+                          .length ==
+                      1
+                  ? ListView.builder(
+                      itemCount: controller.remoteStreams.entries
+                          .map((e) => e.value)
+                          .toList()
+                          .length,
+                      itemBuilder: (context, index) {
+                        List<RemoteStream> items = controller
+                            .remoteStreams.entries
+                            .map((e) => e.value)
+                            .toList();
+                        // print(
+                        //     'items length -----------> ${items.length}');
+                        RemoteStream remoteStream = items[index];
+                        return Container(
+                          color: Colors.black,
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height,
+                          child: Stack(
+                            children: [
+                              wbrtc.RTCVideoView(
+                                remoteStream.audioRenderer,
+                                filterQuality: FilterQuality.medium,
+                                objectFit: wbrtc.RTCVideoViewObjectFit
+                                    .RTCVideoViewObjectFitContain,
+                                mirror: true,
+                              ),
+                              wbrtc.RTCVideoView(
+                                remoteStream.videoRenderer,
+                                filterQuality: FilterQuality.medium,
+                                objectFit: wbrtc.RTCVideoViewObjectFit
+                                    .RTCVideoViewObjectFitCover,
+                                mirror: true,
+                              ),
+                              Center(
+                                child: Container(
+                                  height: 20.0,
+                                  width: 20.0,
+                                  color: Colors.red,
+                                  child: Center(
+                                    child: AutoSizeText(
+                                      controller.subStreams.length.toString()
                                     ),
-                                    wbrtc.RTCVideoView(
-                                      remoteStream.videoRenderer,
-                                      filterQuality: FilterQuality.medium,
-                                      objectFit: wbrtc.RTCVideoViewObjectFit
-                                          .RTCVideoViewObjectFitCover,
-                                      mirror: true,
-                                    ),
-                                    Center(
-                                      child: Container(
-                                        height: 20.0,
-                                        width: 20.0,
-                                        color: Colors.red,
-                                        child: Center(
-                                          child: AutoSizeText(
-                                            controller.subStreams.length.toString()
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                  ),
                                 ),
-                              );
-                            },
-                          )
-                        : GridView.builder(
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              mainAxisSpacing: 5,
-                              crossAxisSpacing: 5,
-                            ),
-                            itemCount: controller.remoteStreams.entries
-                                .map((e) => e.value)
-                                .toList()
-                                .length,
-                            itemBuilder: (context, index) {
-                              List<RemoteStream> items = controller
-                                  .remoteStreams.entries
-                                  .map((e) => e.value)
-                                  .toList();
-                              // print(
-                              //     'items length -----------> ${items.length}');
-                              RemoteStream remoteStream = items[index];
-                              // print(
-                              //     'items length -----------> ${remoteStream.videoRenderer}');
-                              // print(
-                              //     'items length -----------> ${remoteStream.audioRenderer}');
-
-                              return Container(
-                                color: Colors.black,
-                                width: MediaQuery.of(context).size.width,
-                                height: MediaQuery.of(context).size.height,
-                                child: Stack(
-                                  children: [
-                                    wbrtc.RTCVideoView(
-                                        remoteStream.audioRenderer,
-                                        filterQuality: FilterQuality.low,
-                                        objectFit: wbrtc.RTCVideoViewObjectFit
-                                            .RTCVideoViewObjectFitCover,
-                                        mirror: true),
-                                    wbrtc.RTCVideoView(
-                                        remoteStream.videoRenderer,
-                                        filterQuality: FilterQuality.low,
-                                        objectFit: wbrtc.RTCVideoViewObjectFit
-                                            .RTCVideoViewObjectFitCover,
-                                        mirror: true),
-                                    Center(
-                                      child: Container(
-                                        height: 20.0,
-                                        width: 20.0,
-                                        color: Colors.red,
-                                        child: Center(
-                                          child: AutoSizeText(
-                                              controller.subStreams.length.toString()
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
+                              ),
+                            ],
                           ),
-                  ),
-                  //here you shoud show image.network
-                ],
-              ),
+                        );
+                      },
+                    )
+                  : GridView.builder(
+                      gridDelegate:
+                          SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 5,
+                        crossAxisSpacing: 5,
+                      ),
+                      itemCount: controller.remoteStreams.entries
+                          .map((e) => e.value)
+                          .toList()
+                          .length,
+                      itemBuilder: (context, index) {
+                        List<RemoteStream> items = controller
+                            .remoteStreams.entries
+                            .map((e) => e.value)
+                            .toList();
+                        // print(
+                        //     'items length -----------> ${items.length}');
+                        RemoteStream remoteStream = items[index];
+                        // print(
+                        //     'items length -----------> ${remoteStream.videoRenderer}');
+                        // print(
+                        //     'items length -----------> ${remoteStream.audioRenderer}');
+
+                        return Container(
+                          color: Colors.black,
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height,
+                          child: Stack(
+                            children: [
+                              wbrtc.RTCVideoView(
+                                  remoteStream.audioRenderer,
+                                  filterQuality: FilterQuality.low,
+                                  objectFit: wbrtc.RTCVideoViewObjectFit
+                                      .RTCVideoViewObjectFitCover,
+                                  mirror: true),
+                              wbrtc.RTCVideoView(
+                                  remoteStream.videoRenderer,
+                                  filterQuality: FilterQuality.low,
+                                  objectFit: wbrtc.RTCVideoViewObjectFit
+                                      .RTCVideoViewObjectFitCover,
+                                  mirror: true),
+                              Center(
+                                child: Container(
+                                  height: 20.0,
+                                  width: 20.0,
+                                  color: Colors.red,
+                                  child: Center(
+                                    child: AutoSizeText(
+                                        controller.subStreams.length.toString()
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
             ),
             Align(
               alignment: Alignment.bottomCenter,
@@ -168,6 +160,14 @@ class LiveScreen extends StatelessWidget {
                         controller.showUsersModal();
                       },
                       child: Icon(Icons.person_add),
+                    ),
+                    FloatingActionButton(
+                      heroTag: '5',
+                      onPressed: () {
+                        // controller.showUsers.value = true;
+                        controller.switchCamera();
+                      },
+                      child: Icon(Icons.switch_camera_outlined),
                     ),
                   ],
                 ),

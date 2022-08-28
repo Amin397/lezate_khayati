@@ -27,17 +27,14 @@ void main() async {
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-
-  );
-
+  await Firebase.initializeApp();
 
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     print('wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww');
     print(message.data);
 
-    if(message.data['title']== 'کنفرانس'){
-      Globals.liveStream.setTrue(id:message.data['id'].toString());
+    if (message.data['title'] == 'کنفرانس') {
+      Globals.liveStream.setTrue(id: message.data['id'].toString());
     }
   });
 
@@ -51,7 +48,9 @@ void main() async {
             backgroundColor: ColorUtils.yellow,
           ),
           textTheme: const TextTheme(
-            subtitle1: TextStyle(color: Colors.white),
+            subtitle1: TextStyle(
+              color: Colors.white,
+            ),
           ),
           fontFamily: 'iranSans',
           canvasColor: Colors.white,
