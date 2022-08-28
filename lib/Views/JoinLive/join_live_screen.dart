@@ -18,34 +18,36 @@ class JoinLiveScreen extends StatelessWidget {
       body: Container(
         height: Get.height,
         width: Get.width,
-        child: GetBuilder(
+
+        child: GetBuilder<JoinLiveController>(
           id: 'joinLive',
           builder: (ctx) => Column(
             children: [
               Flexible(
                 flex: 1,
-                child: controller.remoteStreams.entries
-                                .map((e) => e.value)
+                child: ctx.remoteStreams.entries
+                                .map((e) => e.value).where((element) => !element.video.isBlank!)
                                 .toList()
                                 .length ==
                             1
                         ? ListView.builder(
-                            itemCount: controller.remoteStreams.entries
+                            itemCount: ctx.remoteStreams.entries
                                 .map((e) => e.value)
                                 .toList()
                                 .length,
                             itemBuilder: (context, index) {
-                              List<RemoteStream> items = controller
+                              List<RemoteStream> items = ctx
                                   .remoteStreams.entries
-                                  .map((e) => e.value)
+                                  .map((e) => e.value).where((element) => !element.video.isBlank!)
                                   .toList();
-                              print(
-                                  'items length -----------> ${items.length}');
-                              RemoteStream remoteStream = items[index];
-                              print(
-                                  'items length -----------> ${remoteStream.videoRenderer}');
-                              print(
-                                  'items length -----------> ${remoteStream.audioRenderer}');
+
+                              print('items length -----------> ${items.length}');
+
+                              RemoteStream remoteStream = items.first;
+
+                              print('items length -----------> ${remoteStream.videoRenderer}');
+
+                              print('items length -----------> ${remoteStream.audioRenderer}');
 
                               return Container(
                                 color: Colors.black,
@@ -68,6 +70,7 @@ class JoinLiveScreen extends StatelessWidget {
                                   ],
                                 ),
                               );
+
                             })
                         : GridView.builder(
                             gridDelegate:
@@ -76,17 +79,19 @@ class JoinLiveScreen extends StatelessWidget {
                               mainAxisSpacing: 5,
                               crossAxisSpacing: 5,
                             ),
-                            itemCount: controller.remoteStreams.entries
-                                .map((e) => e.value)
+                            itemCount: ctx.remoteStreams.entries
+                                .map((e) => e.value).where((element) => !element.video.isBlank!)
                                 .toList()
                                 .length,
                             itemBuilder: (context, index) {
-                              List<RemoteStream> items = controller
+                              List<RemoteStream> items = ctx
                                   .remoteStreams.entries
-                                  .map((e) => e.value)
+                                  .map((e) => e.value).where((element) => !element.video.isBlank!)
                                   .toList();
                               // print('items length -----------> ${items.length}');
                               RemoteStream remoteStream = items[index];
+                              print('---------------- loglog -------------------');
+                              print(remoteStream.video.isBlank);
                               // print(
                               //     'items length -----------> ${remoteStream.videoRenderer}');
                               // print(
