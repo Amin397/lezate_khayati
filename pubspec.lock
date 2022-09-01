@@ -8,6 +8,27 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "38.0.0"
+  agora_rtc_engine:
+    dependency: "direct main"
+    description:
+      name: agora_rtc_engine
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "5.3.0"
+  agora_rtm:
+    dependency: transitive
+    description:
+      name: agora_rtm
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.1"
+  agora_uikit:
+    dependency: "direct main"
+    description:
+      name: agora_uikit
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.3"
   analyzer:
     dependency: transitive
     description:
@@ -252,42 +273,42 @@ packages:
       name: firebase_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.21.0"
+    version: "1.21.1"
   firebase_core_platform_interface:
     dependency: transitive
     description:
       name: firebase_core_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.5.0"
+    version: "4.5.1"
   firebase_core_web:
     dependency: transitive
     description:
       name: firebase_core_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.7.1"
+    version: "1.7.2"
   firebase_database:
     dependency: "direct main"
     description:
       name: firebase_database
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "9.1.2"
+    version: "9.1.3"
   firebase_database_platform_interface:
     dependency: transitive
     description:
       name: firebase_database_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.2+2"
+    version: "0.2.2+3"
   firebase_database_web:
     dependency: transitive
     description:
       name: firebase_database_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.1+4"
+    version: "0.2.1+5"
   firebase_messaging:
     dependency: "direct main"
     description:
@@ -301,14 +322,14 @@ packages:
       name: firebase_messaging_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.1.2"
+    version: "4.1.3"
   firebase_messaging_web:
     dependency: transitive
     description:
       name: firebase_messaging_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.1.2"
+    version: "3.1.3"
   fixnum:
     dependency: transitive
     description:
@@ -341,7 +362,7 @@ packages:
       name: flutter_local_notifications
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "9.8.0+1"
+    version: "9.9.0"
   flutter_local_notifications_linux:
     dependency: transitive
     description:
@@ -390,7 +411,7 @@ packages:
       name: flutter_staggered_animations
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0"
+    version: "1.1.1"
   flutter_svg:
     dependency: "direct main"
     description:
@@ -548,6 +569,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.4"
+  json_annotation:
+    dependency: transitive
+    description:
+      name: json_annotation
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.6.0"
   just_audio:
     dependency: "direct main"
     description:
@@ -569,6 +597,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.4.7"
+  lints:
+    dependency: transitive
+    description:
+      name: lints
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
   logging:
     dependency: transitive
     description:
@@ -582,7 +617,7 @@ packages:
       name: lottie
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.4.1"
+    version: "1.4.2"
   markdown:
     dependency: transitive
     description:
@@ -715,7 +750,7 @@ packages:
       name: path_provider_android
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.19"
+    version: "2.0.20"
   path_provider_ios:
     dependency: transitive
     description:
@@ -855,42 +890,42 @@ packages:
       name: record
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.3.3"
+    version: "4.4.0"
   record_linux:
     dependency: transitive
     description:
       name: record_linux
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.2"
+    version: "0.3.3"
   record_macos:
     dependency: transitive
     description:
       name: record_macos
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.1"
+    version: "0.2.2"
   record_platform_interface:
     dependency: transitive
     description:
       name: record_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.0"
+    version: "0.5.0"
   record_web:
     dependency: transitive
     description:
       name: record_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.0"
+    version: "0.5.0"
   record_windows:
     dependency: transitive
     description:
       name: record_windows
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.1"
+    version: "0.6.2"
   rxdart:
     dependency: transitive
     description:
@@ -1119,7 +1154,7 @@ packages:
       name: xdg_directories
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.0+1"
+    version: "0.2.0+2"
   xml:
     dependency: transitive
     description:

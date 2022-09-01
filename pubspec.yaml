@@ -80,7 +80,8 @@ dependencies:
   janus_client: ^2.2.3
   flutter_webrtc: ^0.8.3
   sdp_transform: ^0.3.2
-
+  agora_uikit: ^1.0.3
+  agora_rtc_engine: ^5.3.0
 
 
 

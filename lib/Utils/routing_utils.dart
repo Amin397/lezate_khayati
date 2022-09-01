@@ -9,6 +9,7 @@ import '../Views/EditProfile/edit_profile_screen.dart';
 import '../Views/JoinLive/join_live_screen.dart';
 import '../Views/Live/Widgets/subscribers-screen.dart';
 import '../Views/Live/live_screen.dart';
+import '../Views/Lobby/lobby_screen.dart';
 import '../Views/Main/main_screen.dart';
 import '../Views/MainMore/main_more_screen.dart';
 import '../Views/MyClass/my_class_screen.dart';
@@ -121,14 +122,19 @@ class RoutingUtils {
     page: () => SingleChatScreen(),
     transition: Transition.fadeIn,
   );
-  static GetPage live = GetPage(
-    name: '/live',
-    page: () => LiveScreen(),
+  static GetPage lobby = GetPage(
+    name: '/lobby',
+    page: () => LobbyPage(),
     transition: Transition.fadeIn,
   );
-  static GetPage joinLive = GetPage(
-    name: '/joinLive',
-    page: () => JoinLiveScreen(),
-    transition: Transition.fadeIn,
-  );
+  // static GetPage live = GetPage(
+  //   name: '/live',
+  //   page: () => LiveScreen(),
+  //   transition: Transition.fadeIn,
+  // );
+  // static GetPage joinLive = GetPage(
+  //   name: '/joinLive',
+  //   page: () => JoinLiveScreen(),
+  //   transition: Transition.fadeIn,
+  // );
 }

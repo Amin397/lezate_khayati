@@ -1,6 +1,8 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart' as wbrtc;
+import 'package:flutter_webrtc/flutter_webrtc.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:janus_client/janus_client.dart';
 import 'package:lezate_khayati/Models/user_model.dart';
 import 'package:lezate_khayati/Plugins/get/get.dart';
@@ -10,6 +12,10 @@ import '../../Utils/Live/Helper.dart';
 import '../../Utils/Live/conf.dart';
 
 class LiveController extends GetxController {
+
+
+  RTCVideoRenderer? myAudioRenderer;
+  RTCVideoRenderer? myVideoRenderer;
   RxBool showUsers = false.obs;
   wbrtc.MediaStream? myStream;
   int myRoom = 1234;
@@ -46,13 +52,33 @@ class LiveController extends GetxController {
     RemoteStream mystr = RemoteStream('0');
     await mystr.init();
     mystr.videoRenderer.srcObject = myStream;
-    // setState(() {
-      remoteStreams.putIfAbsent(0, () => mystr);
-    // });
+
+
+
+
+
+      update(['live']);
     await plugin.joinPublisher(myRoom, displayName: "Shivansh");
+
     plugin.typedMessages?.listen((event) async {
       Object data = event.event.plugindata?.data;
+      remoteStreams.putIfAbsent(0, () => mystr);
+      myAudioRenderer = remoteStreams.entries
+          .map((e) => e.value)
+          .toList()
+          .first
+          .audioRenderer;
+
+      myVideoRenderer = remoteStreams.entries
+          .map((e) => e.value)
+          .toList()
+          .first
+          .videoRenderer;
+
+    remoteStreams.remove(remoteStreams[0]);
+      update(['live']);
       if (data is VideoRoomJoinedEvent) {
+
         (await plugin.publishMedia(bitrate: 3000000));
         List<Map<String, dynamic>> publisherStreams = [];
         for (Publishers publisher in data.publishers ?? []) {
@@ -70,9 +96,7 @@ class LiveController extends GetxController {
             }
           }
         }
-        update(['live']);
         subscribeTo(publisherStreams);
-        update(['live']);
       }
       if (data is VideoRoomNewPublisherEvent) {
         List<Map<String, dynamic>> publisherStreams = [];
@@ -94,24 +118,26 @@ class LiveController extends GetxController {
         print('got new publishers');
         print(publisherStreams);
         subscribeTo(publisherStreams);
-        update(['live']);
       }
       if (data is VideoRoomLeavingEvent) {
         print('publisher is leaving');
+        remoteStreams.remove(data);
         print(data.leaving);
         unSubscribeStream(data.leaving!);
-        update(['live']);
       }
       if (data is VideoRoomConfigured) {
         print('typed event with jsep' + event.jsep.toString());
         await plugin.handleRemoteJsep(event.jsep);
-        update(['live']);
       }
     }, onError: (error, trace) {
       if (error is JanusError) {
         print(error.toMap());
       }
     });
+
+
+
+
     update(['live']);
   }
 
@@ -122,7 +148,7 @@ class LiveController extends GetxController {
     this.feedStreams.remove(id);
     await remoteStreams[id]?.dispose();
     remoteStreams.remove(id);
-    wbrtc.MediaStream? streamRemoved = this.mediaStreams.remove(id);
+    MediaStream? streamRemoved = this.mediaStreams.remove(id);
     streamRemoved?.getTracks().forEach((element) async {
       await element.stop();
     });
@@ -146,19 +172,16 @@ class LiveController extends GetxController {
       await remoteHandle?.subscribeToStreams(streams);
       return;
     }
-
     remoteHandle = await session.attach<JanusVideoRoomPlugin>();
     print(sources);
     var start = await remoteHandle?.joinSubscriber(myRoom, streams: streams);
     remoteHandle?.typedMessages?.listen((event) async {
       Object data = event.event.plugindata?.data;
-
-      print('listened');
       if (data is VideoRoomAttachedEvent) {
         print('Attached event');
         data.streams?.forEach((element) {
           if (element.mid != null && element.feedId != null) {
-            subStreams[element.mid!]['id'] = element.feedId!;
+            subStreams[element.mid!] = element.feedId!;
           }
           // to avoid duplicate subscriptions
           if (subscriptions[element.feedId] == null)
@@ -171,54 +194,73 @@ class LiveController extends GetxController {
       if (event.jsep != null) {
         await remoteHandle?.handleRemoteJsep(event.jsep);
         await start!();
+
+
       }
+
+      update(['live']);
     }, onError: (error, trace) {
       if (error is JanusError) {
         print(error.toMap());
       }
     });
     remoteHandle?.remoteTrack?.listen((event) async {
-      print('listened2');
       String mid = event.mid!;
-      if (subStreams[mid]['id'] != null) {
-        int feedId = subStreams[mid]['id']!;
+      if (subStreams[mid] != null) {
+        int feedId = subStreams[mid]!;
         if (!remoteStreams.containsKey(feedId)) {
           RemoteStream temp = RemoteStream(feedId.toString());
           await temp.init();
-          // setState(() {
-          remoteStreams.putIfAbsent(feedId, () => temp);
-          // });
+            remoteStreams.putIfAbsent(feedId, () => temp);
+            update(['live']);
         }
         if (event.track != null && event.flowing == true) {
           remoteStreams[feedId]?.video.addTrack(event.track!);
           remoteStreams[feedId]?.videoRenderer.srcObject =
               remoteStreams[feedId]?.video;
           // if (kIsWeb) {
-          remoteStreams[feedId]?.videoRenderer.muted = false;
+          //   remoteStreams[feedId]?.videoRenderer.muted = false;
           // }
         }
       }
     });
-    update(['live']);
-    refresh();
+
+
+
     return;
   }
 
-  initialize() async {
+  Future initialize() async {
     ws = WebSocketJanusTransport(url: servermap['janus_ws']);
     j = JanusClient(transport: ws, isUnifiedPlan: true, iceServers: [
       RTCIceServer(
-        urls: "stun:stun1.l.google.com:19302",
-        username: "",
-        credential: "",
-      )
+          urls: "stun:stun1.l.google.com:19302", username: "", credential: "")
     ]);
     session = await j.createSession();
-
-    print('session Id : ${session.sessionId}');
     plugin = await session.attach<JanusVideoRoomPlugin>();
-/*    await plugin.createRoom(myRoom,);
-    print('room created');*/
+
+
+  }
+
+  callEnd() async {
+    await plugin.hangup();
+    for (int i = 0; i < feedStreams.keys.length; i++) {
+      await unSubscribeStream(feedStreams.keys.elementAt(i));
+    }
+    remoteStreams.forEach((key, value) async {
+      value.dispose();
+    });
+    remoteStreams = {};
+    update(['live']);
+    subStreams.clear();
+    subscriptions.clear();
+    // stop all tracks and then dispose
+    myStream?.getTracks().forEach((element) async {
+      await element.stop();
+    });
+    await myStream?.dispose();
+    await plugin.dispose();
+    await remoteHandle?.dispose();
   }
 
   @override
@@ -231,6 +273,7 @@ class LiveController extends GetxController {
 
   @override
   void onInit() {
+      liveId = Get.arguments['liveId'].toString();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       print('*****************************');
       if (message.data['title'] == 'کنفرانس') {
@@ -238,16 +281,15 @@ class LiveController extends GetxController {
       }
     });
 
-    initialize();
+    initialize().then((value) => joinRoom());
 
-    if (Get.arguments != null) {
-      liveId = Get.arguments['liveId'].toString();
-      Future.delayed(Duration(seconds: 3), () {
-        joinRoom();
-      });
-    } else {
-      joinRoom();
-    }
+    // if (Get.arguments != null) {
+    //   Future.delayed(Duration(seconds: 3), () {
+    //     joinRoom();
+    //   });
+    // } else {
+    //   joinRoom();
+    // }
     super.onInit();
   }
 

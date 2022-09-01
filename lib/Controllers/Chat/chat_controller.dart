@@ -1,8 +1,11 @@
+import 'package:agora_uikit/agora_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:lezate_khayati/Globals/Globals.dart';
 import 'package:lezate_khayati/Plugins/get/get.dart';
 import 'package:lezate_khayati/Utils/Api/project_request_utils.dart';
 import 'package:lezate_khayati/Utils/routing_utils.dart';
+import 'package:lezate_khayati/Views/Lobby/lobby_screen.dart';
 
 import '../../Models/Chat/chat_model.dart';
 import '../../Views/Chat/Widget/start_video_confrance_modal.dart';
@@ -63,10 +66,13 @@ class ChatController extends GetxController {
       ),
     );
 
+
+    await [Permission.camera, Permission.microphone].request();
     if (startLive == 1) {
       liveRequest();
     } else if(startLive == 2){
       joinToLive();
+      // joinToLive();
     }
   }
 
@@ -77,12 +83,13 @@ class ChatController extends GetxController {
 
     if (result.isDone) {
       print(result.data['live_id']);
-      Get.toNamed(
-        RoutingUtils.live.name,
-        arguments: {
-          'liveId':result.data['live_id'],
-        }
-      );
+      Get.to(()=>LobbyPage(broadCast: true,liveId:result.data['live_id'].toString()));
+      // Get.toNamed(
+      //   RoutingUtils.lobby.name,
+      //   arguments: {
+      //     'liveId':result.data['live_id'],
+      //   }
+      // );
     }
   }
 
@@ -92,9 +99,13 @@ class ChatController extends GetxController {
     ApiResult result = await RequestsUtil.instance.joinToLive();
     EasyLoading.dismiss();
     if(result.isDone){
-      Get.toNamed(
-        RoutingUtils.joinLive.name,
-      );
+      // Get.toNamed(
+      //     RoutingUtils.lobby.name,
+      //     arguments: {
+      //       'liveId':Globals.liveStream.liveId,
+      //     }
+      // );
+      Get.to(()=>LobbyPage(broadCast: false,));
     }
   }
 }
