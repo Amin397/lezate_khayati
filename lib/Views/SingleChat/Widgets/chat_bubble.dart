@@ -44,7 +44,7 @@ class ChatBubble extends StatelessWidget {
           Container(
             // chat bubble decoration
             constraints: BoxConstraints(
-              maxHeight: Get.height * .305,
+              // maxHeight: Get.height * .305,
               maxWidth: Get.width * .8,
             ),
             decoration: BoxDecoration(
@@ -82,18 +82,55 @@ class ChatBubble extends StatelessWidget {
   Widget buildText() {
     return Padding(
       padding: const EdgeInsets.all(12.0),
-      child: Text(
-        model!.body!,
-        style: Theme.of(Get.context!).textTheme.bodyText1!.copyWith(
-              color: isCurrentUser ? Colors.white : Colors.black87,
+      child: (model!.isMe!)
+          ? Obx(
+              () => Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    model!.body!,
+                    style: Theme.of(Get.context!).textTheme.bodyText1!.copyWith(
+                          color: isCurrentUser ? Colors.white : Colors.black87,
+                        ),
+                  ),
+                  (model!.isSend.isTrue)
+                      ? Stack(
+                          children: [
+                            Icon(
+                              Icons.check,
+                              color: Colors.white,
+                              size: 12.0,
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 4.0),
+                              child: Icon(
+                                Icons.check,
+                                color: Colors.white,
+                                size: 12.0,
+                              ),
+                            )
+                          ],
+                        )
+                      : Icon(
+                          Icons.radio_button_unchecked,
+                          color: Colors.grey,
+                          size: 14.0,
+                        ),
+                ],
+              ),
+            )
+          : Text(
+              model!.body!,
+              style: Theme.of(Get.context!).textTheme.bodyText1!.copyWith(
+                    color: isCurrentUser ? Colors.white : Colors.black87,
+                  ),
             ),
-      ),
     );
   }
 
   Widget buildImage() {
     return Padding(
-      padding: EdgeInsets.all(model!.files!.type == 'voice' ? 0 : 8),
+      padding: EdgeInsets.all(model!.files!.type == 'voice' ? 6 : 8),
       child: Column(
         children: [
           (!model!.isMe!)
@@ -112,13 +149,48 @@ class ChatBubble extends StatelessWidget {
             SizedBox(
               height: 8,
             ),
-            Text(
-              model!.body ?? '',
-              style: Theme.of(Get.context!).textTheme.bodyText1!.copyWith(
-                    color: isCurrentUser ? Colors.white : Colors.black87,
-                  ),
+            Align(
+              alignment:
+                  (model!.isMe!) ? Alignment.centerRight : Alignment.centerLeft,
+              child: Text(
+                model!.body ?? '',
+                style: Theme.of(Get.context!).textTheme.bodyText1!.copyWith(
+                      color: isCurrentUser ? Colors.white : Colors.black87,
+                    ),
+              ),
             ),
-          ]
+          ],
+          (model!.isMe!)
+              ? (model!.isSend.isTrue)
+                  ? Align(
+                      alignment: Alignment.centerRight,
+                      child: Stack(
+                        children: [
+                          Icon(
+                            Icons.check,
+                            color: Colors.white,
+                            size: 12.0,
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 4.0),
+                            child: Icon(
+                              Icons.check,
+                              color: Colors.white,
+                              size: 12.0,
+                            ),
+                          )
+                        ],
+                      ),
+                    )
+                  : Align(
+                      alignment: Alignment.centerRight,
+                      child: Icon(
+                        Icons.radio_button_unchecked,
+                        color: Colors.grey,
+                        size: 14.0,
+                      ),
+                    )
+              : SizedBox()
         ],
       ),
     );

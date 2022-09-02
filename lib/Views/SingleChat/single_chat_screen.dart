@@ -236,7 +236,7 @@ class SingleChatScreen extends StatelessWidget {
                       ),
                     ),
                   ],
-                )),
+                ),),
         ),
       ),
     );

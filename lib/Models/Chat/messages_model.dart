@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:lezate_khayati/Plugins/get/get.dart';
+
 class MessageModel {
   MessageModel({
     this.id,
@@ -11,6 +13,7 @@ class MessageModel {
     this.isMe,
     this.user,
     this.files,
+    required this.isSend,
   });
 
   int? id;
@@ -22,6 +25,7 @@ class MessageModel {
   bool? isMe;
   User? user;
   Files? files;
+  RxBool isSend;
 
 
   static List<MessageModel> listFromJson(List data){
@@ -36,7 +40,9 @@ class MessageModel {
     createdAt: DateTime.parse(json["created_at"]),
     updatedAt: DateTime.parse(json["updated_at"]),
     isMe: json["isMe"],
+    isSend: true.obs,
     user: User.fromJson(json["user"]),
+
     files:(json["files"] == null)?null: Files.fromJson(json["files"]),
   );
 

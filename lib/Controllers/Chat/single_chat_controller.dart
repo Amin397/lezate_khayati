@@ -67,7 +67,7 @@ class SingleChatController extends GetxController
       }
       Future.delayed(Duration(milliseconds: 500), () {
         scrollController.animateTo(
-          scrollController.position.maxScrollExtent + 100,
+          scrollController.position.maxScrollExtent + 50,
           duration: const Duration(
             milliseconds: 200,
           ),
@@ -80,10 +80,13 @@ class SingleChatController extends GetxController
   void sendMessage({File? file}) async {
     MessageModel message;
 
+    String text = '';
+
     if (isRecorded.isTrue) {
       message = MessageModel(
         body: messageController.text,
         isMe: true,
+        isSend: false.obs,
         userId: Globals.userStream.user!.id.toString(),
         user: User(
           name: Globals.userStream.user!.name,
@@ -104,6 +107,8 @@ class SingleChatController extends GetxController
       });
 
       chats.add(message);
+      isRecorded(false);
+      update(['refreshChats']);
 
       ApiResult result = await RequestsUtil.instance.sendMessage(
         chatId: id.toString(),
@@ -116,13 +121,14 @@ class SingleChatController extends GetxController
       if (result.isDone) {
         Future.delayed(Duration(milliseconds: 100), () {
           scrollController.animateTo(
-            scrollController.position.maxScrollExtent + 100,
+            scrollController.position.maxScrollExtent + 50,
             duration: const Duration(
               milliseconds: 600,
             ),
             curve: Curves.easeInOut,
           );
         });
+        message.isSend(true);
       } else {
         ViewUtils.showErrorDialog(
           'ارسال با مشکل مواجه شد',
@@ -138,6 +144,7 @@ class SingleChatController extends GetxController
         message = MessageModel(
           body: messageController.text,
           isMe: true,
+          isSend: false.obs,
           userId: Globals.userStream.user!.id.toString(),
           user: User(
             name: Globals.userStream.user!.name,
@@ -153,6 +160,7 @@ class SingleChatController extends GetxController
         message = MessageModel(
           body: messageController.text,
           isMe: true,
+          isSend: false.obs,
           userId: Globals.userStream.user!.id.toString(),
           user: User(
             name: Globals.userStream.user!.name,
@@ -161,6 +169,10 @@ class SingleChatController extends GetxController
           ),
         );
       }
+      chats.add(message);
+      text = messageController.text;
+      messageController.clear();
+      update(['refreshChats']);
       animationController
         ..duration = const Duration(milliseconds: 1800)
         ..forward();
@@ -168,27 +180,25 @@ class SingleChatController extends GetxController
         animationController.reset();
       });
 
-      chats.add(message);
-
       if (file is File) {
         ApiResult result = await RequestsUtil.instance.sendMessage(
           chatId: id.toString(),
-          message: messageController.text,
+          message: text,
           file: file,
           type: 'image',
         );
-        messageController.clear();
 
         if (result.isDone) {
           Future.delayed(Duration(milliseconds: 100), () {
             scrollController.animateTo(
-              scrollController.position.maxScrollExtent + 100,
+              scrollController.position.maxScrollExtent + 50,
               duration: const Duration(
                 milliseconds: 600,
               ),
               curve: Curves.easeInOut,
             );
           });
+          message.isSend(true);
         } else {
           ViewUtils.showErrorDialog(
             'ارسال با مشکل مواجه شد',
@@ -200,20 +210,21 @@ class SingleChatController extends GetxController
       } else {
         ApiResult result = await RequestsUtil.instance.sendMessage(
           chatId: id.toString(),
-          message: messageController.text,
+          message: text,
         );
         messageController.clear();
 
         if (result.isDone) {
           Future.delayed(Duration(milliseconds: 100), () {
             scrollController.animateTo(
-              scrollController.position.maxScrollExtent + 100,
+              scrollController.position.maxScrollExtent + 50,
               duration: const Duration(
                 milliseconds: 600,
               ),
               curve: Curves.easeInOut,
             );
           });
+          message.isSend(true);
         } else {
           ViewUtils.showErrorDialog(
             'ارسال با مشکل مواجه شد',
