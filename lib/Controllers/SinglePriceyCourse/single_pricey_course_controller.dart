@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:lezate_khayati/Models/SinglePriceyCourse/single_pricey_course_model.dart';
 import 'package:lezate_khayati/Plugins/get/get.dart';
 import 'package:lezate_khayati/Utils/Api/project_request_utils.dart';
@@ -72,6 +73,7 @@ class SinglePriceyCourseController extends GetxController {
   }
 
   void openVideo({required Video video}) async {
+    await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
     await video.videoController.initialize();
 
     video.chewieController = ChewieController(
