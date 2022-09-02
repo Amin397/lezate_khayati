@@ -377,15 +377,15 @@ class SinglePriceyCourseScreen extends StatelessWidget {
       id: 'videoThumb',
       builder: (ctx) => InkWell(
         onTap: () {
-          if (controller.model.isBought!) {
+          // if (controller.model.isBought!) {
             controller.openVideo(
               video: video,
             );
-          } else {
-            controller.showBoughtAlert(
-              video: video,
-            );
-          }
+          // } else {
+          //   controller.showBoughtAlert(
+          //     video: video,
+          //   );
+          // }
         },
         child: Container(
           height: Get.width * .2,

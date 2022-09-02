@@ -6,14 +6,16 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:lezate_khayati/Globals/Globals.dart';
+import 'package:lezate_khayati/Plugins/get/get.dart';
 
 import '../../Models/user_model.dart';
 import '../../Utils/Api/project_request_utils.dart';
 import '../../Utils/Consts.dart';
+import '../JoinLive/Widgets/build_invite_alert.dart';
 import 'Widgets/users_on_live_modal.dart';
 
 class LobbyPage extends StatefulWidget {
-  LobbyPage({Key? key, this.broadCast , this.liveId}) : super(key: key);
+  LobbyPage({Key? key, this.broadCast, this.liveId}) : super(key: key);
 
   bool? broadCast;
   final String? liveId;
@@ -57,8 +59,7 @@ class _LobbyPageState extends State<LobbyPage> {
       if (message.data['title'] == 'کنفرانس') {
         if (Globals.userStream.user!.role == 'admin') {
           getUsers();
-        }else if(message.data['body'] == 'شما به لایو دعوت شده اید'){
-
+        } else if (message.data['body'] == 'شما به لایو دعوت شده اید') {
           // _users.clear();
           // _users2.clear();
           // // destroy sdk
@@ -79,16 +80,38 @@ class _LobbyPageState extends State<LobbyPage> {
     initialize();
   }
 
+  setPublisher() async {
+
+      print('-------------------------- show dialog -------------------');
+      bool accept = await showDialog(
+        context: Get.context!,
+        barrierDismissible: false,
+        builder: (BuildContext context) => AlertDialog(
+          backgroundColor: Colors.transparent,
+          contentPadding: EdgeInsets.zero,
+          content: BuildInviteAlert(),
+        ),
+      );
+      //
+      if(accept){
+
+        Get.back();
+        Future.delayed(Duration(milliseconds: 500), () {
+          Get.to(() => LobbyPage(broadCast: true, liveId: widget.liveId));
+        });
+        //  callEnd();
+        // LiveController liveController = Get.put(LiveController());
+        //  joinToChat();
+      }
 
 
-  setPublisher()async{
-    await _engine!.setClientRole(ClientRole.Broadcaster);
-    setState(() {
-      _getRenderViews();
-    });
+
+
+
   }
 
   getUsers() async {
+    subscribersList.clear();
     ApiResult result = await RequestsUtil.instance.getLiveJoinedUser(
       liveId: widget.liveId.toString(),
     );
@@ -143,6 +166,9 @@ class _LobbyPageState extends State<LobbyPage> {
         setState(() {
           _infoStrings.add('onLeaveChannel');
           _users.clear();
+          if(Globals.userStream.user!.role == 'admin'){
+            getUsers();
+          }
         });
       },
       userJoined: (uid, elapsed) {
@@ -179,6 +205,9 @@ class _LobbyPageState extends State<LobbyPage> {
         setState(() {
           _infoStrings.add('Rtc Channel onLeaveChannel');
           _users2.clear();
+          if(Globals.userStream.user!.role == 'admin'){
+            getUsers();
+          }
         });
       },
       userJoined: (uid, elapsed) {
@@ -254,27 +283,29 @@ class _LobbyPageState extends State<LobbyPage> {
       appBar: AppBar(
         title: const Text('Lobby'),
         actions: [
-          (Globals.userStream.user!.role == 'admin')?GestureDetector(
-            onTap: () {
-              showUsers();
-            },
-            child: Container(
-              padding: paddingAll8,
-              child: Row(
-                children: [
-                  Text(
-                    subscribersList.length.toString(),
+          (Globals.userStream.user!.role == 'admin')
+              ? GestureDetector(
+                  onTap: () {
+                    showUsers();
+                  },
+                  child: Container(
+                    padding: paddingAll8,
+                    child: Row(
+                      children: [
+                        Text(
+                          subscribersList.length.toString(),
+                        ),
+                        SizedBox(
+                          width: 3.0,
+                        ),
+                        Icon(
+                          Icons.visibility_outlined,
+                        )
+                      ],
+                    ),
                   ),
-                  SizedBox(
-                    width: 3.0,
-                  ),
-                  Icon(
-                    Icons.visibility_outlined,
-                  )
-                ],
-              ),
-            ),
-          ):SizedBox()
+                )
+              : SizedBox()
         ],
       ),
       // backgroundColor: Colors.black,
@@ -349,6 +380,7 @@ class _LobbyPageState extends State<LobbyPage> {
         uid: uid,
       ));
     });
+    setState(() {});
     return list;
   }
 
@@ -478,7 +510,7 @@ class _LobbyPageState extends State<LobbyPage> {
       fcmToken: user.fcmToken!,
     );
     if (result.isDone) {
-      Future.delayed(Duration(seconds: 5), () {
+      Future.delayed(Duration(seconds: 3), () {
         EasyLoading.dismiss();
       });
     }

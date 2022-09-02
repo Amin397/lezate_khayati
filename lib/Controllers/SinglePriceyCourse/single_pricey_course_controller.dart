@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:lezate_khayati/Models/SinglePriceyCourse/single_pricey_course_model.dart';
@@ -10,6 +11,7 @@ import 'package:video_thumbnail/video_thumbnail.dart';
 
 import '../../Views/SinglePriceyCourse/Widgets/build_bought_video_alert.dart';
 import '../../Views/SinglePriceyCourse/Widgets/build_more_videos_modal.dart';
+import '../../Views/SinglePriceyCourse/Widgets/build_show_video_modal.dart';
 
 class SinglePriceyCourseController extends GetxController {
   late final int index;
@@ -69,7 +71,29 @@ class SinglePriceyCourseController extends GetxController {
     }
   }
 
-  void openVideo({required Video video}) async {}
+  void openVideo({required Video video}) async {
+    await video.videoController.initialize();
+
+    video.chewieController = ChewieController(
+      videoPlayerController: video.videoController,
+      autoPlay: true,
+    );
+
+    final s = await showModalBottomSheet(
+      context: Get.context!,
+      isDismissible: false,
+      enableDrag: false,
+      isScrollControlled: true,
+      useRootNavigator: false,
+      backgroundColor: Colors.transparent,
+      builder: (BuildContext context) =>
+          BuildShowVideoModal(controller: this, video: video),
+    );
+
+
+    video.videoController.pause();
+    video.chewieController!.pause();
+  }
 
   void showBoughtAlert({required Video video}) async {
     bool buy = await showDialog(
