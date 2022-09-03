@@ -225,7 +225,7 @@ class RequestsUtil extends GetConnect {
       webMethod: WebMethods.users,
       urlParams: 'join',
       body: {
-        'live_id':Globals.liveStream.liveId,
+        'live_id': Globals.liveStream.liveId,
       },
       bearer: true,
     );
@@ -252,6 +252,19 @@ class RequestsUtil extends GetConnect {
         urlParams: 'whisper',
         bearer: true,
         body: {'name': ''});
+  }
+
+  Future<ApiResult> uploadLiveFile({required File file}) async {
+    return await makeRequest(
+      type: 'post',
+      webController: WebControllers.admin,
+      webMethod: WebMethods.live,
+      urlParams: 'uploadImg',
+      bearer: true,
+      indexFiles: {
+        'img': file,
+      },
+    );
   }
 
   Future<ApiResult> sendMessage({

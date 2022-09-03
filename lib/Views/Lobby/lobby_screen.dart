@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:agora_rtc_engine/rtc_channel.dart';
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:agora_rtc_engine/rtc_local_view.dart' as RtcLocalView;
 import 'package:agora_rtc_engine/rtc_remote_view.dart' as RtcRemoteView;
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -32,6 +35,8 @@ class _LobbyPageState extends State<LobbyPage> {
   List<UserModel> subscribersList = [];
 
   bool muted = false;
+  bool camera = false;
+  bool switched = false;
 
   RtcEngine? _engine;
   RtcChannel? _channel;
@@ -81,33 +86,26 @@ class _LobbyPageState extends State<LobbyPage> {
   }
 
   setPublisher() async {
-
-      print('-------------------------- show dialog -------------------');
-      bool accept = await showDialog(
-        context: Get.context!,
-        barrierDismissible: false,
-        builder: (BuildContext context) => AlertDialog(
-          backgroundColor: Colors.transparent,
-          contentPadding: EdgeInsets.zero,
-          content: BuildInviteAlert(),
-        ),
-      );
-      //
-      if(accept){
-
-        Get.back();
-        Future.delayed(Duration(milliseconds: 500), () {
-          Get.to(() => LobbyPage(broadCast: true, liveId: widget.liveId));
-        });
-        //  callEnd();
-        // LiveController liveController = Get.put(LiveController());
-        //  joinToChat();
-      }
-
-
-
-
-
+    print('-------------------------- show dialog -------------------');
+    bool accept = await showDialog(
+      context: Get.context!,
+      barrierDismissible: false,
+      builder: (BuildContext context) => AlertDialog(
+        backgroundColor: Colors.transparent,
+        contentPadding: EdgeInsets.zero,
+        content: BuildInviteAlert(),
+      ),
+    );
+    //
+    if (accept) {
+      Get.back();
+      Future.delayed(Duration(milliseconds: 500), () {
+        Get.to(() => LobbyPage(broadCast: true, liveId: widget.liveId));
+      });
+      //  callEnd();
+      // LiveController liveController = Get.put(LiveController());
+      //  joinToChat();
+    }
   }
 
   getUsers() async {
@@ -130,9 +128,9 @@ class _LobbyPageState extends State<LobbyPage> {
     await _engine!.enableVideo();
     await _engine!.setChannelProfile(ChannelProfile.LiveBroadcasting);
     _addAgoraEventHandlers();
-    await _engine!.joinChannel(token, 'aminRoom398', null, 0);
+    await _engine!.joinChannel(token, 'aminroom400', null, 0);
 
-    _channel = await RtcChannel.create('aminRoom398');
+    _channel = await RtcChannel.create('aminroom400');
     _addRtcChannelEventHandlers();
     if (widget.broadCast!) {
       await _engine!.setClientRole(ClientRole.Broadcaster);
@@ -140,11 +138,14 @@ class _LobbyPageState extends State<LobbyPage> {
       await _engine!.setClientRole(ClientRole.Audience);
     }
     await _channel!.joinChannel(
-        token,
-        null,
-        0,
-        ChannelMediaOptions(
-            autoSubscribeAudio: true, autoSubscribeVideo: true));
+      token,
+      null,
+      0,
+      ChannelMediaOptions(
+        autoSubscribeAudio: true,
+        autoSubscribeVideo: true,
+      ),
+    );
   }
 
   /// Add agora event handlers
@@ -166,7 +167,7 @@ class _LobbyPageState extends State<LobbyPage> {
         setState(() {
           _infoStrings.add('onLeaveChannel');
           _users.clear();
-          if(Globals.userStream.user!.role == 'admin'){
+          if (Globals.userStream.user!.role == 'admin') {
             getUsers();
           }
         });
@@ -205,7 +206,7 @@ class _LobbyPageState extends State<LobbyPage> {
         setState(() {
           _infoStrings.add('Rtc Channel onLeaveChannel');
           _users2.clear();
-          if(Globals.userStream.user!.role == 'admin'){
+          if (Globals.userStream.user!.role == 'admin') {
             getUsers();
           }
         });
@@ -281,7 +282,8 @@ class _LobbyPageState extends State<LobbyPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Lobby'),
+        backgroundColor: Colors.red,
+        title: const Text('ویدئو کنفرانس'),
         actions: [
           (Globals.userStream.user!.role == 'admin')
               ? GestureDetector(
@@ -305,7 +307,14 @@ class _LobbyPageState extends State<LobbyPage> {
                     ),
                   ),
                 )
-              : SizedBox()
+              : SizedBox(),
+          if (Globals.userStream.user!.role == 'admin')
+            IconButton(
+              onPressed: () {
+                pickFile();
+              },
+              icon: Icon(Icons.upload_file),
+            ),
         ],
       ),
       // backgroundColor: Colors.black,
@@ -318,6 +327,84 @@ class _LobbyPageState extends State<LobbyPage> {
         ],
       ),
     );
+  }
+
+  void pickFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.media,
+    );
+    if (result != null) {
+      File file = File(result.files.single.path!);
+
+      switch (file.path.split('.').last) {
+        case 'png':
+          {
+            print('png');
+            break;
+          }
+        case 'jpeg':
+          {
+            print('jpeg');
+            break;
+          }
+        // case 'mp4':
+        //   {
+        //     file = await getThumb(filePath: file.path);
+        //     isVideo = true;
+        //     print('mp4');
+        //     break;
+        //   }
+        default:
+          {
+            print(file.path.split('.').last.toString());
+            break;
+          }
+      }
+
+      // bool isSend = await showModalBottomSheet(
+      //   context: Get.context!,
+      //   isScrollControlled: true,
+      //   enableDrag: true,
+      //   backgroundColor: Colors.transparent,
+      //   isDismissible: false,
+      //   builder: (BuildContext context) => BuildShowImageWidget(
+      //     controller: this,
+      //     file: file,
+      //     isVideo: isVideo,
+      //   ),
+      // );
+
+      // bool isSend = await showDialog(
+      //   context: Get.context!,
+      //   barrierDismissible: false,
+      //   builder: (BuildContext context) => AlertDialog(
+      //     contentPadding: EdgeInsets.zero,
+      //     backgroundColor: Colors.transparent,
+      //     content: BuildShowImageWidget(
+      //       controller: this,
+      //       file: file,
+      //       isVideo: isVideo,
+      //     ),
+      //   ),
+      // );
+
+      // if (isSend) {
+      uploadFile(
+        file: file,
+      );
+      // }
+    }
+  }
+
+  uploadFile({required File file}) async {
+    ApiResult result = await RequestsUtil.instance.uploadLiveFile(
+      file: file,
+    );
+
+
+    if(result.isDone){
+      print(result.data);
+    }
   }
 
   Widget _tools() {
@@ -352,14 +439,26 @@ class _LobbyPageState extends State<LobbyPage> {
             ),
           ),
           RawMaterialButton(
-            onPressed: _onToggleMute,
+            onPressed: _onToggleCameraOff,
             shape: const CircleBorder(),
             elevation: 2.0,
-            fillColor: (muted) ? Colors.blueAccent : Colors.white,
+            fillColor: (camera) ? Colors.blueAccent : Colors.white,
             padding: const EdgeInsets.all(12.0),
             child: Icon(
-              muted ? Icons.mic_off : Icons.mic,
-              color: (muted) ? Colors.white : Colors.blueAccent,
+              camera ? Icons.videocam_off_outlined : Icons.videocam_outlined,
+              color: (camera) ? Colors.white : Colors.blueAccent,
+              size: 20.0,
+            ),
+          ),
+          RawMaterialButton(
+            onPressed: _onToggleSwitchCamera,
+            shape: const CircleBorder(),
+            elevation: 2.0,
+            fillColor: (switched) ? Colors.blueAccent : Colors.white,
+            padding: const EdgeInsets.all(12.0),
+            child: Icon(
+              switched ? Icons.switch_camera_outlined : Icons.switch_camera_outlined,
+              color: (switched) ? Colors.white : Colors.blueAccent,
               size: 20.0,
             ),
           ),
@@ -376,7 +475,7 @@ class _LobbyPageState extends State<LobbyPage> {
     }
     _users.forEach((int uid) {
       list.add(RtcRemoteView.SurfaceView(
-        channelId: 'aminRoom398',
+        channelId: 'aminroom400',
         uid: uid,
       ));
     });
@@ -440,7 +539,7 @@ class _LobbyPageState extends State<LobbyPage> {
       (int uid) => list.add(
         RtcRemoteView.SurfaceView(
           uid: uid,
-          channelId: 'aminRoom398',
+          channelId: 'aminroom400',
           renderMode: VideoRenderMode.FILL,
         ),
       ),
@@ -479,6 +578,20 @@ class _LobbyPageState extends State<LobbyPage> {
       muted = !muted;
     });
     _engine!.muteLocalAudioStream(muted);
+  }
+
+  void _onToggleSwitchCamera() {
+    setState(() {
+      switched = !switched;
+    });
+    _engine!.switchCamera();
+  }
+
+  void _onToggleCameraOff() {
+    setState(() {
+      camera = !camera;
+    });
+    _engine!.muteLocalVideoStream(camera);
   }
 
   void _onCallEnded() {
