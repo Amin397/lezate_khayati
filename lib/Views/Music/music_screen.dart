@@ -5,6 +5,7 @@ import 'package:lezate_khayati/Utils/Consts.dart';
 
 import '../../Controllers/Music/music_controller.dart';
 import '../../Plugins/neu/src/widget/container.dart';
+import '../../Plugins/voice/src/voice_message.dart';
 import '../../Utils/color_utils.dart';
 import 'Widget/build_music_fillter_widget.dart';
 import 'Widget/build_music_item.dart';
@@ -115,11 +116,29 @@ class _MusicScreenState extends State<MusicScreen> {
                           return AnimationConfiguration.staggeredList(
                             position: index,
                             child: SlideAnimation(
-                              child: BuildMusicItem(
-                                item: controller.musicList[index],
-                                index: index,
-                                controller: controller,
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                  left: Get.width * .4,
+                                  right: Get.width * .02,
+                                  bottom: 8.0,
+                                ),
+                                child: VoiceMessage(
+                                  audioSrc: controller.musicList[index].url,
+                                  isLocale: false,
+                                  // contactBgColor: Colors.red,
+                                  contactFgColor: Colors.blue,
+                                  contactPlayIconColor: Colors.white,
+                                  played: false,
+                                  me: true,
+                                  noiseCount: 100,
+                                  onPlay: () {},
+                                ),
                               ),
+                              // child: BuildMusicItem(
+                              //   item: controller.musicList[index],
+                              //   index: index,
+                              //   controller: controller,
+                              // ),
                             ),
                           );
                         },

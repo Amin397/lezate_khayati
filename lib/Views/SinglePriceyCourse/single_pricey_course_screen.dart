@@ -4,6 +4,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:html/parser.dart';
+import 'package:lezate_khayati/Globals/Globals.dart';
 import 'package:lezate_khayati/Models/SinglePriceyCourse/single_pricey_course_model.dart';
 import 'package:lezate_khayati/Plugins/get/get.dart';
 import 'package:lezate_khayati/Utils/Consts.dart';
@@ -377,15 +378,21 @@ class SinglePriceyCourseScreen extends StatelessWidget {
       id: 'videoThumb',
       builder: (ctx) => InkWell(
         onTap: () {
-          // if (controller.model.isBought!) {
+          if (controller.model.isBought!) {
             controller.openVideo(
               video: video,
+              demo: false
             );
-          // } else {
-          //   controller.showBoughtAlert(
-          //     video: video,
-          //   );
-          // }
+          } else {
+            if(Globals.userStream.user!.justified == 1){
+              controller.openVideo(
+                video: video,
+                demo: true,
+              );
+            }else{
+              controller.showJustifiedAlert();
+            }
+          }
         },
         child: Container(
           height: Get.width * .2,

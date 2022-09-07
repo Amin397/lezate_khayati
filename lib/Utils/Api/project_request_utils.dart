@@ -14,7 +14,7 @@ class RequestsUtil extends GetConnect {
 
   static String token = 'test';
 
-  static String baseRequestUrl = 'https://seeuland.com/api';
+  static String baseRequestUrl = 'https://api.seeuland.com/api';
 
   static String _makePath({
     required WebControllers? webController,

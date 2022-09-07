@@ -6,6 +6,7 @@ import 'package:lezate_khayati/Models/SinglePriceyCourse/single_pricey_course_mo
 import 'package:lezate_khayati/Plugins/get/get.dart';
 
 import '../../../Controllers/SinglePriceyCourse/single_pricey_course_controller.dart';
+import '../../../Globals/Globals.dart';
 import '../../../Utils/Consts.dart';
 import '../../../Utils/view_utils.dart';
 
@@ -73,12 +74,18 @@ class BuildMoreVideosModal extends StatelessWidget {
       onTap: () {
         if (controller.model.isBought!) {
           controller.openVideo(
-            video: video,
+              video: video,
+              demo: false
           );
         } else {
-          controller.showBoughtAlert(
-            video: video,
-          );
+          if(Globals.userStream.user!.justified == 1){
+            controller.openVideo(
+              video: video,
+              demo: true,
+            );
+          }else{
+            controller.showJustifiedAlert();
+          }
         }
       },
       child: Container(

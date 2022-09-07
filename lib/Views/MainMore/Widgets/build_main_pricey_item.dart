@@ -63,7 +63,7 @@ class BuildMainPriceyItem extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             _buildRateBar(
-              rate: course.reviewsRating!,
+              rate: double.parse(course.reviewsRating.toString()),
             ),
             _buildView(
               view: course.reviews!,

@@ -13,6 +13,7 @@ import 'package:video_thumbnail/video_thumbnail.dart';
 import '../../Views/SinglePriceyCourse/Widgets/build_bought_video_alert.dart';
 import '../../Views/SinglePriceyCourse/Widgets/build_more_videos_modal.dart';
 import '../../Views/SinglePriceyCourse/Widgets/build_show_video_modal.dart';
+import '../../Views/SinglePriceyCourse/Widgets/show_justify_alert.dart';
 
 class SinglePriceyCourseController extends GetxController {
   late final int index;
@@ -72,7 +73,8 @@ class SinglePriceyCourseController extends GetxController {
     }
   }
 
-  void openVideo({required Video video}) async {
+  void openVideo({required Video video, required bool demo}) async {
+    EasyLoading.show();
     await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
     await video.videoController.initialize();
 
@@ -81,6 +83,7 @@ class SinglePriceyCourseController extends GetxController {
       autoPlay: true,
     );
 
+    EasyLoading.dismiss();
     final s = await showModalBottomSheet(
       context: Get.context!,
       isDismissible: false,
@@ -91,7 +94,6 @@ class SinglePriceyCourseController extends GetxController {
       builder: (BuildContext context) =>
           BuildShowVideoModal(controller: this, video: video),
     );
-
 
     video.videoController.pause();
     video.chewieController!.pause();
@@ -129,6 +131,18 @@ class SinglePriceyCourseController extends GetxController {
       isScrollControlled: true,
       builder: (BuildContext context) => BuildMoreVideosModal(
         controller: this,
+      ),
+    );
+  }
+
+  void showJustifiedAlert() {
+    showDialog(
+      barrierDismissible: false,
+      context: Get.context!,
+      builder: (BuildContext context) => AlertDialog(
+        backgroundColor: Colors.transparent,
+        contentPadding: EdgeInsets.zero,
+        content: ShowJustifyAlert(),
       ),
     );
   }
