@@ -4,8 +4,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:janus_client/janus_client.dart';
+import 'package:lottie/lottie.dart';
 
 // import '../../Plugins/get/get.dart';
+import '../../Utils/Consts.dart';
 import '../../Utils/janus-webrtc/Helper.dart';
 import '../../Utils/janus-webrtc/conf.dart';
 
@@ -14,7 +16,7 @@ class TypedVideoRoomV3Unified extends StatefulWidget {
   _VideoRoomState createState() => _VideoRoomState();
 }
 
-class _VideoRoomState extends State<TypedVideoRoomV3Unified> {
+class _VideoRoomState extends State<TypedVideoRoomV3Unified> with TickerProviderStateMixin{
   late JanusClient j;
   Map<int, RemoteStream> remoteStreams = {};
   String displayname = 'display name';
@@ -27,6 +29,7 @@ class _VideoRoomState extends State<TypedVideoRoomV3Unified> {
   JanusVideoRoomPlugin? remoteHandle;
   late int myId;
 
+  late final AnimationController animationController;
   bool isLoaded = false;
   int myRoom = 1234;
   Map<int, dynamic> feedStreams = {};
@@ -34,6 +37,8 @@ class _VideoRoomState extends State<TypedVideoRoomV3Unified> {
   Map<int, dynamic> feeds = {};
   Map<String, dynamic> subStreams = {};
   Map<int, MediaStream?> mediaStreams = {};
+
+  TextEditingController messageController = TextEditingController();
 
   //todo: create a session and join as publisher ✓
   //todo: send sesion id to all users ✓
@@ -94,7 +99,6 @@ class _VideoRoomState extends State<TypedVideoRoomV3Unified> {
         await remoteHandle?.handleRemoteJsep(event.jsep);
         await start!();
       }
-
     }, onError: (error, trace) {
       if (error is JanusError) {
         print(error.toMap());
@@ -250,6 +254,14 @@ class _VideoRoomState extends State<TypedVideoRoomV3Unified> {
     this.subscriptions.remove(id);
   }
 
+
+  @override
+  void initState() {
+    animationController = AnimationController(
+      vsync: this,
+    );
+    super.initState();
+  }
   @override
   void dispose() async {
     super.dispose();
@@ -283,59 +295,47 @@ class _VideoRoomState extends State<TypedVideoRoomV3Unified> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        // backgroundColor: Colors.white.withOpacity(0.0),
-        elevation: 0.0,
-        shadowColor: Colors.transparent,
+        backgroundColor: Colors.red,
+        title: Text('ویدئو کنفرانس'),
+        centerTitle: true,
         actions: [
-          // IconButton(
-          //           //     icon: Icon(
-          //           //       Icons.call,
-          //           //       color: Colors.greenAccent,
-          //           //     ),
-          //           //     onPressed: () async {
-          //           //       await this.joinRoom();
-          //           //     }),
-          //           // IconButton(
-          //           //     icon: Icon(
-          //           //       Icons.flip_camera_ios_rounded,
-          //           //       color: Colors.white,
-          //           //     ),
-          //           //     onPressed: () {}),
           IconButton(
-              icon: Icon(
-                Icons.clear,
-                color: Colors.white,
-              ),
-              onPressed: () async {
-                await callEnd();
-                Navigator.pop(context);
-              }),
+            onPressed: () {
+              // showUsers.value = true;
+              Navigator.of(context).pop();
+              // Get.back();
+            },
+            icon: Icon(Icons.call_end),
+          )
         ],
       ),
       body: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
-        child:(isLoaded)? Stack(
-          children: [
-            _buildPublisherView(),
-          ],
-        ):Stack(
-          children: [
-            Container(
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-              color: Colors.black,
-              child: Center(
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    Colors.red, //<-- SEE HERE
+        child: (isLoaded)
+            ? Stack(
+                children: [
+                  _buildPublisherView(),
+                  _buildCommentPart()
+                ],
+              )
+            : Stack(
+                children: [
+                  Container(
+                    height: MediaQuery.of(context).size.height,
+                    width: MediaQuery.of(context).size.width,
+                    color: Colors.black,
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          Colors.red, //<-- SEE HERE
+                        ),
+                        backgroundColor: Colors.black,
+                      ),
+                    ),
                   ),
-                  backgroundColor: Colors.black,
-                ),
+                ],
               ),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -363,9 +363,142 @@ class _VideoRoomState extends State<TypedVideoRoomV3Unified> {
             filterQuality: FilterQuality.medium,
             objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
             mirror: true,
-          )
+          ),
         ],
       ),
     );
+  }
+
+  Widget _buildCommentPart() {
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height * .4,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Colors.black45,
+              Colors.black38,
+              Colors.black26,
+              Colors.transparent,
+            ],
+            begin: Alignment.bottomCenter,
+            end: Alignment.topCenter,
+          ),
+        ),
+        child: Column(
+          children: [
+            Expanded(
+              child: Container(
+                height: double.maxFinite,
+                width: double.maxFinite,
+                child: ListView.builder(
+                  itemCount: 20,
+                  itemBuilder: (BuildContext context , int index){
+                    return Text('amin');
+                  },
+                ),
+              ),
+            ),
+            SizedBox(height: 8.0,),
+            Container(
+              padding: paddingAll8,
+              width: MediaQuery.of(context).size.width,
+              // height: MediaQuery.of(context).size.height * .06,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Expanded(
+                    child: AnimatedContainer(
+                      constraints: BoxConstraints(
+                        maxHeight: MediaQuery.of(context).size.height * .15,
+                      ),
+                      width: double.maxFinite,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(.5),
+                        // boxShadow: ViewUtils.shadow(
+                        //   offset: const Offset(0.0, 0.0),
+                        // ),
+                        borderRadius: radiusAll10,
+                      ),
+                      duration: const Duration(milliseconds: 270),
+                      child: TextField(
+                        onTap: () {
+                          // controller.scrollToDown();
+                        },
+                        controller: messageController,
+                        maxLines: 10,
+                        minLines: 1,
+                        style: TextStyle(
+                          color: Colors.grey.shade800,
+                        ),
+                        keyboardType: TextInputType.multiline,
+                        decoration: InputDecoration(
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: radiusAll10,
+                            borderSide: const BorderSide(
+                              color: Colors.red,
+                              width: 1.0,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: radiusAll10,
+                            borderSide: BorderSide(
+                              color: Colors.red,
+                              width: 1.0,
+                            ),
+                          ),
+                          hintText: 'متن پیام',
+                          hintStyle: TextStyle(
+                            fontSize: 12.0,
+                          ),
+                          // suffixIcon: IconButton(
+                          //   onPressed: () {
+                          //     controller.pickFile();
+                          //   },
+                          //   icon: Icon(
+                          //     Icons.attach_file,
+                          //     color: Colors.grey.shade700,
+                          //   ),
+                          // ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      if (messageController.text.isNotEmpty) {
+                        sendMessage();
+                      }
+                    },
+                    child: Lottie.asset(
+                      'assets/animations/send.json',
+                      height: MediaQuery.of(context).size.width * .15,
+                      width: MediaQuery.of(context).size.width * .15,
+                      controller: animationController,
+                      // repeat: false,
+                    ),
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  void sendMessage() {
+    messageController.clear();
+
+    animationController
+      ..duration = const Duration(milliseconds: 1800)
+      ..forward();
+    Future.delayed(const Duration(milliseconds: 1800), () {
+      animationController.reset();
+    });
+
+
   }
 }
