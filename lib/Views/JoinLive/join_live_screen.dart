@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:janus_client/janus_client.dart';
 
+// import '../../Plugins/get/get.dart';
 import '../../Utils/janus-webrtc/Helper.dart';
 import '../../Utils/janus-webrtc/conf.dart';
 
@@ -26,6 +27,7 @@ class _VideoRoomState extends State<TypedVideoRoomV3Unified> {
   JanusVideoRoomPlugin? remoteHandle;
   late int myId;
 
+  bool isLoaded = false;
   int myRoom = 1234;
   Map<int, dynamic> feedStreams = {};
   Map<int?, dynamic> subscriptions = {};
@@ -44,10 +46,10 @@ class _VideoRoomState extends State<TypedVideoRoomV3Unified> {
   void didChangeDependencies() async {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
-    initialize();
+    initialize().then((value) => joinRoom());
   }
 
-  initialize() async {
+  Future<void> initialize() async {
     ws = WebSocketJanusTransport(url: servermap['janus_ws']);
     j = JanusClient(transport: ws, isUnifiedPlan: true, iceServers: [
       RTCIceServer(
@@ -92,6 +94,7 @@ class _VideoRoomState extends State<TypedVideoRoomV3Unified> {
         await remoteHandle?.handleRemoteJsep(event.jsep);
         await start!();
       }
+
     }, onError: (error, trace) {
       if (error is JanusError) {
         print(error.toMap());
@@ -118,11 +121,13 @@ class _VideoRoomState extends State<TypedVideoRoomV3Unified> {
           }
         }
       }
+      setState(() {
+        isLoaded = true;
+      });
     });
 
     plugin.typedMessages?.listen((event) async {
       print('listener called   ---------------jskfksjdfk');
-
     }, onError: (error, trace) {
       if (error is JanusError) {
         print(error.toMap());
@@ -217,6 +222,10 @@ class _VideoRoomState extends State<TypedVideoRoomV3Unified> {
         print(error.toMap());
       }
     });
+
+    // setState(() {
+    //   isLoaded = true;
+    // });
   }
 
   Future<void> unSubscribeStream(int id) async {
@@ -278,20 +287,20 @@ class _VideoRoomState extends State<TypedVideoRoomV3Unified> {
         elevation: 0.0,
         shadowColor: Colors.transparent,
         actions: [
-          IconButton(
-              icon: Icon(
-                Icons.call,
-                color: Colors.greenAccent,
-              ),
-              onPressed: () async {
-                await this.joinRoom();
-              }),
-          IconButton(
-              icon: Icon(
-                Icons.flip_camera_ios_rounded,
-                color: Colors.white,
-              ),
-              onPressed: () {}),
+          // IconButton(
+          //           //     icon: Icon(
+          //           //       Icons.call,
+          //           //       color: Colors.greenAccent,
+          //           //     ),
+          //           //     onPressed: () async {
+          //           //       await this.joinRoom();
+          //           //     }),
+          //           // IconButton(
+          //           //     icon: Icon(
+          //           //       Icons.flip_camera_ios_rounded,
+          //           //       color: Colors.white,
+          //           //     ),
+          //           //     onPressed: () {}),
           IconButton(
               icon: Icon(
                 Icons.clear,
@@ -306,95 +315,56 @@ class _VideoRoomState extends State<TypedVideoRoomV3Unified> {
       body: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
-        child: Column(
+        child:(isLoaded)? Stack(
           children: [
-            Flexible(
-              flex: 1,
-              child: remoteStreams.entries
-                          .map((e) => e.value)
-                          .toList()
-                          .length ==
-                      1
-                  ? ListView.builder(
-                      itemCount: remoteStreams.entries
-                          .map((e) => e.value)
-                          .toList()
-                          .length,
-                      itemBuilder: (context, index) {
-                        List<RemoteStream> items =
-                            remoteStreams.entries.map((e) => e.value).toList();
-                        print('items length -----------> ${items.length}');
-                        RemoteStream remoteStream = items[index];
-                        print(
-                            'items length -----------> ${remoteStream.videoRenderer}');
-                        print(
-                            'items length -----------> ${remoteStream.audioRenderer}');
-
-                        return Container(
-                          color: Colors.black,
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height,
-                          child: Stack(
-                            children: [
-                              RTCVideoView(remoteStream.audioRenderer,
-                                  filterQuality: FilterQuality.medium,
-                                  objectFit: RTCVideoViewObjectFit
-                                      .RTCVideoViewObjectFitCover,
-                                  mirror: true),
-                              RTCVideoView(remoteStream.videoRenderer,
-                                  filterQuality: FilterQuality.medium,
-                                  objectFit: RTCVideoViewObjectFit
-                                      .RTCVideoViewObjectFitCover,
-                                  mirror: true)
-                            ],
-                          ),
-                        );
-                      })
-                  : GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        mainAxisSpacing: 5,
-                        crossAxisSpacing: 5,
-                      ),
-                      itemCount: remoteStreams.entries
-                          .map((e) => e.value)
-                          .toList()
-                          .length,
-                      itemBuilder: (context, index) {
-                        List<RemoteStream> items =
-                            remoteStreams.entries.map((e) => e.value).toList();
-                        print('items length -----------> ${items.length}');
-                        RemoteStream remoteStream = items[index];
-                        print(
-                            'items length -----------> ${remoteStream.videoRenderer}');
-                        print(
-                            'items length -----------> ${remoteStream.audioRenderer}');
-
-                        return Container(
-                          color: Colors.black,
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height,
-                          child: Stack(
-                            children: [
-                              RTCVideoView(remoteStream.audioRenderer,
-                                  filterQuality: FilterQuality.medium,
-                                  objectFit: RTCVideoViewObjectFit
-                                      .RTCVideoViewObjectFitCover,
-                                  mirror: true),
-                              RTCVideoView(remoteStream.videoRenderer,
-                                  filterQuality: FilterQuality.medium,
-                                  objectFit: RTCVideoViewObjectFit
-                                      .RTCVideoViewObjectFitCover,
-                                  mirror: true)
-                            ],
-                          ),
-                        );
-                      },
-                    ),
+            _buildPublisherView(),
+          ],
+        ):Stack(
+          children: [
+            Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              color: Colors.black,
+              child: Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    Colors.red, //<-- SEE HERE
+                  ),
+                  backgroundColor: Colors.black,
+                ),
+              ),
             ),
-            //here you shoud show image.network
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildPublisherView() {
+    List<RemoteStream> items =
+        remoteStreams.entries.map((e) => e.value).toList();
+    print('items length -----------> ${items.length}');
+    RemoteStream remoteStream = items[0];
+
+    return Container(
+      color: Colors.black,
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height,
+      child: Stack(
+        children: [
+          RTCVideoView(
+            remoteStream.audioRenderer,
+            filterQuality: FilterQuality.medium,
+            objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
+            mirror: true,
+          ),
+          RTCVideoView(
+            remoteStream.videoRenderer,
+            filterQuality: FilterQuality.medium,
+            objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
+            mirror: true,
+          )
+        ],
       ),
     );
   }
