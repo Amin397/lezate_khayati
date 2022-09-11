@@ -127,14 +127,14 @@ class RoutingUtils {
     page: () => LobbyPage(),
     transition: Transition.fadeIn,
   );
-  // static GetPage live = GetPage(
-  //   name: '/live',
-  //   page: () => LiveScreen(),
-  //   transition: Transition.fadeIn,
-  // );
-  // static GetPage joinLive = GetPage(
-  //   name: '/joinLive',
-  //   page: () => JoinLiveScreen(),
-  //   transition: Transition.fadeIn,
-  // );
+  static GetPage live = GetPage(
+    name: '/live',
+    page: () => TypedVideoRoomV2Unified(),
+    transition: Transition.fadeIn,
+  );
+  static GetPage joinLive = GetPage(
+    name: '/joinLive',
+    page: () => TypedVideoRoomV3Unified(),
+    transition: Transition.fadeIn,
+  );
 }

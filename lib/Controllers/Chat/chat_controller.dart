@@ -9,6 +9,7 @@ import 'package:lezate_khayati/Views/Lobby/lobby_screen.dart';
 
 import '../../Models/Chat/chat_model.dart';
 import '../../Views/Chat/Widget/start_video_confrance_modal.dart';
+import '../../Views/Live/live_screen.dart';
 
 class ChatController extends GetxController {
   TextEditingController searchTextController = TextEditingController();
@@ -83,9 +84,9 @@ class ChatController extends GetxController {
 
     if (result.isDone) {
       print(result.data['live_id']);
-      Get.to(()=>LobbyPage(broadCast: true,liveId:result.data['live_id'].toString()));
+      Get.to(()=>TypedVideoRoomV2Unified(liveId:result.data['live_id']));
       // Get.toNamed(
-      //   RoutingUtils.lobby.name,
+      //   RoutingUtils.live.name,
       //   arguments: {
       //     'liveId':result.data['live_id'],
       //   }
@@ -99,13 +100,13 @@ class ChatController extends GetxController {
     ApiResult result = await RequestsUtil.instance.joinToLive();
     EasyLoading.dismiss();
     if(result.isDone){
-      // Get.toNamed(
-      //     RoutingUtils.lobby.name,
-      //     arguments: {
-      //       'liveId':Globals.liveStream.liveId,
-      //     }
-      // );
-      Get.to(()=>LobbyPage(broadCast: false,));
+      Get.toNamed(
+          RoutingUtils.joinLive.name,
+          arguments: {
+            'liveId':Globals.liveStream.liveId,
+          }
+      );
+      // Get.to(()=>LobbyPage(broadCast: false,));
     }
   }
 }
