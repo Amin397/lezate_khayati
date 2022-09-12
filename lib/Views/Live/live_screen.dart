@@ -1,31 +1,35 @@
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart' as wbrtc;
 import 'package:get/get.dart';
 import 'package:janus_client/janus_client.dart';
+import 'package:lezate_khayati/Globals/Globals.dart';
+import 'package:lezate_khayati/Utils/color_utils.dart';
+import 'package:lottie/lottie.dart';
 
+import '../../Models/Live/comment_model.dart';
 import '../../Models/user_model.dart';
 import '../../Utils/Api/project_request_utils.dart';
+import '../../Utils/Consts.dart';
 import '../../Utils/janus-webrtc/Helper.dart';
 import '../../Utils/janus-webrtc/conf.dart';
 
 class TypedVideoRoomV2Unified extends StatefulWidget {
-
   TypedVideoRoomV2Unified({this.liveId});
 
   final int? liveId;
 
   @override
   _VideoRoomState createState() => _VideoRoomState();
-
 }
 
-class _VideoRoomState extends State<TypedVideoRoomV2Unified> {
-
-
+class _VideoRoomState extends State<TypedVideoRoomV2Unified>
+    with TickerProviderStateMixin {
   late JanusClient j;
   String displayname = 'display name';
   String imageAvatar = 'https://i.pravatar.cc/300';
@@ -47,8 +51,14 @@ class _VideoRoomState extends State<TypedVideoRoomV2Unified> {
   Map<int, dynamic> feeds = {};
   Map<String, dynamic> subStreams = {};
   Map<int, wbrtc.MediaStream?> mediaStreams = {};
+  final ScrollController scrollController = ScrollController();
+  List<CommentModel> commentsList = [];
 
   bool isLoaded = false;
+
+  late final AnimationController animationController;
+
+  TextEditingController messageController = TextEditingController();
 
   //todo: create a session and join as publisher ✓
   //todo: send sesion id to all users ✓
@@ -66,11 +76,27 @@ class _VideoRoomState extends State<TypedVideoRoomV2Unified> {
 
   @override
   void initState() {
+    // getComments();
+    animationController = AnimationController(
+      vsync: this,
+    );
     super.initState();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       print('*****************************');
       if (message.data['title'] == 'کنفرانس') {
         getUsers();
+      } else if (message.data['title'] == 'comment') {
+        setState(() {
+          commentsList
+              .add(CommentModel.fromJson(jsonDecode(message.data['message'])));
+          scrollController.animateTo(
+            scrollController.position.maxScrollExtent + 30,
+            duration: const Duration(
+              milliseconds: 200,
+            ),
+            curve: Curves.easeInOut,
+          );
+        });
       }
     });
   }
@@ -88,6 +114,18 @@ class _VideoRoomState extends State<TypedVideoRoomV2Unified> {
         subscribersCount = UserModel.listFromJsonLive(result.data).length;
       });
       // update(['live']);
+    }
+  }
+
+  getComments() async {
+    commentsList.clear();
+    ApiResult result = await RequestsUtil.instance.getComments(
+      liveId: widget.liveId.toString(),
+    );
+    if (result.isDone) {
+      setState(() {
+        commentsList = CommentModel.listFromJson(result.data);
+      });
     }
   }
 
@@ -351,6 +389,16 @@ class _VideoRoomState extends State<TypedVideoRoomV2Unified> {
         backgroundColor: Colors.red,
         title: Text('ویدئو کنفرانس'),
         centerTitle: true,
+        leading: IconButton(
+          onPressed: () {
+            // showUsers.value = true;
+            Navigator.of(context).pop();
+            // Get.back();
+          },
+          icon: Icon(
+            Icons.call_end,
+          ),
+        ),
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -378,25 +426,26 @@ class _VideoRoomState extends State<TypedVideoRoomV2Unified> {
           ? Stack(
               children: [
                 _buildAdminView(),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Container(
-                    margin: EdgeInsets.only(
-                      bottom: Get.height * .05,
-                    ),
-                    width: MediaQuery.of(context).size.width * 0.65,
-                    child: FloatingActionButton(
-                      heroTag: '9',
-                      onPressed: () {
-                        // showUsers.value = true;
-                        Navigator.of(context).pop();
-                        // Get.back();
-                      },
-                      backgroundColor: Colors.red.shade700,
-                      child: Icon(Icons.call_end),
-                    ),
-                  ),
-                ),
+                // Align(
+                //   alignment: Alignment.bottomCenter,
+                //   child: Container(
+                //     margin: EdgeInsets.only(
+                //       bottom: Get.height * .05,
+                //     ),
+                //     width: MediaQuery.of(context).size.width * 0.65,
+                //     child: FloatingActionButton(
+                //       heroTag: '9',
+                //       onPressed: () {
+                //         // showUsers.value = true;
+                //         Navigator.of(context).pop();
+                //         // Get.back();
+                //       },
+                //       backgroundColor: Colors.red.shade700,
+                //       child: Icon(Icons.call_end),
+                //     ),
+                //   ),
+                // ),
+                _buildCommentPart(),
               ],
             )
           : Stack(
@@ -419,6 +468,130 @@ class _VideoRoomState extends State<TypedVideoRoomV2Unified> {
     );
   }
 
+  Widget _buildCommentPart() {
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height * .4,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Colors.black45,
+              Colors.black38,
+              Colors.black26,
+              Colors.transparent,
+            ],
+            begin: Alignment.bottomCenter,
+            end: Alignment.topCenter,
+          ),
+        ),
+        child: Column(
+          children: [
+            Expanded(
+              child: Container(
+                height: double.maxFinite,
+                width: double.maxFinite,
+                child: ListView.builder(
+                  itemCount: commentsList.length,
+                  controller: scrollController,
+                  physics: BouncingScrollPhysics(),
+                  itemBuilder: (BuildContext context, int index) {
+                    return _buildCommentItem(comment: commentsList[index]);
+                  },
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 8.0,
+            ),
+            Container(
+              padding: paddingAll8,
+              width: MediaQuery.of(context).size.width,
+              // height: MediaQuery.of(context).size.height * .06,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Expanded(
+                    child: AnimatedContainer(
+                      constraints: BoxConstraints(
+                        maxHeight: MediaQuery.of(context).size.height * .15,
+                      ),
+                      width: double.maxFinite,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(.5),
+                        // boxShadow: ViewUtils.shadow(
+                        //   offset: const Offset(0.0, 0.0),
+                        // ),
+                        borderRadius: radiusAll10,
+                      ),
+                      duration: const Duration(milliseconds: 270),
+                      child: TextField(
+                        onTap: () {
+                          // controller.scrollToDown();
+                        },
+                        controller: messageController,
+                        maxLines: 10,
+                        minLines: 1,
+                        style: TextStyle(
+                          color: Colors.grey.shade800,
+                        ),
+                        keyboardType: TextInputType.multiline,
+                        decoration: InputDecoration(
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: radiusAll10,
+                            borderSide: const BorderSide(
+                              color: Colors.red,
+                              width: 1.0,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: radiusAll10,
+                            borderSide: BorderSide(
+                              color: Colors.red,
+                              width: 1.0,
+                            ),
+                          ),
+                          hintText: 'متن پیام',
+                          hintStyle: TextStyle(
+                            fontSize: 12.0,
+                          ),
+                          // suffixIcon: IconButton(
+                          //   onPressed: () {
+                          //     controller.pickFile();
+                          //   },
+                          //   icon: Icon(
+                          //     Icons.attach_file,
+                          //     color: Colors.grey.shade700,
+                          //   ),
+                          // ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      if (messageController.text.isNotEmpty) {
+                        sendMessage();
+                      }
+                    },
+                    child: Lottie.asset(
+                      'assets/animations/send.json',
+                      height: MediaQuery.of(context).size.width * .15,
+                      width: MediaQuery.of(context).size.width * .15,
+                      controller: animationController,
+                      // repeat: false,
+                    ),
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildAdminView() {
     List<RemoteStream> items =
         remoteStreams.entries.map((e) => e.value).toList();
@@ -431,14 +604,145 @@ class _VideoRoomState extends State<TypedVideoRoomV2Unified> {
       height: MediaQuery.of(context).size.height,
       child: Stack(
         children: [
-          wbrtc.RTCVideoView(remoteStream.audioRenderer,
-              filterQuality: FilterQuality.medium,
-              objectFit: wbrtc.RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
-              mirror: true),
-          wbrtc.RTCVideoView(remoteStream.videoRenderer,
-              filterQuality: FilterQuality.medium,
-              objectFit: wbrtc.RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
-              mirror: true)
+          wbrtc.RTCVideoView(
+            remoteStream.audioRenderer,
+            filterQuality: FilterQuality.medium,
+            objectFit: wbrtc.RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
+            mirror: true,
+          ),
+          wbrtc.RTCVideoView(
+            remoteStream.videoRenderer,
+            filterQuality: FilterQuality.medium,
+            objectFit: wbrtc.RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
+            mirror: true,
+          )
+        ],
+      ),
+    );
+  }
+
+  void sendMessage() async {
+    FocusScope.of(context).unfocus();
+    String comment = messageController.text;
+    messageController.clear();
+
+    animationController
+      ..duration = const Duration(milliseconds: 1800)
+      ..forward();
+    Future.delayed(const Duration(milliseconds: 1800), () {
+      animationController.reset();
+    });
+
+    ApiResult result = await RequestsUtil.instance.sendLiveComment(
+      liveId: widget.liveId.toString(),
+      comment: comment,
+    );
+
+    if (result.isDone) {
+      setState(() {
+        commentsList.add(
+          CommentModel(
+            userId: Globals.userStream.user!.id.toString(),
+            user: User(
+              name: Globals.userStream.user!.name,
+              id: Globals.userStream.user!.id,
+              avatar: Globals.userStream.user!.avatar,
+            ),
+            body: comment,
+            liveId: widget.liveId.toString(),
+          ),
+        );
+        scrollController.animateTo(
+          scrollController.position.maxScrollExtent + 30,
+          duration: const Duration(
+            milliseconds: 200,
+          ),
+          curve: Curves.easeInOut,
+        );
+      });
+
+    }
+  }
+
+  Widget _buildCommentItem({required CommentModel comment}) {
+    return Container(
+      height: MediaQuery.of(context).size.height * .07,
+      width: MediaQuery.of(context).size.width * .7,
+      // margin: paddingAll6,
+      margin: EdgeInsets.only(left: 0.0, bottom: 8.0, right: 4.0),
+      child: Row(
+        children: [
+          Container(
+            height: MediaQuery.of(context).size.height * .07,
+            width: MediaQuery.of(context).size.height * .07,
+            decoration: BoxDecoration(
+              color: Colors.grey[300],
+              shape: BoxShape.circle,
+            ),
+            margin: paddingAll6,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(100.0),
+              child: (comment.user!.avatar is String)
+                  ? FadeInImage(
+                      fit: BoxFit.cover,
+                      image: NetworkImage(
+                        comment.user!.avatar!,
+                      ),
+                      placeholder: AssetImage(
+                        'assets/img/placeHolder.jpg',
+                      ),
+                    )
+                  : Center(
+                      child: Icon(
+                        Icons.person,
+                      ),
+                    ),
+            ),
+          ),
+          Expanded(
+            child: Container(
+              height: double.maxFinite,
+              width: double.maxFinite,
+              padding: paddingAll4,
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(.6),
+                borderRadius: radiusAll8,
+              ),
+              child: Column(
+                children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: AutoSizeText(
+                      comment.user!.name!,
+                      maxLines: 1,
+                      maxFontSize: 14.0,
+                      minFontSize: 10.0,
+                      style: TextStyle(
+                        color: ColorUtils.textColor,
+                        fontSize: 12.0,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Container(
+                      height: double.maxFinite,
+                      width: double.maxFinite,
+                      child: AutoSizeText(
+                        comment.body!,
+                        maxLines: 2,
+                        maxFontSize: 16.0,
+                        minFontSize: 10.0,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 14.0,
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          )
         ],
       ),
     );

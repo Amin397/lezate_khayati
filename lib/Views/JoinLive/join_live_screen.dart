@@ -1,13 +1,20 @@
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:janus_client/janus_client.dart';
+import 'package:lezate_khayati/Globals/Globals.dart';
+import 'package:lezate_khayati/Utils/Api/project_request_utils.dart';
 import 'package:lottie/lottie.dart';
 
 // import '../../Plugins/get/get.dart';
+import '../../Models/Live/comment_model.dart';
 import '../../Utils/Consts.dart';
+import '../../Utils/color_utils.dart';
 import '../../Utils/janus-webrtc/Helper.dart';
 import '../../Utils/janus-webrtc/conf.dart';
 
@@ -16,7 +23,8 @@ class TypedVideoRoomV3Unified extends StatefulWidget {
   _VideoRoomState createState() => _VideoRoomState();
 }
 
-class _VideoRoomState extends State<TypedVideoRoomV3Unified> with TickerProviderStateMixin{
+class _VideoRoomState extends State<TypedVideoRoomV3Unified>
+    with TickerProviderStateMixin {
   late JanusClient j;
   Map<int, RemoteStream> remoteStreams = {};
   String displayname = 'display name';
@@ -29,6 +37,7 @@ class _VideoRoomState extends State<TypedVideoRoomV3Unified> with TickerProvider
   JanusVideoRoomPlugin? remoteHandle;
   late int myId;
 
+  List<CommentModel> commentsList = [];
   late final AnimationController animationController;
   bool isLoaded = false;
   int myRoom = 1234;
@@ -37,7 +46,7 @@ class _VideoRoomState extends State<TypedVideoRoomV3Unified> with TickerProvider
   Map<int, dynamic> feeds = {};
   Map<String, dynamic> subStreams = {};
   Map<int, MediaStream?> mediaStreams = {};
-
+  final ScrollController scrollController = ScrollController();
   TextEditingController messageController = TextEditingController();
 
   //todo: create a session and join as publisher ✓
@@ -254,14 +263,46 @@ class _VideoRoomState extends State<TypedVideoRoomV3Unified> with TickerProvider
     this.subscriptions.remove(id);
   }
 
-
   @override
   void initState() {
+    getComments();
     animationController = AnimationController(
       vsync: this,
     );
     super.initState();
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('*****************************');
+      if (message.data['title'] == 'comment') {
+        // getComments();
+        print(message.data['message'].runtimeType);
+        setState(() {
+          commentsList
+              .add(CommentModel.fromJson(jsonDecode(message.data['message'])));
+          scrollController.animateTo(
+            scrollController.position.maxScrollExtent + 50,
+            duration: const Duration(
+              milliseconds: 200,
+            ),
+            curve: Curves.easeInOut,
+          );
+        });
+      }
+    });
   }
+
+  getComments() async {
+    commentsList.clear();
+    ApiResult result = await RequestsUtil.instance.getComments(
+      liveId: Globals.liveStream.liveId,
+    );
+    if (result.isDone) {
+      setState(() {
+        commentsList = CommentModel.listFromJson(result.data);
+      });
+    }
+  }
+
   @override
   void dispose() async {
     super.dispose();
@@ -314,10 +355,7 @@ class _VideoRoomState extends State<TypedVideoRoomV3Unified> with TickerProvider
         height: MediaQuery.of(context).size.height,
         child: (isLoaded)
             ? Stack(
-                children: [
-                  _buildPublisherView(),
-                  _buildCommentPart()
-                ],
+                children: [_buildPublisherView(), _buildCommentPart()],
               )
             : Stack(
                 children: [
@@ -394,14 +432,19 @@ class _VideoRoomState extends State<TypedVideoRoomV3Unified> with TickerProvider
                 height: double.maxFinite,
                 width: double.maxFinite,
                 child: ListView.builder(
-                  itemCount: 20,
-                  itemBuilder: (BuildContext context , int index){
-                    return Text('amin');
+                  itemCount: commentsList.length,
+                  controller: scrollController,
+                  itemBuilder: (BuildContext context, int index) {
+                    return _buildCommentItem(
+                      comment: commentsList[index],
+                    );
                   },
                 ),
               ),
             ),
-            SizedBox(height: 8.0,),
+            SizedBox(
+              height: 8.0,
+            ),
             Container(
               padding: paddingAll8,
               width: MediaQuery.of(context).size.width,
@@ -489,7 +532,93 @@ class _VideoRoomState extends State<TypedVideoRoomV3Unified> with TickerProvider
     );
   }
 
-  void sendMessage() {
+  Widget _buildCommentItem({required CommentModel comment}) {
+    return Container(
+      height: MediaQuery.of(context).size.height * .07,
+      width: MediaQuery.of(context).size.width * .7,
+      // margin: paddingAll6,
+      margin: EdgeInsets.only(left: 0.0, bottom: 8.0, right: 4.0),
+      child: Row(
+        children: [
+          Container(
+            height: MediaQuery.of(context).size.height * .07,
+            width: MediaQuery.of(context).size.height * .07,
+            decoration: BoxDecoration(
+              color: Colors.grey[300],
+              shape: BoxShape.circle,
+            ),
+            margin: paddingAll6,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(100.0),
+              child: (comment.user!.avatar is String)
+                  ? FadeInImage(
+                      fit: BoxFit.cover,
+                      image: NetworkImage(
+                        comment.user!.avatar!,
+                      ),
+                      placeholder: AssetImage(
+                        'assets/img/placeHolder.jpg',
+                      ),
+                    )
+                  : Center(
+                      child: Icon(
+                        Icons.person,
+                      ),
+                    ),
+            ),
+          ),
+          Expanded(
+            child: Container(
+              height: double.maxFinite,
+              width: double.maxFinite,
+              padding: paddingAll4,
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(.6),
+                borderRadius: radiusAll8,
+              ),
+              child: Column(
+                children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: AutoSizeText(
+                      comment.user!.name!,
+                      maxLines: 1,
+                      maxFontSize: 14.0,
+                      minFontSize: 10.0,
+                      style: TextStyle(
+                        color: ColorUtils.textColor,
+                        fontSize: 12.0,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Container(
+                      height: double.maxFinite,
+                      width: double.maxFinite,
+                      child: AutoSizeText(
+                        comment.body!,
+                        maxLines: 2,
+                        maxFontSize: 16.0,
+                        minFontSize: 10.0,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 14.0,
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  void sendMessage() async {
+    FocusScope.of(context).unfocus();
+    String comment = messageController.text;
     messageController.clear();
 
     animationController
@@ -499,6 +628,33 @@ class _VideoRoomState extends State<TypedVideoRoomV3Unified> with TickerProvider
       animationController.reset();
     });
 
+    ApiResult result = await RequestsUtil.instance.sendLiveComment(
+      liveId: Globals.liveStream.liveId,
+      comment: comment,
+    );
 
+    if (result.isDone) {
+      setState(() {
+        commentsList.add(
+          CommentModel(
+            userId: Globals.userStream.user!.id.toString(),
+            user: User(
+              name: Globals.userStream.user!.name,
+              id: Globals.userStream.user!.id,
+              avatar: Globals.userStream.user!.avatar,
+            ),
+            body: comment,
+            liveId: Globals.liveStream.liveId,
+          ),
+        );
+        scrollController.animateTo(
+          scrollController.position.maxScrollExtent + 50,
+          duration: const Duration(
+            milliseconds: 200,
+          ),
+          curve: Curves.easeInOut,
+        );
+      });
+    }
   }
 }

@@ -244,6 +244,18 @@ class RequestsUtil extends GetConnect {
     );
   }
 
+  Future<ApiResult> getComments({
+    required String liveId,
+  }) async {
+    return await makeRequest(
+      type: 'get',
+      webController: WebControllers.live,
+      webMethod: WebMethods.messages,
+      urlParams: liveId,
+      bearer: true,
+    );
+  }
+
   Future<ApiResult> startLive() async {
     return await makeRequest(
         type: 'post',
@@ -252,6 +264,22 @@ class RequestsUtil extends GetConnect {
         urlParams: 'whisper',
         bearer: true,
         body: {'name': ''});
+  }
+
+  Future<ApiResult> sendLiveComment({
+    required String liveId,
+    required String comment,
+  }) async {
+    return await makeRequest(
+        type: 'post',
+        webController: WebControllers.live,
+        webMethod: WebMethods.messages,
+        urlParams: 'create',
+        bearer: true,
+        body: {
+          'body': comment,
+          'live_id':liveId,
+        });
   }
 
   Future<ApiResult> uploadLiveFile({required File file}) async {
