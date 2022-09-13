@@ -13,6 +13,7 @@ import 'package:lottie/lottie.dart';
 
 // import '../../Plugins/get/get.dart';
 import '../../Models/Live/comment_model.dart';
+import '../../Plugins/get/get.dart' as gets;
 import '../../Utils/Consts.dart';
 import '../../Utils/color_utils.dart';
 import '../../Utils/janus-webrtc/Helper.dart';
@@ -36,7 +37,8 @@ class _VideoRoomState extends State<TypedVideoRoomV3Unified>
   late JanusVideoRoomPlugin plugin;
   JanusVideoRoomPlugin? remoteHandle;
   late int myId;
-
+  Timer? timeer;
+  List<Map<String, dynamic>> list=[];
   List<CommentModel> commentsList = [];
   late final AnimationController animationController;
   bool isLoaded = false;
@@ -63,6 +65,9 @@ class _VideoRoomState extends State<TypedVideoRoomV3Unified>
     initialize().then((value) => joinRoom());
   }
 
+
+
+
   Future<void> initialize() async {
     ws = WebSocketJanusTransport(url: servermap['janus_ws']);
     j = JanusClient(transport: ws, isUnifiedPlan: true, iceServers: [
@@ -72,6 +77,69 @@ class _VideoRoomState extends State<TypedVideoRoomV3Unified>
     session = await j.createSession();
     print('session Id : ${session.sessionId}');
     plugin = await session.attach<JanusVideoRoomPlugin>();
+    timeer = Timer.periodic(Duration(seconds: 10), (timer) async {
+
+      await _checkUpdates();
+    });
+
+  }
+
+
+  _checkUpdates()async{
+    print('------------------- call fun in timer');
+    try {
+      var response = await plugin.send(data: {
+        "request": "listparticipants",
+        "room": myRoom
+      }); /*   var response2= await  plugin.send(data: {
+      "request" : "list"
+    });
+    print('[videoRoom]');
+    print(response2);*/
+
+
+      print(response['plugindata']);
+      print(response['plugindata']['data']['participants']);
+      List<Map<String, dynamic>> temList = [];
+
+      var responseList = response['plugindata']['data']['participants'];
+      for (int i = 0; i < responseList.length; i++) {
+        if (responseList[i]['display'] == 'mohammad') {
+          temList.add({'mid': '$i', 'feed': responseList[i]['id']});
+          print(responseList[i]);
+        }
+      }
+      print('new list length ${temList.length}');
+      print('remote streem length ${remoteStreams.length}');
+      print('old list length ${list.length}');
+      if (remoteStreams.length == 0 ) {
+        list.clear();
+        print('remote stream cleaned');
+      }
+      if( remoteStreams.length>temList.length){
+
+        gets.Get.back();
+
+        print('--------------------we return back soon--------------------');
+        gets.Get.to( ()=>TypedVideoRoomV3Unified());
+      }
+      if (temList.length != list.length) {
+        list = List.from(temList);
+        print('run subs to');
+
+        subscribeTo(list);
+        if (list.isEmpty) {
+          callEnd();
+        }
+      }
+    }catch(e){
+      print('[VideoROOM] $e');
+
+      gets.Get.back();
+
+      print('--------------------hhhh--------------------');
+      gets.Get.to( ()=>TypedVideoRoomV3Unified());
+    }
   }
 
   subscribeTo(List<Map<String, dynamic>> sources) async {
@@ -287,7 +355,7 @@ class _VideoRoomState extends State<TypedVideoRoomV3Unified>
             curve: Curves.easeInOut,
           );
         });
-      }else{
+      } else {
         print(message.data);
       }
     });
@@ -357,7 +425,10 @@ class _VideoRoomState extends State<TypedVideoRoomV3Unified>
         height: MediaQuery.of(context).size.height,
         child: (isLoaded)
             ? Stack(
-                children: [_buildPublisherView(), _buildCommentPart()],
+                children: [
+                  _buildPublisherView(),
+                  _buildCommentPart(),
+                ],
               )
             : Stack(
                 children: [

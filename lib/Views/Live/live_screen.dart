@@ -18,6 +18,7 @@ import '../../Utils/Api/project_request_utils.dart';
 import '../../Utils/Consts.dart';
 import '../../Utils/janus-webrtc/Helper.dart';
 import '../../Utils/janus-webrtc/conf.dart';
+import '../JoinLive/join_live_screen.dart';
 
 class TypedVideoRoomV2Unified extends StatefulWidget {
   TypedVideoRoomV2Unified({this.liveId});
@@ -55,7 +56,6 @@ class _VideoRoomState extends State<TypedVideoRoomV2Unified>
   List<CommentModel> commentsList = [];
   List<Map<String, dynamic>> publisherStreams = [];
   bool isLoaded = false;
-
   late final AnimationController animationController;
 
   TextEditingController messageController = TextEditingController();
@@ -142,17 +142,27 @@ class _VideoRoomState extends State<TypedVideoRoomV2Unified>
 
     print('session Id : ${session.sessionId}');
     plugin = await session.attach<JanusVideoRoomPlugin>();
+
+
+
+
 /*    await plugin.createRoom(myRoom,);
     print('room created');*/
   }
 
+
+
+
+
   subscribeTo(List<Map<String, dynamic>> sources) async {
+    myPrint();
     if (sources.length == 0) return;
     var streams = (sources)
         .map((e) => PublisherStream(mid: e['mid'], feed: e['feed']))
         .toList();
     if (remoteHandle != null) {
       await remoteHandle?.subscribeToStreams(streams);
+      myPrint();
       return;
     }
     remoteHandle = await session.attach<JanusVideoRoomPlugin>();
@@ -179,6 +189,7 @@ class _VideoRoomState extends State<TypedVideoRoomV2Unified>
         await remoteHandle?.handleRemoteJsep(event.jsep);
         await start!();
       }
+      myPrint();
     }, onError: (error, trace) {
       if (error is JanusError) {
         print(error.toMap());
@@ -205,8 +216,22 @@ class _VideoRoomState extends State<TypedVideoRoomV2Unified>
           }
         }
       }
+
+      myPrint();
     });
+
+    myPrint();
     return;
+  }
+
+  myPrint(){
+    print('888888888888888888888888888888888888888888');
+    print('feedStreams ${feedStreams}');
+    print('subscriptions ${subscriptions}');
+    print(' feeds ${feeds}');
+    print('subStreams ${subStreams}');
+    print('mediaStreams ${mediaStreams}');
+    print('sources ${publisherStreams}');
   }
 
   Future<void> joinRoom() async {
