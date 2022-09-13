@@ -32,7 +32,7 @@ class TypedVideoRoomV2Unified extends StatefulWidget {
 class _VideoRoomState extends State<TypedVideoRoomV2Unified>
     with TickerProviderStateMixin {
   late JanusClient j;
-  String displayname = 'display name';
+  String displayname = 'mohammad';
   String imageAvatar = 'https://i.pravatar.cc/300';
   String userId = '45454545';
   Map<int, RemoteStream> remoteStreams = {};
