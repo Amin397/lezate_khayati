@@ -287,6 +287,8 @@ class _VideoRoomState extends State<TypedVideoRoomV3Unified>
             curve: Curves.easeInOut,
           );
         });
+      }else{
+        print(message.data);
       }
     });
   }

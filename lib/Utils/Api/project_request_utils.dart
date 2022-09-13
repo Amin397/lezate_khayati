@@ -218,6 +218,23 @@ class RequestsUtil extends GetConnect {
     );
   }
 
+  Future<ApiResult> sendPublisher({
+    required String publishers,
+    required String liveId,
+  }) async {
+    return await makeRequest(
+      type: 'post',
+      webController: WebControllers.admin,
+      webMethod: WebMethods.live,
+      urlParams: 'publishers/$liveId',
+      body: {
+        'json':publishers,
+      },
+      // urlParams: '$courseId/${Globals.userStream.user!.id.toString()}',
+      bearer: true,
+    );
+  }
+
   Future<ApiResult> joinToLive() async {
     return await makeRequest(
       type: 'post',
@@ -258,12 +275,13 @@ class RequestsUtil extends GetConnect {
 
   Future<ApiResult> startLive() async {
     return await makeRequest(
-        type: 'post',
-        webController: WebControllers.admin,
-        webMethod: WebMethods.live,
-        urlParams: 'whisper',
-        bearer: true,
-        body: {'name': ''});
+      type: 'post',
+      webController: WebControllers.admin,
+      webMethod: WebMethods.live,
+      urlParams: 'whisper',
+      bearer: true,
+      body: {'name': ''},
+    );
   }
 
   Future<ApiResult> sendLiveComment({
@@ -278,7 +296,7 @@ class RequestsUtil extends GetConnect {
         bearer: true,
         body: {
           'body': comment,
-          'live_id':liveId,
+          'live_id': liveId,
         });
   }
 

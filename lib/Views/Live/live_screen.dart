@@ -36,7 +36,7 @@ class _VideoRoomState extends State<TypedVideoRoomV2Unified>
   String userId = '45454545';
   Map<int, RemoteStream> remoteStreams = {};
 
-  int subscribersCount = 0;
+  List<UserModel> subscribers = [];
   late RestJanusTransport rest;
   late WebSocketJanusTransport ws;
   late JanusSession session;
@@ -53,7 +53,7 @@ class _VideoRoomState extends State<TypedVideoRoomV2Unified>
   Map<int, wbrtc.MediaStream?> mediaStreams = {};
   final ScrollController scrollController = ScrollController();
   List<CommentModel> commentsList = [];
-
+  List<Map<String, dynamic>> publisherStreams = [];
   bool isLoaded = false;
 
   late final AnimationController animationController;
@@ -111,7 +111,7 @@ class _VideoRoomState extends State<TypedVideoRoomV2Unified>
       //   subscribersList.add(UserModel.fromJson(o['user']));
       // }
       setState(() {
-        subscribersCount = UserModel.listFromJsonLive(result.data).length;
+        subscribers = UserModel.listFromJsonLive(result.data);
       });
       // update(['live']);
     }
@@ -278,7 +278,6 @@ class _VideoRoomState extends State<TypedVideoRoomV2Unified>
       if (data is VideoRoomNewPublisherEvent) {
         print('------------------2------------------');
 
-        List<Map<String, dynamic>> publisherStreams = [];
         for (Publishers publisher in data.publishers ?? []) {
           feedStreams[publisher.id!] = {
             "id": publisher.id,
@@ -324,6 +323,18 @@ class _VideoRoomState extends State<TypedVideoRoomV2Unified>
     setState(() {
       isLoaded = true;
     });
+  }
+
+  sendNotife() async {
+    print(publisherStreams);
+    ApiResult result = await RequestsUtil.instance.sendPublisher(
+      // publishers: publisherStreams.toString(),
+      publishers: 'await plugin.',
+      liveId: widget.liveId.toString(),
+    );
+    if (result.isDone) {
+      print(result.data);
+    }
   }
 
   Future<void> unSubscribeStream(int id) async {
@@ -412,14 +423,25 @@ class _VideoRoomState extends State<TypedVideoRoomV2Unified>
                   width: 4.0,
                 ),
                 Text(
-                  subscribersCount.toString(),
+                  'subscribersCount..toString()',
                   style: TextStyle(
                     color: Colors.white,
                   ),
                 ),
               ],
             ),
-          )
+          ),
+          IconButton(
+            onPressed: () {
+              // showUsers.value = true;
+              // Navigator.of(context).pop();
+              sendNotife();
+              // Get.back();
+            },
+            icon: Icon(
+              Icons.check,
+            ),
+          ),
         ],
       ),
       body: (isLoaded)
@@ -660,7 +682,6 @@ class _VideoRoomState extends State<TypedVideoRoomV2Unified>
           curve: Curves.easeInOut,
         );
       });
-
     }
   }
 
