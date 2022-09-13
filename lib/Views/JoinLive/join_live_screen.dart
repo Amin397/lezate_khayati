@@ -28,7 +28,7 @@ class _VideoRoomState extends State<TypedVideoRoomV3Unified>
     with TickerProviderStateMixin {
   late JanusClient j;
   Map<int, RemoteStream> remoteStreams = {};
-  String displayname = 'display name';
+  String displayname = 'mohammad';
   String imageAvatar = 'https://i.pravatar.cc/300';
   String userId = '45454545';
   late RestJanusTransport rest;
@@ -378,9 +378,11 @@ class _VideoRoomState extends State<TypedVideoRoomV3Unified>
   @override
   void dispose() async {
     super.dispose();
+    timeer?.cancel();
     await remoteHandle?.dispose();
     await plugin.dispose();
     session.dispose();
+
   }
 
   callEnd() async {
@@ -415,6 +417,8 @@ class _VideoRoomState extends State<TypedVideoRoomV3Unified>
           IconButton(
             onPressed: () {
               // showUsers.value = true;
+              timeer?.cancel();
+
               Navigator.of(context).pop();
               // Get.back();
             },

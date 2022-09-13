@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +21,7 @@ import '../../Utils/Consts.dart';
 import '../../Utils/janus-webrtc/Helper.dart';
 import '../../Utils/janus-webrtc/conf.dart';
 import '../JoinLive/join_live_screen.dart';
+import 'Widgets/comment_part.dart';
 
 class TypedVideoRoomV2Unified extends StatefulWidget {
   TypedVideoRoomV2Unified({this.liveId});
@@ -32,7 +35,7 @@ class TypedVideoRoomV2Unified extends StatefulWidget {
 class _VideoRoomState extends State<TypedVideoRoomV2Unified>
     with TickerProviderStateMixin {
   late JanusClient j;
-  String displayname = 'display name';
+  String displayname = 'mohammad';
   String imageAvatar = 'https://i.pravatar.cc/300';
   String userId = '45454545';
   Map<int, RemoteStream> remoteStreams = {};
@@ -81,24 +84,6 @@ class _VideoRoomState extends State<TypedVideoRoomV2Unified>
       vsync: this,
     );
     super.initState();
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('*****************************');
-      if (message.data['title'] == 'کنفرانس') {
-        getUsers();
-      } else if (message.data['title'] == 'comment') {
-        setState(() {
-          commentsList
-              .add(CommentModel.fromJson(jsonDecode(message.data['message'])));
-          scrollController.animateTo(
-            scrollController.position.maxScrollExtent + 30,
-            duration: const Duration(
-              milliseconds: 200,
-            ),
-            curve: Curves.easeInOut,
-          );
-        });
-      }
-    });
   }
 
   getUsers() async {
@@ -143,16 +128,9 @@ class _VideoRoomState extends State<TypedVideoRoomV2Unified>
     print('session Id : ${session.sessionId}');
     plugin = await session.attach<JanusVideoRoomPlugin>();
 
-
-
-
 /*    await plugin.createRoom(myRoom,);
     print('room created');*/
   }
-
-
-
-
 
   subscribeTo(List<Map<String, dynamic>> sources) async {
     myPrint();
@@ -224,7 +202,7 @@ class _VideoRoomState extends State<TypedVideoRoomV2Unified>
     return;
   }
 
-  myPrint(){
+  myPrint() {
     print('888888888888888888888888888888888888888888');
     print('feedStreams ${feedStreams}');
     print('subscriptions ${subscriptions}');
@@ -416,8 +394,11 @@ class _VideoRoomState extends State<TypedVideoRoomV2Unified>
 
   addPublisher() {}
 
+  Size? size;
+
   @override
   Widget build(BuildContext context) {
+    size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -456,17 +437,13 @@ class _VideoRoomState extends State<TypedVideoRoomV2Unified>
               ],
             ),
           ),
-          IconButton(
-            onPressed: () {
-              // showUsers.value = true;
-              // Navigator.of(context).pop();
-              sendNotife();
-              // Get.back();
-            },
-            icon: Icon(
-              Icons.check,
+          if (Globals.userStream.user!.role == 'admin')
+            IconButton(
+              onPressed: () {
+                pickFile();
+              },
+              icon: Icon(Icons.upload_file),
             ),
-          ),
         ],
       ),
       body: (isLoaded)
@@ -492,7 +469,10 @@ class _VideoRoomState extends State<TypedVideoRoomV2Unified>
                 //     ),
                 //   ),
                 // ),
-                _buildCommentPart(),
+                // _buildCommentPart(),
+                CommentPart(
+                  liveId: widget.liveId.toString(),
+                ),
               ],
             )
           : Stack(
@@ -514,6 +494,86 @@ class _VideoRoomState extends State<TypedVideoRoomV2Unified>
             ),
     );
   }
+
+  void pickFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.media,
+    );
+    if (result != null) {
+      File file = File(result.files.single.path!);
+
+      switch (file.path.split('.').last) {
+        case 'png':
+          {
+            print('png');
+            break;
+          }
+        case 'jpeg':
+          {
+            print('jpeg');
+            break;
+          }
+      // case 'mp4':
+      //   {
+      //     file = await getThumb(filePath: file.path);
+      //     isVideo = true;
+      //     print('mp4');
+      //     break;
+      //   }
+        default:
+          {
+            print(file.path.split('.').last.toString());
+            break;
+          }
+      }
+
+      // bool isSend = await showModalBottomSheet(
+      //   context: Get.context!,
+      //   isScrollControlled: true,
+      //   enableDrag: true,
+      //   backgroundColor: Colors.transparent,
+      //   isDismissible: false,
+      //   builder: (BuildContext context) => BuildShowImageWidget(
+      //     controller: this,
+      //     file: file,
+      //     isVideo: isVideo,
+      //   ),
+      // );
+
+      // bool isSend = await showDialog(
+      //   context: Get.context!,
+      //   barrierDismissible: false,
+      //   builder: (BuildContext context) => AlertDialog(
+      //     contentPadding: EdgeInsets.zero,
+      //     backgroundColor: Colors.transparent,
+      //     content: BuildShowImageWidget(
+      //       controller: this,
+      //       file: file,
+      //       isVideo: isVideo,
+      //     ),
+      //   ),
+      // );
+
+      // if (isSend) {
+      uploadFile(
+        file: file,
+      );
+      // }
+    }
+  }
+
+  uploadFile({required File file}) async {
+    ApiResult result = await RequestsUtil.instance.uploadLiveFile(
+      file: file,
+    );
+
+
+    if(result.isDone){
+      print(result.data);
+    }
+  }
+
+
 
   Widget _buildCommentPart() {
     return Align(
@@ -647,8 +707,8 @@ class _VideoRoomState extends State<TypedVideoRoomV2Unified>
 
     return Container(
       color: Colors.black,
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
+      width: size!.width,
+      height: size!.height,
       child: Stack(
         children: [
           wbrtc.RTCVideoView(
