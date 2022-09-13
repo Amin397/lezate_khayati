@@ -62,7 +62,7 @@ class _VideoRoomState extends State<TypedVideoRoomV3Unified>
   void didChangeDependencies() async {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
-    initialize().then((value) => joinRoom());
+    initialize();
   }
 
 
@@ -152,10 +152,12 @@ class _VideoRoomState extends State<TypedVideoRoomV3Unified>
     if (remoteHandle != null) {
       await remoteHandle?.subscribeToStreams(streams);
       return;
+
     }
+
     remoteHandle = await session.attach<JanusVideoRoomPlugin>();
     print(sources);
-    var start = await remoteHandle?.joinSubscriber(myRoom, streams: streams);
+    var start = await remoteHandle?.joinSubscriber(myRoom, feedId: streams[0].feed);
     remoteHandle?.typedMessages?.listen((event) async {
       Object data = event.event.plugindata?.data;
       if (data is VideoRoomAttachedEvent) {
