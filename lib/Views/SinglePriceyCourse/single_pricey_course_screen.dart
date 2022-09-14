@@ -28,6 +28,9 @@ class SinglePriceyCourseScreen extends StatelessWidget {
         ),
         centerTitle: true,
         backgroundColor: Colors.red,
+        actions: [
+          Obx(()=>(controller.isLoaded.isTrue)?_buildBookmarkIcon():Container())
+        ],
       ),
       body: Container(
         height: Get.height,
@@ -100,7 +103,9 @@ class SinglePriceyCourseScreen extends StatelessWidget {
       child: Align(
         alignment: Alignment.topRight,
         child: AutoSizeText(
-          parse(parse(controller.model.description!).body!.text).documentElement!.text,
+          parse(parse(controller.model.description!).body!.text)
+              .documentElement!
+              .text,
           maxFontSize: 16.0,
           minFontSize: 10.0,
           maxLines: 5,
@@ -325,7 +330,7 @@ class SinglePriceyCourseScreen extends StatelessWidget {
       height: Get.height * .24,
       child: Column(
         children: [
-          if (controller.model.videos!.length >=4)
+          if (controller.model.videos!.length >= 4)
             Align(
               alignment: Alignment.centerLeft,
               child: InkWell(
@@ -379,17 +384,14 @@ class SinglePriceyCourseScreen extends StatelessWidget {
       builder: (ctx) => InkWell(
         onTap: () {
           if (controller.model.isBought!) {
-            controller.openVideo(
-              video: video,
-              demo: false
-            );
+            controller.openVideo(video: video, demo: false);
           } else {
-            if(Globals.userStream.user!.justified == 1){
+            if (Globals.userStream.user!.justified == 1) {
               controller.openVideo(
                 video: video,
                 demo: true,
               );
-            }else{
+            } else {
               controller.showJustifiedAlert();
             }
           }
@@ -504,6 +506,37 @@ class SinglePriceyCourseScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildBookmarkIcon() {
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 150),
+      transitionBuilder: (Widget child, Animation<double> animation) {
+        return SizeTransition(
+          sizeFactor: animation,
+          child: child,
+        );
+      },
+      child: controller.model.isBookmarked.isTrue
+          ? IconButton(
+              onPressed: () {
+                controller.switchBookmark();
+              },
+              icon: Icon(
+                Icons.bookmark,
+                color: Colors.white,
+              ),
+            )
+          : IconButton(
+              onPressed: () {
+                controller.switchBookmark();
+              },
+              icon: Icon(
+                Icons.bookmark_outline,
+                color: Colors.white,
+              ),
+            ),
     );
   }
 }

@@ -42,7 +42,7 @@ class _MusicScreenState extends State<MusicScreen> {
           SizedBox(
             height: Get.height * .015,
           ),
-          _buildMusicList()
+          _buildMusicList(),
         ],
       ),
     );

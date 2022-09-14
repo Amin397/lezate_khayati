@@ -70,7 +70,23 @@ class BuildMenuWidget extends StatelessWidget {
                 ),
               ),
             ),
-            Divider(),
+            // Divider(),
+            // AnimationConfiguration.synchronized(
+            //   child: SlideAnimation(
+            //     child: FadeInAnimation(
+            //       child: _buildMenuItem(
+            //         func: (){
+            //           controller.goToMyOrders();
+            //         },
+            //         id: 2,
+            //         title: 'علاقه مندی ها',
+            //         image: 'assets/img/favorite.png',
+            //         heroTag: 'myFavorite'
+            //       ),
+            //     ),
+            //   ),
+            // ),
+            // Divider(),
             // AnimationConfiguration.synchronized(
             //   child: SlideAnimation(
             //     child: FadeInAnimation(
@@ -86,23 +102,23 @@ class BuildMenuWidget extends StatelessWidget {
             //     ),
             //   ),
             // ),
-            // Divider(),
-            // AnimationConfiguration.synchronized(
-            //   child: SlideAnimation(
-            //     child: FadeInAnimation(
-            //       child: _buildMenuItem(
-            //         func: (){
-            //           controller.goToMyFavorite();
-            //         },
-            //         id: 3,
-            //         title: 'لیست علاقه مندی ها',
-            //         image: 'assets/img/favorite.png',
-            //         heroTag: 'myFavorite'
-            //       ),
-            //     ),
-            //   ),
-            // ),
-            // Divider(),
+            Divider(),
+            AnimationConfiguration.synchronized(
+              child: SlideAnimation(
+                child: FadeInAnimation(
+                  child: _buildMenuItem(
+                    func: (){
+                      controller.goToMyFavorite();
+                    },
+                    id: 3,
+                    title: 'لیست علاقه مندی ها',
+                    image: 'assets/img/favorite.png',
+                    heroTag: 'myFavorite'
+                  ),
+                ),
+              ),
+            ),
+            Divider(),
             AnimationConfiguration.synchronized(
               child: SlideAnimation(
                 child: FadeInAnimation(

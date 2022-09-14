@@ -97,11 +97,11 @@ class RoutingUtils {
   //   page: () => MyQuestionScreen(),
   //   transition: Transition.fadeIn,
   // );
-  // static GetPage myFavorite = GetPage(
-  //   name: '/myFavorite',
-  //   page: () => MyFavoriteScreen(),
-  //   transition: Transition.fadeIn,
-  // );
+  static GetPage myFavorite = GetPage(
+    name: '/myFavorite',
+    page: () => MyFavoriteScreen(),
+    transition: Transition.fadeIn,
+  );
   static GetPage editProfile = GetPage(
     name: '/editProfile',
     page: () => EditProfileScreen(),
@@ -122,11 +122,11 @@ class RoutingUtils {
     page: () => SingleChatScreen(),
     transition: Transition.fadeIn,
   );
-  static GetPage lobby = GetPage(
-    name: '/lobby',
-    page: () => LobbyPage(),
-    transition: Transition.fadeIn,
-  );
+  // static GetPage lobby = GetPage(
+  //   name: '/lobby',
+  //   page: () => LobbyPage(),
+  //   transition: Transition.fadeIn,
+  // );
   static GetPage live = GetPage(
     name: '/live',
     page: () => TypedVideoRoomV2Unified(),

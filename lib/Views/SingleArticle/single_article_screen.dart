@@ -22,6 +22,10 @@ class SingleArticleScreen extends StatelessWidget {
         ),
         centerTitle: true,
         backgroundColor: Colors.red,
+        actions: [
+          Obx(() =>
+              (controller.isLoaded.isTrue) ? _buildBookmarkIcon() : Container())
+        ],
       ),
       body: Container(
         height: Get.height,
@@ -55,6 +59,37 @@ class SingleArticleScreen extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildBookmarkIcon() {
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 150),
+      transitionBuilder: (Widget child, Animation<double> animation) {
+        return SizeTransition(
+          sizeFactor: animation,
+          child: child,
+        );
+      },
+      child: controller.model.isBookmarked!.isTrue
+          ? IconButton(
+              onPressed: () {
+                controller.switchBookmark();
+              },
+              icon: Icon(
+                Icons.bookmark,
+                color: Colors.white,
+              ),
+            )
+          : IconButton(
+              onPressed: () {
+                controller.switchBookmark();
+              },
+              icon: Icon(
+                Icons.bookmark_outline,
+                color: Colors.white,
+              ),
+            ),
     );
   }
 
@@ -95,7 +130,9 @@ class SingleArticleScreen extends StatelessWidget {
         alignment: Alignment.topRight,
         child: AutoSizeText(
           // controller.model.content!,
-          parse(parse(controller.model.content!).body!.text).documentElement!.text,
+          parse(parse(controller.model.content!).body!.text)
+              .documentElement!
+              .text,
           maxFontSize: 16.0,
           minFontSize: 10.0,
           maxLines: 5,

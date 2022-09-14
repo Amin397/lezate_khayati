@@ -25,6 +25,7 @@ class SinglePriceyCourseModel {
     this.reviewsRating,
     this.videos,
     this.comments,
+    required this.isBookmarked,
   });
 
   int? id;
@@ -40,6 +41,7 @@ class SinglePriceyCourseModel {
   String? img;
   String? views;
   int? totalVideos;
+  RxBool isBookmarked;
   bool? isBought;
   List<int>? update;
   int? reviews;
@@ -51,6 +53,7 @@ class SinglePriceyCourseModel {
       SinglePriceyCourseModel(
         id: json["id"],
         name: json["name"],
+        isBookmarked: json["isBookmarked"] == true ? true.obs:false.obs,
         type: json["type"],
         slug: json["slug"],
         teacher: json["teacher"],

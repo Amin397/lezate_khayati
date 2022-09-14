@@ -9,7 +9,9 @@ enum WebControllers {
   courses,
   search,
   admin,
+  bookmarks,
   chats,
   live,
   theme,
+  reviews,
 }

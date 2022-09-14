@@ -8,27 +8,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "47.0.0"
-  agora_rtc_engine:
-    dependency: "direct main"
-    description:
-      name: agora_rtc_engine
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "5.3.0"
-  agora_rtm:
-    dependency: transitive
-    description:
-      name: agora_rtm
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.1.1"
-  agora_uikit:
-    dependency: "direct main"
-    description:
-      name: agora_uikit
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.3"
   analyzer:
     dependency: transitive
     description:
@@ -520,13 +499,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.4.7"
-  lints:
-    dependency: transitive
-    description:
-      name: lints
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.0"
   logging:
     dependency: transitive
     description:
@@ -826,6 +798,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
+  smooth_star_rating:
+    dependency: "direct main"
+    description:
+      name: smooth_star_rating
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.1"
   source_span:
     dependency: transitive
     description:

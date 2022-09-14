@@ -14,6 +14,7 @@ import '../../Views/SinglePriceyCourse/Widgets/build_bought_video_alert.dart';
 import '../../Views/SinglePriceyCourse/Widgets/build_more_videos_modal.dart';
 import '../../Views/SinglePriceyCourse/Widgets/build_show_video_modal.dart';
 import '../../Views/SinglePriceyCourse/Widgets/show_justify_alert.dart';
+import '../../Views/SinglePriceyCourse/Widgets/show_set_rate_modal.dart';
 
 class SinglePriceyCourseController extends GetxController {
   late final int index;
@@ -25,6 +26,7 @@ class SinglePriceyCourseController extends GetxController {
   late final SinglePriceyCourseModel model;
 
   RxBool isLoaded = false.obs;
+  double rate = 0.0;
 
   @override
   void onInit() {
@@ -145,5 +147,45 @@ class SinglePriceyCourseController extends GetxController {
         content: ShowJustifyAlert(),
       ),
     );
+  }
+
+  void switchBookmark() async {
+    if (model.isBookmarked.isTrue) {
+      EasyLoading.show();
+      ApiResult result = await RequestsUtil.instance.setBookmark(
+        id: model.id.toString(),
+        type: 'course',
+      );
+      EasyLoading.dismiss();
+      if(result.isDone){
+        Future.delayed(Duration(milliseconds: 200) , (){
+          model.isBookmarked(false);
+        });
+      }
+    } else {
+      // var setStar = await showModalBottomSheet(
+      //   context: Get.context!,
+      //   backgroundColor: Colors.transparent,
+      //   isDismissible: false,
+      //   enableDrag: false,
+      //   builder: (BuildContext context) => ShowSetRateModal(
+      //     rate: double.parse(model.reviewsRating.toString()),
+      //   ),
+      // );
+
+      // if (setStar is double) {
+        EasyLoading.show();
+        ApiResult result = await RequestsUtil.instance.setBookmark(
+          id: model.id.toString(),
+          type: 'course',
+        );
+        EasyLoading.dismiss();
+        if(result.isDone){
+          Future.delayed(Duration(milliseconds: 200) , (){
+            model.isBookmarked(true);
+          });
+        }
+      // }
+    }
   }
 }

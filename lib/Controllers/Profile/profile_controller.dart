@@ -19,9 +19,9 @@ class ProfileController extends GetxController {
   //   Get.toNamed(RoutingUtils.myQuestion.name);
   // }
 
-  // void goToMyFavorite() {
-  //   Get.toNamed(RoutingUtils.myFavorite.name);
-  // }
+  void goToMyFavorite() {
+    Get.toNamed(RoutingUtils.myFavorite.name);
+  }
 
   void goToEditProfile() {
     Get.toNamed(RoutingUtils.editProfile.name);

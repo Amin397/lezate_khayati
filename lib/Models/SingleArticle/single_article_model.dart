@@ -1,3 +1,5 @@
+import 'package:lezate_khayati/Plugins/get/get.dart';
+
 class SingleArticleModel {
   SingleArticleModel({
     this.id,
@@ -9,6 +11,9 @@ class SingleArticleModel {
     this.views,
     this.createdAt,
     this.updatedAt,
+    this.isBookmarked,
+    this.reviews,
+    this.reviewsRating,
     this.comments,
   });
 
@@ -21,6 +26,9 @@ class SingleArticleModel {
   String? views;
   DateTime? createdAt;
   DateTime? updatedAt;
+  RxBool? isBookmarked;
+  int? reviews;
+  int? reviewsRating;
   List<Comment>? comments;
 
   factory SingleArticleModel.fromJson(Map<String, dynamic> json) => SingleArticleModel(
@@ -33,6 +41,9 @@ class SingleArticleModel {
     views: json["views"],
     createdAt: DateTime.parse(json["created_at"]),
     updatedAt: DateTime.parse(json["updated_at"]),
+    isBookmarked: json["isBookmarked"] == true ?true.obs:false.obs,
+    reviews: json["reviews"],
+    reviewsRating: json["reviewsRating"],
     comments: List<Comment>.from(json["comments"].map((x) => Comment.fromJson(x))),
   );
 

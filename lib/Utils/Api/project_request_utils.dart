@@ -206,6 +206,23 @@ class RequestsUtil extends GetConnect {
     );
   }
 
+  Future<ApiResult> setBookmark({
+    required String id,
+    required String type,
+  }) async {
+    return await makeRequest(
+      type: 'post',
+      webController: WebControllers.auth,
+      webMethod: WebMethods.bookmarks,
+      bearer: true,
+      urlParams: 'create',
+      body: {
+        'collection_id':id,
+        'type':type,
+      }
+    );
+  }
+
   Future<ApiResult> buyCourse({
     required String courseId,
   }) async {
@@ -257,6 +274,16 @@ class RequestsUtil extends GetConnect {
       body: {
         'token': fcmToken,
       },
+      bearer: true,
+    );
+  }
+
+  Future<ApiResult> getFavorites({required String mode}) async {
+    return await makeRequest(
+      type: 'get',
+      webController: WebControllers.auth,
+      webMethod: WebMethods.bookmarks,
+      urlParams: mode,
       bearer: true,
     );
   }
@@ -506,6 +533,7 @@ class RequestsUtil extends GetConnect {
       webController: WebControllers.courses,
       webMethod: WebMethods.single,
       urlParams: id,
+      bearer: true
     );
   }
 
