@@ -14,6 +14,7 @@ class BuildHomeBottomNavigationWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(
       () => SalomonBottomBar(
+        margin: EdgeInsets.all(12.0),
         currentIndex: controller.currentIndex.value,
         onTap: (i) {
           controller.changePage(i);

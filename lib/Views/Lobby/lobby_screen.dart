@@ -397,14 +397,14 @@ class _LobbyPageState extends State<LobbyPage> {
   }
 
   uploadFile({required File file}) async {
-    ApiResult result = await RequestsUtil.instance.uploadLiveFile(
-      file: file,
-    );
+    // ApiResult result = await RequestsUtil.instance.uploadLiveFile(
+    //   file: file,
+    // );
 
 
-    if(result.isDone){
-      print(result.data);
-    }
+    // if(result.isDone){
+    //   print(result.data);
+    // }
   }
 
   Widget _tools() {

@@ -2,7 +2,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:lezate_khayati/Controllers/Chat/chat_controller.dart';
 import 'package:lezate_khayati/Controllers/Home/home_controller.dart';
+import 'package:lezate_khayati/Controllers/Login/login_controller.dart';
 import 'package:lezate_khayati/Controllers/Profile/profile_controller.dart';
+import 'package:lezate_khayati/Controllers/Splash/splash_controller.dart';
 import 'package:lezate_khayati/Globals/Globals.dart';
 import 'package:lezate_khayati/Plugins/get/get.dart';
 import 'package:lezate_khayati/Utils/Consts.dart';
@@ -70,11 +72,8 @@ class MainController extends GetxController {
     pageController = PageController(
       initialPage: currentIndex.value,
     );
-
-
-
-
-
+    Get.delete<SplashController>();
+    Get.delete<LoginController>();
     // FirebaseMessaging.instance
     //     .getInitialMessage()
     //     .then((RemoteMessage? message) {

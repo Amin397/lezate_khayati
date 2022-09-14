@@ -54,7 +54,7 @@ class ShowJustifyAlert extends StatelessWidget {
                     await launchUrl(LaunchUri);
                   },
                   child: Text(
-                    ' 026-34612532 /',
+                    ' 026-34612532 ',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: ColorUtils.blue,
@@ -62,23 +62,23 @@ class ShowJustifyAlert extends StatelessWidget {
                     ),
                   ),
                 ),
-                InkWell(
-                  onTap: () async {
-                    final LaunchUri = Uri(
-                      scheme: 'tel',
-                      path: '09125787206',
-                    );
-                    await launchUrl(LaunchUri);
-                  },
-                  child: Text(
-                    ' 09125787206',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: ColorUtils.blue,
-                      fontSize: 14.0,
-                    ),
-                  ),
-                ),
+                // InkWell(
+                //   onTap: () async {
+                //     final LaunchUri = Uri(
+                //       scheme: 'tel',
+                //       path: '09125787206',
+                //     );
+                //     await launchUrl(LaunchUri);
+                //   },
+                //   child: Text(
+                //     ' 09125787206',
+                //     textAlign: TextAlign.center,
+                //     style: TextStyle(
+                //       color: ColorUtils.blue,
+                //       fontSize: 14.0,
+                //     ),
+                //   ),
+                // ),
               ],
             ),
             Expanded(

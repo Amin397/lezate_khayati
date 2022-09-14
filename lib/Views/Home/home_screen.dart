@@ -210,7 +210,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildShimmerItem() {
     return Container(
       height: Get.height,
-      width: Get.height * .125,
+      width: Get.height * .12,
       child: Shimmer.fromColors(
         baseColor: Colors.grey.withOpacity(.2),
         highlightColor: Colors.white24,

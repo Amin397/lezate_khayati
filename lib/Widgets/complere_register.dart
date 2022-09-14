@@ -8,14 +8,14 @@ import 'package:lezate_khayati/Utils/color_utils.dart';
 import 'package:lezate_khayati/Utils/widget_utils.dart';
 
 class CompleteRegister extends StatefulWidget {
-  final String mobile;
-  final String code;
-  final LoginController controller;
+  final String? mobile;
+  final String? code;
+  final LoginController? controller;
 
   const CompleteRegister({
-    required this.mobile,
-    required this.code,
-    required this.controller,
+     this.mobile,
+     this.code,
+     this.controller,
   });
 
   @override
@@ -45,33 +45,31 @@ class _CompleteRegisterState extends State<CompleteRegister> {
         borderRadius: radiusAll10,
         color: Colors.white,
       ),
-      child: Column(
-        children: [
-          SizedBox(
-            height: Get.height / 48,
-          ),
-          header(),
-          SizedBox(
-            height: Get.height / 48,
-          ),
-          // Expanded(
-          //   child: body(),
-          // ),
-          name(),
-          city(),
-          postalCode(),
-          address(),
-          _buildBirthDay(),
-          _buildGender(),
-          fromWhere(),
-          SizedBox(
-            height: Get.height / 48,
-          ),
-          finalBtn(),
-          SizedBox(
-            height: Get.height / 48,
-          ),
-        ],
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(
+              height: Get.height / 48,
+            ),
+            // Expanded(
+            //   child: body(),
+            // ),
+            name(),
+            city(),
+            postalCode(),
+            address(),
+            _buildBirthDay(),
+            _buildGender(),
+            fromWhere(),
+            SizedBox(
+              height: Get.height / 48,
+            ),
+            finalBtn(),
+            SizedBox(
+              height: Get.height / 48,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -145,7 +143,7 @@ class _CompleteRegisterState extends State<CompleteRegister> {
 
   Widget name() {
     return _textInput(
-      controller: widget.controller.nameController,
+      controller: widget.controller!.nameController,
       focusNode: nameFocusNode,
       name: "نام و نام خانوادگی",
     );
@@ -153,7 +151,7 @@ class _CompleteRegisterState extends State<CompleteRegister> {
 
   Widget postalCode() {
     return _textInput(
-      controller: widget.controller.postalCodeController,
+      controller: widget.controller!.postalCodeController,
       focusNode: postalCodeFocusNode,
       name: "کد پستی",
     );
@@ -161,7 +159,7 @@ class _CompleteRegisterState extends State<CompleteRegister> {
 
   Widget address() {
     return _textInput(
-      controller: widget.controller.addressController,
+      controller: widget.controller!.addressController,
       focusNode: addressFocusNode,
       name: "آدرس",
     );
@@ -169,7 +167,7 @@ class _CompleteRegisterState extends State<CompleteRegister> {
 
   // Widget birthDay() {
   //   return _textInput(
-  //     controller: widget.controller.birthDayController,
+  //     controller: widget.controller!.birthDayController,
   //     focusNode: birthDayFocusNode,
   //     name: "روز تولد",
   //   );
@@ -177,7 +175,7 @@ class _CompleteRegisterState extends State<CompleteRegister> {
 
   Widget city() {
     return _textInput(
-      controller: widget.controller.cityController,
+      controller: widget.controller!.cityController,
       focusNode: cityFocusNode,
       name: "شهر",
     );
@@ -186,10 +184,10 @@ class _CompleteRegisterState extends State<CompleteRegister> {
   void finalize() {
     Get.back(result: true);
     // EasyLoading.show();
-    // widget.controller.requests
+    // widget.controller!.requests
     //     .completeRegister(
     //   name: nameController.text,
-    //   refer: widget.controller.refer,
+    //   refer: widget.controller!.refer,
     // )
     //     .then((ApiResult result) {
     //   EasyLoading.dismiss();
@@ -215,102 +213,100 @@ class _CompleteRegisterState extends State<CompleteRegister> {
   }
 
   Widget fromWhere() {
-    return Expanded(
-      child: Container(
-        width: Get.width,
-        height: double.maxFinite,
-        padding: paddingAll10,
-        child: Row(
-          children: [
-            Text(
-              'نحوه آشنایی :',
-              style: TextStyle(
-                color: Colors.grey.shade700,
-              ),
+    return Container(
+      width: Get.width,
+      height: Get.height * .1,
+      padding: paddingAll10,
+      child: Row(
+        children: [
+          Text(
+            'نحوه آشنایی :',
+            style: TextStyle(
+              color: Colors.grey.shade700,
             ),
-            PopupMenuButton<int>(
-              offset: const Offset(0, 50),
-              shape: const TooltipShape(),
-              onSelected: (item) {},
-              icon: Icon(
-                Icons.arrow_drop_down,
-                color: Colors.grey,
-              ),
-              itemBuilder: (context) => [
-                PopupMenuItem<int>(
-                  onTap: () {
-                    setState(() {
-                      refer = 'اینستاگرام';
-                    });
-                    widget.controller.changeRefer('اینستاگرام');
-                  },
-                  value: 1,
-                  child: const Text(
-                    'اینستاگرام',
-                    style: TextStyle(
-                      color: ColorUtils.textColor,
-                    ),
+          ),
+          PopupMenuButton<int>(
+            offset: const Offset(0, 50),
+            shape: const TooltipShape(),
+            onSelected: (item) {},
+            icon: Icon(
+              Icons.arrow_drop_down,
+              color: Colors.grey,
+            ),
+            itemBuilder: (context) => [
+              PopupMenuItem<int>(
+                onTap: () {
+                  setState(() {
+                    refer = 'اینستاگرام';
+                  });
+                  widget.controller!.changeRefer('اینستاگرام');
+                },
+                value: 1,
+                child: const Text(
+                  'اینستاگرام',
+                  style: TextStyle(
+                    color: ColorUtils.textColor,
                   ),
                 ),
-                PopupMenuItem<int>(
-                  onTap: () {
-                    setState(() {
-                      refer = 'تلگرام';
-                    });
-                    widget.controller.changeRefer('تلگرام');
-                  },
-                  value: 2,
-                  child: const Text('تلگرام',
-                      style: TextStyle(
-                        color: ColorUtils.textColor,
-                      )),
-                ),
-                PopupMenuItem<int>(
-                  onTap: () {
-                    setState(() {
-                      refer = 'گوگل';
-                    });
-                    widget.controller.changeRefer('گوگل');
-                  },
-                  value: 3,
-                  child: const Text(
-                    'گوگل',
+              ),
+              PopupMenuItem<int>(
+                onTap: () {
+                  setState(() {
+                    refer = 'تلگرام';
+                  });
+                  widget.controller!.changeRefer('تلگرام');
+                },
+                value: 2,
+                child: const Text('تلگرام',
                     style: TextStyle(
                       color: ColorUtils.textColor,
-                    ),
+                    )),
+              ),
+              PopupMenuItem<int>(
+                onTap: () {
+                  setState(() {
+                    refer = 'گوگل';
+                  });
+                  widget.controller!.changeRefer('گوگل');
+                },
+                value: 3,
+                child: const Text(
+                  'گوگل',
+                  style: TextStyle(
+                    color: ColorUtils.textColor,
                   ),
                 ),
-                PopupMenuItem<int>(
-                  onTap: () {
-                    setState(() {
-                      refer = 'واتس اپ';
-                    });
-                    widget.controller.changeRefer('واتس اپ');
-                  },
-                  value: 4,
-                  child: const Text(
-                    'واتس اپ',
-                    style: TextStyle(
-                      color: ColorUtils.textColor,
-                    ),
+              ),
+              PopupMenuItem<int>(
+                onTap: () {
+                  setState(() {
+                    refer = 'واتس اپ';
+                  });
+                  widget.controller!.changeRefer('واتس اپ');
+                },
+                value: 4,
+                child: const Text(
+                  'واتس اپ',
+                  style: TextStyle(
+                    color: ColorUtils.textColor,
                   ),
                 ),
-              ],
-            ),
-            Expanded(
-              child: SizedBox(
-                height: double.maxFinite,
-                width: double.maxFinite,
               ),
+            ],
+          ),
+          Expanded(
+            child: SizedBox(
+              height: double.maxFinite,
+              width: double.maxFinite,
             ),
-            Text(
-              refer,
-              style: TextStyle(
-                color: Colors.grey.shade700,
-              ),
-            )
-          ],
-        ),
+          ),
+          Text(
+            refer,
+            style: TextStyle(
+              color: Colors.grey.shade700,
+            ),
+          )
+        ],
       ),
     );
   }
@@ -318,7 +314,7 @@ class _CompleteRegisterState extends State<CompleteRegister> {
   Widget _buildBirthDay() {
     return InkWell(
       onTap: () {
-        widget.controller.openDatePicker();
+        widget.controller!.openDatePicker();
       },
       child: GetBuilder(
         id: 'birthDay',
@@ -337,7 +333,7 @@ class _CompleteRegisterState extends State<CompleteRegister> {
           child: Align(
             alignment: Alignment.centerRight,
             child: AutoSizeText(
-              widget.controller.birthDay,
+              widget.controller!.birthDay,
               style: TextStyle(
                 color: Colors.black,
               ),
@@ -363,9 +359,9 @@ class _CompleteRegisterState extends State<CompleteRegister> {
               children: [
                 Radio<String>(
                     value: "male",
-                    groupValue: widget.controller.selectedGender,
+                    groupValue: widget.controller!.selectedGender,
                     onChanged: (value) {
-                      widget.controller.changeGender(value: value!);
+                      widget.controller!.changeGender(value: value!);
                     }),
                 Text(
                   'مرد',
@@ -379,9 +375,9 @@ class _CompleteRegisterState extends State<CompleteRegister> {
               children: [
                 Radio<String>(
                     value: "female",
-                    groupValue: widget.controller.selectedGender,
+                    groupValue: widget.controller!.selectedGender,
                     onChanged: (value) {
-                      widget.controller.changeGender(value: value!);
+                      widget.controller!.changeGender(value: value!);
                     }),
                 Text(
                   'زن',

@@ -18,6 +18,8 @@ import '../../Utils/Consts.dart';
 import '../../Utils/color_utils.dart';
 import '../../Utils/janus-webrtc/Helper.dart';
 import '../../Utils/janus-webrtc/conf.dart';
+import '../../Utils/view_utils.dart';
+import '../Live/Widgets/show_uploaded_image_modal.dart';
 
 class TypedVideoRoomV3Unified extends StatefulWidget {
   @override
@@ -28,7 +30,7 @@ class _VideoRoomState extends State<TypedVideoRoomV3Unified>
     with TickerProviderStateMixin {
   late JanusClient j;
   Map<int, RemoteStream> remoteStreams = {};
-  String displayname = 'display name';
+  String displayname = 'mohammad';
   String imageAvatar = 'https://i.pravatar.cc/300';
   String userId = '45454545';
   late RestJanusTransport rest;
@@ -51,6 +53,8 @@ class _VideoRoomState extends State<TypedVideoRoomV3Unified>
   final ScrollController scrollController = ScrollController();
   TextEditingController messageController = TextEditingController();
 
+  String? uploadImage;
+
   //todo: create a session and join as publisher ✓
   //todo: send sesion id to all users ✓
   //todo: see this sesion all users as player ✓
@@ -62,7 +66,7 @@ class _VideoRoomState extends State<TypedVideoRoomV3Unified>
   void didChangeDependencies() async {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
-    initialize().then((value) => joinRoom());
+    initialize();
   }
 
 
@@ -152,10 +156,12 @@ class _VideoRoomState extends State<TypedVideoRoomV3Unified>
     if (remoteHandle != null) {
       await remoteHandle?.subscribeToStreams(streams);
       return;
+
     }
+
     remoteHandle = await session.attach<JanusVideoRoomPlugin>();
     print(sources);
-    var start = await remoteHandle?.joinSubscriber(myRoom, streams: streams);
+    var start = await remoteHandle?.joinSubscriber(myRoom, feedId: streams[0].feed);
     remoteHandle?.typedMessages?.listen((event) async {
       Object data = event.event.plugindata?.data;
       if (data is VideoRoomAttachedEvent) {
@@ -355,8 +361,10 @@ class _VideoRoomState extends State<TypedVideoRoomV3Unified>
             curve: Curves.easeInOut,
           );
         });
-      } else {
-        print(message.data);
+      } else if(message.data['type'] == 'live_img'){
+        setState(() {
+          uploadImage = message.data['live_img'];
+        });
       }
     });
   }
@@ -376,9 +384,11 @@ class _VideoRoomState extends State<TypedVideoRoomV3Unified>
   @override
   void dispose() async {
     super.dispose();
+    timeer?.cancel();
     await remoteHandle?.dispose();
     await plugin.dispose();
     session.dispose();
+
   }
 
   callEnd() async {
@@ -400,8 +410,11 @@ class _VideoRoomState extends State<TypedVideoRoomV3Unified>
     await remoteHandle?.dispose();
   }
 
+
+  Size? size;
   @override
   Widget build(BuildContext context) {
+    size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -413,6 +426,8 @@ class _VideoRoomState extends State<TypedVideoRoomV3Unified>
           IconButton(
             onPressed: () {
               // showUsers.value = true;
+              timeer?.cancel();
+
               Navigator.of(context).pop();
               // Get.back();
             },
@@ -428,6 +443,36 @@ class _VideoRoomState extends State<TypedVideoRoomV3Unified>
                 children: [
                   _buildPublisherView(),
                   _buildCommentPart(),
+                  (uploadImage is String)?Align(
+                    alignment: Alignment.topRight,
+                    child: InkWell(
+                      onTap: () {
+                        showModal();
+                      },
+                      child: Container(
+                        height: size!.height * .05,
+                        width: size!.width * .3,
+                        margin: paddingAll10,
+                        decoration: BoxDecoration(
+                          borderRadius: radiusAll6,
+                          color: Colors.white,
+                          boxShadow: ViewUtils.neoShadow(),
+                        ),
+                        child: Center(
+                          child: AutoSizeText(
+                            'نمایش تصویر',
+                            maxFontSize: 16.0,
+                            maxLines: 1,
+                            minFontSize: 12.0,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14.0,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ):SizedBox(),
                 ],
               )
             : Stack(
@@ -450,6 +495,23 @@ class _VideoRoomState extends State<TypedVideoRoomV3Unified>
       ),
     );
   }
+
+
+  void showModal() async {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      isDismissible: true,
+      enableDrag: false,
+      useRootNavigator: false,
+      builder: (BuildContext context) => ShowUploadedImageModal(
+        isSub: true,
+        imageLink: uploadImage,
+      ),
+    );
+  }
+
 
   Widget _buildPublisherView() {
     List<RemoteStream> items =

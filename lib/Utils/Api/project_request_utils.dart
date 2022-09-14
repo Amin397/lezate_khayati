@@ -228,7 +228,7 @@ class RequestsUtil extends GetConnect {
       webMethod: WebMethods.live,
       urlParams: 'publishers/$liveId',
       body: {
-        'json':publishers,
+        'json': publishers,
       },
       // urlParams: '$courseId/${Globals.userStream.user!.id.toString()}',
       bearer: true,
@@ -300,13 +300,17 @@ class RequestsUtil extends GetConnect {
         });
   }
 
-  Future<ApiResult> uploadLiveFile({required File file}) async {
+  Future<ApiResult> uploadLiveFile({
+    required File file,
+    required String liveId,
+  }) async {
     return await makeRequest(
       type: 'post',
       webController: WebControllers.admin,
       webMethod: WebMethods.live,
       urlParams: 'uploadImg',
       bearer: true,
+      body: {'live_id': liveId},
       indexFiles: {
         'img': file,
       },

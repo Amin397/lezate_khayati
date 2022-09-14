@@ -36,9 +36,9 @@ class _MusicScreenState extends State<MusicScreen> {
           SizedBox(
             height: Get.height * .015,
           ),
-          BuildMusicFilterWidget(
-            controller: controller,
-          ),
+          // BuildMusicFilterWidget(
+          //   controller: controller,
+          // ),
           SizedBox(
             height: Get.height * .015,
           ),

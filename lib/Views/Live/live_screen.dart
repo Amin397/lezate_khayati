@@ -1,15 +1,17 @@
 import 'dart:async';
-import 'dart:convert';
+import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart' as wbrtc;
 import 'package:get/get.dart';
 import 'package:janus_client/janus_client.dart';
 import 'package:lezate_khayati/Globals/Globals.dart';
 import 'package:lezate_khayati/Utils/color_utils.dart';
+import 'package:lezate_khayati/Utils/view_utils.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../Models/Live/comment_model.dart';
@@ -18,7 +20,8 @@ import '../../Utils/Api/project_request_utils.dart';
 import '../../Utils/Consts.dart';
 import '../../Utils/janus-webrtc/Helper.dart';
 import '../../Utils/janus-webrtc/conf.dart';
-import '../JoinLive/join_live_screen.dart';
+import 'Widgets/comment_part.dart';
+import 'Widgets/show_uploaded_image_modal.dart';
 
 class TypedVideoRoomV2Unified extends StatefulWidget {
   TypedVideoRoomV2Unified({this.liveId});
@@ -56,6 +59,7 @@ class _VideoRoomState extends State<TypedVideoRoomV2Unified>
   List<CommentModel> commentsList = [];
   List<Map<String, dynamic>> publisherStreams = [];
   bool isLoaded = false;
+  File? file;
   late final AnimationController animationController;
 
   TextEditingController messageController = TextEditingController();
@@ -81,24 +85,6 @@ class _VideoRoomState extends State<TypedVideoRoomV2Unified>
       vsync: this,
     );
     super.initState();
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('*****************************');
-      if (message.data['title'] == 'کنفرانس') {
-        getUsers();
-      } else if (message.data['title'] == 'comment') {
-        setState(() {
-          commentsList
-              .add(CommentModel.fromJson(jsonDecode(message.data['message'])));
-          scrollController.animateTo(
-            scrollController.position.maxScrollExtent + 30,
-            duration: const Duration(
-              milliseconds: 200,
-            ),
-            curve: Curves.easeInOut,
-          );
-        });
-      }
-    });
   }
 
   getUsers() async {
@@ -143,16 +129,9 @@ class _VideoRoomState extends State<TypedVideoRoomV2Unified>
     print('session Id : ${session.sessionId}');
     plugin = await session.attach<JanusVideoRoomPlugin>();
 
-
-
-
 /*    await plugin.createRoom(myRoom,);
     print('room created');*/
   }
-
-
-
-
 
   subscribeTo(List<Map<String, dynamic>> sources) async {
     myPrint();
@@ -224,7 +203,7 @@ class _VideoRoomState extends State<TypedVideoRoomV2Unified>
     return;
   }
 
-  myPrint(){
+  myPrint() {
     print('888888888888888888888888888888888888888888');
     print('feedStreams ${feedStreams}');
     print('subscriptions ${subscriptions}');
@@ -416,8 +395,11 @@ class _VideoRoomState extends State<TypedVideoRoomV2Unified>
 
   addPublisher() {}
 
+  Size? size;
+
   @override
   Widget build(BuildContext context) {
+    size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -448,7 +430,7 @@ class _VideoRoomState extends State<TypedVideoRoomV2Unified>
                   width: 4.0,
                 ),
                 Text(
-                  'subscribersCount..toString()',
+                  subscribers.length.toString(),
                   style: TextStyle(
                     color: Colors.white,
                   ),
@@ -456,17 +438,13 @@ class _VideoRoomState extends State<TypedVideoRoomV2Unified>
               ],
             ),
           ),
-          IconButton(
-            onPressed: () {
-              // showUsers.value = true;
-              // Navigator.of(context).pop();
-              sendNotife();
-              // Get.back();
-            },
-            icon: Icon(
-              Icons.check,
+          if (Globals.userStream.user!.role == 'admin')
+            IconButton(
+              onPressed: () {
+                pickFile();
+              },
+              icon: Icon(Icons.upload_file),
             ),
-          ),
         ],
       ),
       body: (isLoaded)
@@ -492,7 +470,40 @@ class _VideoRoomState extends State<TypedVideoRoomV2Unified>
                 //     ),
                 //   ),
                 // ),
-                _buildCommentPart(),
+                // _buildCommentPart(),
+                CommentPart(
+                  liveId: widget.liveId.toString(),
+                ),
+                (file is File)?Align(
+                  alignment: Alignment.topRight,
+                  child: InkWell(
+                    onTap: () {
+                      showModal();
+                    },
+                    child: Container(
+                      height: size!.height * .05,
+                      width: size!.width * .3,
+                      margin: paddingAll10,
+                      decoration: BoxDecoration(
+                        borderRadius: radiusAll6,
+                        color: Colors.white,
+                        boxShadow: ViewUtils.neoShadow(),
+                      ),
+                      child: Center(
+                        child: AutoSizeText(
+                          'نمایش تصویر',
+                          maxFontSize: 16.0,
+                          maxLines: 1,
+                          minFontSize: 12.0,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14.0,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ):SizedBox(),
               ],
             )
           : Stack(
@@ -515,129 +526,59 @@ class _VideoRoomState extends State<TypedVideoRoomV2Unified>
     );
   }
 
-  Widget _buildCommentPart() {
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height * .4,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Colors.black45,
-              Colors.black38,
-              Colors.black26,
-              Colors.transparent,
-            ],
-            begin: Alignment.bottomCenter,
-            end: Alignment.topCenter,
-          ),
-        ),
-        child: Column(
-          children: [
-            Expanded(
-              child: Container(
-                height: double.maxFinite,
-                width: double.maxFinite,
-                child: ListView.builder(
-                  itemCount: commentsList.length,
-                  controller: scrollController,
-                  physics: BouncingScrollPhysics(),
-                  itemBuilder: (BuildContext context, int index) {
-                    return _buildCommentItem(comment: commentsList[index]);
-                  },
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 8.0,
-            ),
-            Container(
-              padding: paddingAll8,
-              width: MediaQuery.of(context).size.width,
-              // height: MediaQuery.of(context).size.height * .06,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Expanded(
-                    child: AnimatedContainer(
-                      constraints: BoxConstraints(
-                        maxHeight: MediaQuery.of(context).size.height * .15,
-                      ),
-                      width: double.maxFinite,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(.5),
-                        // boxShadow: ViewUtils.shadow(
-                        //   offset: const Offset(0.0, 0.0),
-                        // ),
-                        borderRadius: radiusAll10,
-                      ),
-                      duration: const Duration(milliseconds: 270),
-                      child: TextField(
-                        onTap: () {
-                          // controller.scrollToDown();
-                        },
-                        controller: messageController,
-                        maxLines: 10,
-                        minLines: 1,
-                        style: TextStyle(
-                          color: Colors.grey.shade800,
-                        ),
-                        keyboardType: TextInputType.multiline,
-                        decoration: InputDecoration(
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: radiusAll10,
-                            borderSide: const BorderSide(
-                              color: Colors.red,
-                              width: 1.0,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: radiusAll10,
-                            borderSide: BorderSide(
-                              color: Colors.red,
-                              width: 1.0,
-                            ),
-                          ),
-                          hintText: 'متن پیام',
-                          hintStyle: TextStyle(
-                            fontSize: 12.0,
-                          ),
-                          // suffixIcon: IconButton(
-                          //   onPressed: () {
-                          //     controller.pickFile();
-                          //   },
-                          //   icon: Icon(
-                          //     Icons.attach_file,
-                          //     color: Colors.grey.shade700,
-                          //   ),
-                          // ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      if (messageController.text.isNotEmpty) {
-                        sendMessage();
-                      }
-                    },
-                    child: Lottie.asset(
-                      'assets/animations/send.json',
-                      height: MediaQuery.of(context).size.width * .15,
-                      width: MediaQuery.of(context).size.width * .15,
-                      controller: animationController,
-                      // repeat: false,
-                    ),
-                  ),
-                ],
-              ),
-            )
-          ],
-        ),
-      ),
+  void pickFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.image,
     );
+    if (result != null) {
+      setState(() {
+        file = File(result.files.single.path!);
+      });
+      //
+      // switch (file!.path.split('.').last) {
+      //   case 'png':
+      //     {
+      //       print('png');
+      //       break;
+      //     }
+      //   case 'jpeg':
+      //     {
+      //       print('jpeg');
+      //       break;
+      //     }
+      // // case 'mp4':
+      // //   {
+      // //     file = await getThumb(filePath: file.path);
+      // //     isVideo = true;
+      // //     print('mp4');
+      // //     break;
+      // //   }
+      //   default:
+      //     {
+      //       print(file!.path.split('.').last.toString());
+      //       break;
+      //     }
+      // }
+      uploadFile(
+        file: file!,
+      );
+      // }
+    }
   }
+
+  uploadFile({required File file}) async {
+    EasyLoading.show();
+    ApiResult result = await RequestsUtil.instance.uploadLiveFile(
+      file: file,
+      liveId:widget.liveId.toString(),
+    );
+    EasyLoading.dismiss();
+    if (result.isDone) {
+      print(result.data);
+    }
+  }
+
+
 
   Widget _buildAdminView() {
     List<RemoteStream> items =
@@ -647,8 +588,8 @@ class _VideoRoomState extends State<TypedVideoRoomV2Unified>
 
     return Container(
       color: Colors.black,
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
+      width: size!.width,
+      height: size!.height,
       child: Stack(
         children: [
           wbrtc.RTCVideoView(
@@ -790,6 +731,21 @@ class _VideoRoomState extends State<TypedVideoRoomV2Unified>
             ),
           )
         ],
+      ),
+    );
+  }
+
+  void showModal() async {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      isDismissible: true,
+      enableDrag: false,
+      useRootNavigator: false,
+      builder: (BuildContext context) => ShowUploadedImageModal(
+        file:file!,
+        isSub: false,
       ),
     );
   }
