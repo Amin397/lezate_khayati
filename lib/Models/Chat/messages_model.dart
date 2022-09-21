@@ -1,8 +1,9 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:lezate_khayati/Plugins/get/get.dart';
 
-class MessageModel {
+class MessageModel{
   MessageModel({
     this.id,
     this.userId,
@@ -13,19 +14,27 @@ class MessageModel {
     this.isMe,
     this.user,
     this.files,
+    this.parent,
+    this.replyName,
     required this.isSend,
+    this.swipeAnimationController,
+    this.animation,
   });
 
   int? id;
   String? userId;
   String? chatId;
   String? body;
+  String? replyName;
   DateTime? createdAt;
   DateTime? updatedAt;
   bool? isMe;
   User? user;
   Files? files;
+  ParentClass? parent;
   RxBool isSend;
+  AnimationController? swipeAnimationController;
+  Animation<Offset>? animation;
 
 
   static List<MessageModel> listFromJson(List data){
@@ -40,7 +49,10 @@ class MessageModel {
     createdAt: DateTime.parse(json["created_at"]),
     updatedAt: DateTime.parse(json["updated_at"]),
     isMe: json["isMe"],
+    replyName:(json["parent"] == null)?null:  json["parent"]['user']['name'],
     isSend: true.obs,
+    parent:(json['parent'] == null)?null: ParentClass.fromJson(json["parent"]),
+    // parent:json['parent'] ?? null,
     user: User.fromJson(json["user"]),
 
     files:(json["files"] == null)?null: Files.fromJson(json["files"]),
@@ -58,6 +70,33 @@ class MessageModel {
     "files": files!.toJson(),
   };
 }
+
+class ParentClass {
+  ParentClass({
+    this.id,
+    this.userId,
+    this.isMe,
+  });
+
+  int? id;
+  String? userId;
+  bool? isMe;
+
+  factory ParentClass.fromJson(Map<String, dynamic> json) => ParentClass(
+    id: json["id"],
+    userId: json["user_id"],
+    isMe: json["isMe"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "user_id": userId,
+    "isMe": isMe,
+  };
+}
+
+
+
 
 class Files {
   Files({

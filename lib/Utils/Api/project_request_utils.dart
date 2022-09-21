@@ -347,35 +347,71 @@ class RequestsUtil extends GetConnect {
   Future<ApiResult> sendMessage({
     required String chatId,
     required String message,
+    dynamic parentId,
     File? file,
     String? type,
   }) async {
+
+
+    print('\n\n\n\n\n');
+    print(parentId);
     if (file is File) {
       print(file.path);
       print(file.path);
-      return await makeRequest(
-        type: 'post',
-        webController: WebControllers.chats,
-        webMethod: WebMethods.newmessage,
-        files: [file],
-        body: {
-          'body': message,
-          'chat_id': chatId,
-          'type': type,
-        },
-        bearer: true,
-      );
+      if(parentId is String){
+        return await makeRequest(
+          type: 'post',
+          webController: WebControllers.chats,
+          webMethod: WebMethods.newmessage,
+          files: [file],
+          body: {
+            'body': message,
+            'chat_id': chatId,
+            'type': type,
+            'parent_id ':parentId,
+          },
+          bearer: true,
+        );
+      }else{
+        return await makeRequest(
+          type: 'post',
+          webController: WebControllers.chats,
+          webMethod: WebMethods.newmessage,
+          files: [file],
+          body: {
+            'body': message,
+            'chat_id': chatId,
+            'type': type,
+          },
+          bearer: true,
+        );
+      }
+
     } else {
-      return await makeRequest(
-        type: 'post',
-        webController: WebControllers.chats,
-        webMethod: WebMethods.newmessage,
-        body: {
-          'body': message,
-          'chat_id': chatId,
-        },
-        bearer: true,
-      );
+      if(parentId is String){
+        return await makeRequest(
+          type: 'post',
+          webController: WebControllers.chats,
+          webMethod: WebMethods.newmessage,
+          body: {
+            'body': message,
+            'chat_id': chatId,
+            'parent_id':parentId,
+          },
+          bearer: true,
+        );
+      }else{
+        return await makeRequest(
+          type: 'post',
+          webController: WebControllers.chats,
+          webMethod: WebMethods.newmessage,
+          body: {
+            'body': message,
+            'chat_id': chatId,
+          },
+          bearer: true,
+        );
+      }
     }
   }
 

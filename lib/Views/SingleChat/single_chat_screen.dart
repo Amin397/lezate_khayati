@@ -1,8 +1,12 @@
 import 'dart:io';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:lezate_khayati/Models/Chat/messages_model.dart';
 import 'package:lezate_khayati/Plugins/get/get.dart';
 import 'package:lezate_khayati/Utils/Consts.dart';
+import 'package:lezate_khayati/Utils/color_utils.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../Controllers/Chat/single_chat_controller.dart';
@@ -55,188 +59,190 @@ class SingleChatScreen extends StatelessWidget {
           padding: paddingAll8,
           // height: Get.height * .08,
           width: Get.width,
-          child: Obx(() => (controller.isRecorded.isTrue)
-              ? Row(
-                  children: [
-                    Expanded(
-                      child: SizedBox(
-                        width: double.maxFinite,
-                        height: Get.height * .08,
-                        child: VoiceMessage(
-                          audioFile: File(controller.voicePath),
-                          isLocale: true,
-                          played: false,
-                          me: true,
-                          onPlay: () {},
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        controller.deleteVoice();
-                      },
-                      icon: Icon(
-                        Icons.delete_forever,
-                        color: Colors.red,
-                      ),
-                    ),
-                    GetBuilder(
-                      init: controller,
-                      id: 'resetSendMessage',
-                      builder: (ctx) => GestureDetector(
-                        onTap: () {
-                          if (controller.messageController.text.isNotEmpty) {
-                            controller.sendMessage();
-                          } else if (controller.isRecorded.isTrue) {
-                            controller.sendMessage(
-                              file: File(controller.voicePath),
-                            );
-                          }
-                        },
-                        child: Lottie.asset(
-                          'assets/animations/send.json',
-                          height: Get.width * .15,
-                          width: Get.width * .15,
-                          controller: controller.animationController,
-                          // repeat: false,
-                        ),
-                      ),
-                    ),
-                  ],
-                )
-              : Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Expanded(
-                      child: AnimatedContainer(
-                        constraints: BoxConstraints(
-                          maxHeight: Get.height * .15,
-                        ),
-                        width: double.maxFinite,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          // boxShadow: ViewUtils.shadow(
-                          //   offset: const Offset(0.0, 0.0),
-                          // ),
-                          borderRadius: radiusAll10,
-                        ),
-                        duration: const Duration(milliseconds: 270),
-                        child: TextField(
-                          onTap: () {
-                            controller.scrollToDown();
-                          },
-                          controller: controller.messageController,
-                          maxLines: 10,
-                          minLines: 1,
-                          style: TextStyle(
-                            color: Colors.grey.shade800,
-                          ),
-                          keyboardType: TextInputType.multiline,
-                          decoration: InputDecoration(
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: radiusAll10,
-                              borderSide: const BorderSide(
-                                color: Colors.red,
-                                width: 1.0,
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: radiusAll10,
-                              borderSide: BorderSide(
-                                color: Colors.red,
-                                width: 1.0,
-                              ),
-                            ),
-                            hintText: 'متن پیام',
-                            hintStyle: TextStyle(
-                              fontSize: 12.0,
-                            ),
-                            // suffixIcon: IconButton(
-                            //   onPressed: () {
-                            //     controller.pickFile();
-                            //   },
-                            //   icon: Icon(
-                            //     Icons.attach_file,
-                            //     color: Colors.grey.shade700,
-                            //   ),
-                            // ),
+          child: Obx(
+            () => (controller.isRecorded.isTrue)
+                ? Row(
+                    children: [
+                      Expanded(
+                        child: SizedBox(
+                          width: double.maxFinite,
+                          height: Get.height * .08,
+                          child: VoiceMessage(
+                            audioFile: File(controller.voicePath),
+                            isLocale: true,
+                            played: false,
+                            me: true,
+                            onPlay: () {},
                           ),
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        vertical: Get.height * .01,
-                      ),
-                      child: IconButton(
+                      IconButton(
                         onPressed: () {
-                          controller.pickFile();
+                          controller.deleteVoice();
                         },
                         icon: Icon(
-                          Icons.attach_file,
+                          Icons.delete_forever,
+                          color: Colors.red,
                         ),
                       ),
-                    ),
-                    AnimatedContainer(
-                      duration: Duration(milliseconds: 300),
-                      height: (controller.isRecording.isTrue) ? 100.0 : 30.0,
-                      width: (controller.isRecording.isTrue) ? 100.0 : 30.0,
-                      // color: Colors.red,
-                      margin: EdgeInsets.symmetric(
-                        vertical: Get.height * .02,
+                      GetBuilder(
+                        init: controller,
+                        id: 'resetSendMessage',
+                        builder: (ctx) => GestureDetector(
+                          onTap: () {
+                            if (controller.messageController.text.isNotEmpty) {
+                              controller.sendMessage();
+                            } else if (controller.isRecorded.isTrue) {
+                              controller.sendMessage(
+                                file: File(controller.voicePath),
+                              );
+                            }
+                          },
+                          child: Lottie.asset(
+                            'assets/animations/send.json',
+                            height: Get.width * .15,
+                            width: Get.width * .15,
+                            controller: controller.animationController,
+                            // repeat: false,
+                          ),
+                        ),
                       ),
-                      child: Stack(
-                        clipBehavior: Clip.none,
-                        children: [
-                          (controller.isRecording.isTrue)
-                              ? Center(
-                                  child: Container(
-                                    child: Lottie.asset(
-                                      'assets/animations/voiceWave.json',
-                                      height: 100.0,
-                                      width: 100.0,
-                                    ),
-                                  ),
-                                )
-                              : SizedBox(),
-                          Center(
-                            child: GestureDetector(
-                              onLongPressStart: (LongPressStartDetails s) {
-                                print('start');
-                                controller.start();
-                              },
-                              onLongPressEnd: (LongPressEndDetails s) {
-                                print('end');
-                                controller.stop();
-                              },
-                              child: Icon(
-                                Icons.mic,
+                    ],
+                  )
+                : Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Expanded(
+                        child: AnimatedContainer(
+                          constraints: BoxConstraints(
+                            maxHeight: Get.height * .15,
+                          ),
+                          width: double.maxFinite,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            // boxShadow: ViewUtils.shadow(
+                            //   offset: const Offset(0.0, 0.0),
+                            // ),
+                            borderRadius: radiusAll10,
+                          ),
+                          duration: const Duration(milliseconds: 270),
+                          child: TextField(
+                            onTap: () {
+                              controller.scrollToDown();
+                            },
+                            controller: controller.messageController,
+                            maxLines: 10,
+                            minLines: 1,
+                            style: TextStyle(
+                              color: Colors.grey.shade800,
+                            ),
+                            keyboardType: TextInputType.multiline,
+                            decoration: InputDecoration(
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: radiusAll10,
+                                borderSide: const BorderSide(
+                                  color: Colors.red,
+                                  width: 1.0,
+                                ),
                               ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: radiusAll10,
+                                borderSide: BorderSide(
+                                  color: Colors.red,
+                                  width: 1.0,
+                                ),
+                              ),
+                              hintText: 'متن پیام',
+                              hintStyle: TextStyle(
+                                fontSize: 12.0,
+                              ),
+                              // suffixIcon: IconButton(
+                              //   onPressed: () {
+                              //     controller.pickFile();
+                              //   },
+                              //   icon: Icon(
+                              //     Icons.attach_file,
+                              //     color: Colors.grey.shade700,
+                              //   ),
+                              // ),
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                    GetBuilder(
-                      init: controller,
-                      id: 'resetSendMessage',
-                      builder: (ctx) => GestureDetector(
-                        onTap: () {
-                          if (controller.messageController.text.isNotEmpty) {
-                            controller.sendMessage();
-                          }
-                        },
-                        child: Lottie.asset(
-                          'assets/animations/send.json',
-                          height: Get.width * .15,
-                          width: Get.width * .15,
-                          controller: controller.animationController,
-                          // repeat: false,
                         ),
                       ),
-                    ),
-                  ],
-                ),),
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: Get.height * .01,
+                        ),
+                        child: IconButton(
+                          onPressed: () {
+                            controller.pickFile();
+                          },
+                          icon: Icon(
+                            Icons.attach_file,
+                          ),
+                        ),
+                      ),
+                      AnimatedContainer(
+                        duration: Duration(milliseconds: 300),
+                        height: (controller.isRecording.isTrue) ? 100.0 : 30.0,
+                        width: (controller.isRecording.isTrue) ? 100.0 : 30.0,
+                        // color: Colors.red,
+                        margin: EdgeInsets.symmetric(
+                          vertical: Get.height * .02,
+                        ),
+                        child: Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            (controller.isRecording.isTrue)
+                                ? Center(
+                                    child: Container(
+                                      child: Lottie.asset(
+                                        'assets/animations/voiceWave.json',
+                                        height: 100.0,
+                                        width: 100.0,
+                                      ),
+                                    ),
+                                  )
+                                : SizedBox(),
+                            Center(
+                              child: GestureDetector(
+                                onLongPressStart: (LongPressStartDetails s) {
+                                  print('start');
+                                  controller.start();
+                                },
+                                onLongPressEnd: (LongPressEndDetails s) {
+                                  print('end');
+                                  controller.stop();
+                                },
+                                child: Icon(
+                                  Icons.mic,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      GetBuilder(
+                        init: controller,
+                        id: 'resetSendMessage',
+                        builder: (ctx) => GestureDetector(
+                          onTap: () {
+                            if (controller.messageController.text.isNotEmpty) {
+                              controller.sendMessage();
+                            }
+                          },
+                          child: Lottie.asset(
+                            'assets/animations/send.json',
+                            height: Get.width * .15,
+                            width: Get.width * .15,
+                            controller: controller.animationController,
+                            // repeat: false,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+          ),
         ),
       ),
     );
@@ -277,7 +283,9 @@ class SingleChatScreen extends StatelessWidget {
                           itemCount: controller.chats.length,
                           itemBuilder: (BuildContext context, int index) =>
                               ChatBubble(
-                            file: (controller.chats[index].files != null)?controller.chats[index].files!.file : null,
+                            file: (controller.chats[index].files != null)
+                                ? controller.chats[index].files!.file
+                                : null,
                             model: controller.chats[index],
                             isCurrentUser: controller.chats[index].isMe!,
                           ),
@@ -289,9 +297,180 @@ class SingleChatScreen extends StatelessWidget {
               ),
             ),
           ),
+          _buildReplayPart(),
           _buildMessageField(),
         ],
       ),
+    );
+  }
+
+  Widget _buildReplayPart() {
+    return Obx(
+      () {
+        return AnimatedContainer(
+          duration: Duration(milliseconds: 300),
+          width: Get.width,
+          height: (controller.replyActive.isTrue) ? Get.height * .13 : 0.0,
+          decoration: BoxDecoration(
+            color: Colors.grey[400],
+            borderRadius: radiusAll10,
+          ),
+          padding: paddingAll6,
+          margin: EdgeInsets.symmetric(
+            horizontal: Get.width * .02,
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 6.0,
+                height: double.maxFinite,
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.horizontal(
+                    left: Radius.circular(10.0),
+                  ),
+                ),
+              ),
+              Container(
+                width: Get.width - 40.5,
+                height: double.maxFinite,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.horizontal(
+                    right: Radius.circular(10.0),
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    if (controller.replayModel is MessageModel)
+                      Container(
+                        width: double.maxFinite,
+                        height: Get.height * .02,
+                        margin: EdgeInsets.symmetric(horizontal: 6.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Align(
+                              child: Text(
+                                (controller.replayModel!.isMe!)
+                                    ? 'شما'
+                                    : controller.replayModel!.user!.name!,
+                                style: TextStyle(color: ColorUtils.textColor),
+                              ),
+                              alignment: Alignment.bottomLeft,
+                            ),
+                            InkWell(
+                              onTap: () {
+                                controller.clearReply();
+                              },
+                              child: Icon(
+                                Icons.clear,
+                                size: 20.0,
+                                color: Colors.grey,
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    if (controller.replayModel is MessageModel)
+                      Expanded(
+                        child: Container(
+                          height: double.maxFinite,
+                          width: double.maxFinite,
+                          padding: paddingAll6,
+                          child: (controller.replayModel!.files is Files)
+                              ? (controller.replayModel!.files!.type == 'image')
+                                  ? Row(
+                                      children: [
+                                        Container(
+                                          height: Get.width * .17,
+                                          width: Get.width * .17,
+                                          // margin: EdgeInsets.only(right: Get.width * .7),
+                                          child: ClipRRect(
+                                            borderRadius: radiusAll6,
+                                            child:(controller.replayModel!.files!.input is String)? Image(
+                                              image: NetworkImage(
+                                                controller
+                                                    .replayModel!.files!.input!,
+                                              ),
+                                              fit: BoxFit.fill,
+                                            ):Image(
+                                              image: FileImage(
+                                                controller
+                                                    .replayModel!.files!.file!,
+                                              ),
+                                              fit: BoxFit.fill,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 8.0,
+                                        ),
+                                        (controller.replayModel!.body is String)
+                                            ? Expanded(
+                                                child: Container(
+                                                  height: double.maxFinite,
+                                                  width: double.maxFinite,
+                                                  child: Align(
+                                                    alignment:
+                                                        Alignment.centerLeft,
+                                                    child: AutoSizeText(
+                                                      controller
+                                                          .replayModel!.body!,
+                                                      maxLines: 2,
+                                                      maxFontSize: 18.0,
+                                                      minFontSize: 12.0,
+                                                      style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontSize: 16.0,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              )
+                                            : SizedBox(),
+                                      ],
+                                    )
+                                  : (controller.replayModel!.files!.input
+                                          is String)
+                                      ? VoiceMessage(
+                                          audioSrc: controller
+                                              .replayModel!.files!.input!,
+                                          isLocale: false,
+                                          played: false,
+                                          me: false,
+                                          onPlay: () {},
+                                        )
+                                      : VoiceMessage(
+                                          audioFile: controller
+                                              .replayModel!.files!.file!,
+                                          isLocale: true,
+                                          played: false,
+                                          me: false,
+                                          onPlay: () {},
+                                        )
+                              : Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: AutoSizeText(
+                                    controller.replayModel!.body!,
+                                    maxLines: 2,
+                                    maxFontSize: 18.0,
+                                    minFontSize: 12.0,
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 16.0,
+                                    ),
+                                  ),
+                                ),
+                        ),
+                      )
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

@@ -20,12 +20,15 @@ class SingleChatController extends GetxController
   RxBool isLoaded = false.obs;
 
   List<MessageModel> chats = [];
+
+  MessageModel? replayModel;
   final ScrollController scrollController = ScrollController();
   TextEditingController messageController = TextEditingController();
 
   final Record record = Record();
 
   final RxBool isRecording = false.obs;
+  final RxBool replyActive = false.obs;
   final RxBool isRecorded = false.obs;
   final RxBool showSendButton = false.obs;
   late final AnimationController animationController;
@@ -40,6 +43,7 @@ class SingleChatController extends GetxController
     animationController = AnimationController(
       vsync: this,
     );
+
     getData(notification: false);
     super.onInit();
 
@@ -65,6 +69,22 @@ class SingleChatController extends GetxController
         chats = MessageModel.listFromJson(result.data);
         isLoaded(true);
       }
+
+      chats.forEach((element) {
+        element.swipeAnimationController = AnimationController(
+          vsync: this,
+          duration: const Duration(milliseconds: 100),
+        );
+        element.animation = Tween(
+          begin: const Offset(0.0, 0.0),
+          end: const Offset(0.2, 0.0),
+        ).animate(
+          CurvedAnimation(
+            curve: Curves.decelerate,
+            parent: element.swipeAnimationController!,
+          ),
+        );
+      });
       Future.delayed(Duration(milliseconds: 500), () {
         scrollController.animateTo(
           scrollController.position.maxScrollExtent + 50,
@@ -88,6 +108,10 @@ class SingleChatController extends GetxController
         isMe: true,
         isSend: false.obs,
         userId: Globals.userStream.user!.id.toString(),
+        swipeAnimationController: AnimationController(
+          vsync: this,
+          duration: const Duration(milliseconds: 100),
+        ),
         user: User(
           name: Globals.userStream.user!.name,
           id: Globals.userStream.user!.id,
@@ -96,6 +120,15 @@ class SingleChatController extends GetxController
         files: Files(
           type: 'voice',
           file: file,
+        ),
+      );
+      message.animation = Tween(
+        begin: const Offset(0.0, 0.0),
+        end: const Offset(0.2, 0.0),
+      ).animate(
+        CurvedAnimation(
+          curve: Curves.decelerate,
+          parent: message.swipeAnimationController!,
         ),
       );
 
@@ -115,6 +148,7 @@ class SingleChatController extends GetxController
         message: messageController.text,
         file: file,
         type: 'voice',
+        parentId: (replyActive.isTrue) ? replayModel!.id.toString() : 0,
       );
       messageController.clear();
 
@@ -155,17 +189,67 @@ class SingleChatController extends GetxController
             type: 'image',
             file: file,
           ),
+          swipeAnimationController: AnimationController(
+            vsync: this,
+            duration: const Duration(milliseconds: 100),
+          ),
+        );
+        message.animation = Tween(
+          begin: const Offset(0.0, 0.0),
+          end: const Offset(0.2, 0.0),
+        ).animate(
+          CurvedAnimation(
+            curve: Curves.decelerate,
+            parent: message.swipeAnimationController!,
+          ),
         );
       } else {
-        message = MessageModel(
-          body: messageController.text,
-          isMe: true,
-          isSend: false.obs,
-          userId: Globals.userStream.user!.id.toString(),
-          user: User(
-            name: Globals.userStream.user!.name,
-            id: Globals.userStream.user!.id,
-            avatar: Globals.userStream.user!.avatar,
+        if (replyActive.isTrue) {
+          message = MessageModel(
+            body: messageController.text,
+            isMe: true,
+            isSend: false.obs,
+            userId: Globals.userStream.user!.id.toString(),
+            swipeAnimationController: AnimationController(
+              vsync: this,
+              duration: const Duration(milliseconds: 100),
+            ),
+            user: User(
+              name: Globals.userStream.user!.name,
+              id: Globals.userStream.user!.id,
+              avatar: Globals.userStream.user!.avatar,
+            ),
+            parent: ParentClass(
+              id: replayModel!.id,
+              userId: Globals.userStream.user!.id.toString(),
+              isMe: true,
+            ),
+          );
+        } else {
+          message = MessageModel(
+            body: messageController.text,
+            isMe: true,
+            isSend: false.obs,
+            userId: Globals.userStream.user!.id.toString(),
+            swipeAnimationController: AnimationController(
+              vsync: this,
+              duration: const Duration(milliseconds: 100),
+            ),
+            user: User(
+              name: Globals.userStream.user!.name,
+              id: Globals.userStream.user!.id,
+              avatar: Globals.userStream.user!.avatar,
+            ),
+          );
+        }
+
+        message.animation = Tween(
+          begin: const Offset(0.0, 0.0),
+          end: const Offset(0.2, 0.0),
+        ).animate(
+          CurvedAnimation(
+            curve: Curves.decelerate,
+            parent: message.swipeAnimationController!,
           ),
         );
       }
@@ -186,6 +270,7 @@ class SingleChatController extends GetxController
           message: text,
           file: file,
           type: 'image',
+          parentId: (replyActive.isTrue) ? replayModel!.id.toString() : 0,
         );
 
         if (result.isDone) {
@@ -211,6 +296,7 @@ class SingleChatController extends GetxController
         ApiResult result = await RequestsUtil.instance.sendMessage(
           chatId: id.toString(),
           message: text,
+          parentId: (replyActive.isTrue) ? replayModel!.id.toString() : 0,
         );
         messageController.clear();
 
@@ -235,7 +321,8 @@ class SingleChatController extends GetxController
         }
       }
     }
-
+    // replayModel!.dispose();
+    replyActive(false);
     update(['refreshChats']);
   }
 
@@ -372,5 +459,20 @@ class SingleChatController extends GetxController
   void deleteVoice() {
     isRecorded(false);
     voicePath = '';
+  }
+
+  void replyMessage({MessageModel? model}) {
+    model!.swipeAnimationController!
+        .forward()
+        .whenComplete(() => model.swipeAnimationController!.reverse());
+    replayModel = model;
+    Future.delayed(Duration(milliseconds: 200), () {
+      replyActive(false);
+      replyActive(true);
+    });
+  }
+
+  void clearReply() {
+    replyActive(false);
   }
 }
