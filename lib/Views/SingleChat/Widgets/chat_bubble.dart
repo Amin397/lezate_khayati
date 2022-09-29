@@ -101,7 +101,7 @@ class ChatBubble extends StatelessWidget {
   Widget buildText() {
     return Padding(
       padding: const EdgeInsets.all(12.0),
-      child: (model!.isMe!)
+      child: (isCurrentUser)
           ? Obx(
               () => Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -146,11 +146,19 @@ class ChatBubble extends StatelessWidget {
                 ],
               ),
             )
-          : Text(
-              model!.body!,
-              style: Theme.of(Get.context!).textTheme.bodyText1!.copyWith(
-                    color: isCurrentUser ? Colors.white : Colors.black87,
-                  ),
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                (model!.parent is ParentClass)
+                    ? _buildReplyPart()
+                    : SizedBox(),
+                Text(
+                  model!.body!,
+                  style: Theme.of(Get.context!).textTheme.bodyText1!.copyWith(
+                        color: isCurrentUser ? Colors.white : Colors.black87,
+                      ),
+                ),
+              ],
             ),
     );
   }

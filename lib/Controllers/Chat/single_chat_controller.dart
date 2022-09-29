@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:lezate_khayati/Globals/Globals.dart';
 import 'package:lezate_khayati/Plugins/get/get.dart';
 import 'package:lezate_khayati/Utils/Api/project_request_utils.dart';
@@ -99,10 +100,11 @@ class SingleChatController extends GetxController
 
   void sendMessage({File? file}) async {
     MessageModel message;
-
     String text = '';
+    bool isReply =replyActive.value;
+    isRecorded(false);
 
-    if (isRecorded.isTrue) {
+    if (isReply) {
       message = MessageModel(
         body: messageController.text,
         isMe: true,
@@ -140,7 +142,7 @@ class SingleChatController extends GetxController
       });
 
       chats.add(message);
-      isRecorded(false);
+
       update(['refreshChats']);
 
       ApiResult result = await RequestsUtil.instance.sendMessage(
@@ -148,9 +150,10 @@ class SingleChatController extends GetxController
         message: messageController.text,
         file: file,
         type: 'voice',
-        parentId: (replyActive.isTrue) ? replayModel!.id.toString() : 0,
+        parentId: (isReply) ? replayModel!.id.toString() : 0,
       );
       messageController.clear();
+      replyActive(false);
 
       if (result.isDone) {
         Future.delayed(Duration(milliseconds: 100), () {
@@ -204,7 +207,7 @@ class SingleChatController extends GetxController
           ),
         );
       } else {
-        if (replyActive.isTrue) {
+        if (isReply) {
           message = MessageModel(
             body: messageController.text,
             isMe: true,
@@ -270,8 +273,10 @@ class SingleChatController extends GetxController
           message: text,
           file: file,
           type: 'image',
-          parentId: (replyActive.isTrue) ? replayModel!.id.toString() : 0,
+          parentId: (isReply) ? replayModel!.id.toString() : 0,
         );
+        isRecorded(false);
+        replyActive(false);
 
         if (result.isDone) {
           Future.delayed(Duration(milliseconds: 100), () {
@@ -296,9 +301,10 @@ class SingleChatController extends GetxController
         ApiResult result = await RequestsUtil.instance.sendMessage(
           chatId: id.toString(),
           message: text,
-          parentId: (replyActive.isTrue) ? replayModel!.id.toString() : 0,
+          parentId: (isReply) ? replayModel!.id.toString() : 0,
         );
         messageController.clear();
+        replyActive(false);
 
         if (result.isDone) {
           Future.delayed(Duration(milliseconds: 100), () {
@@ -322,7 +328,7 @@ class SingleChatController extends GetxController
       }
     }
     // replayModel!.dispose();
-    replyActive(false);
+    // replyActive(false);
     update(['refreshChats']);
   }
 
