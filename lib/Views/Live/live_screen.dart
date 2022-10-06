@@ -10,9 +10,9 @@ import 'package:flutter_webrtc/flutter_webrtc.dart' as wbrtc;
 import 'package:get/get.dart';
 import 'package:janus_client/janus_client.dart';
 import 'package:lezate_khayati/Globals/Globals.dart';
+import 'package:lezate_khayati/Plugins/get/get_connect/http/src/request/request.dart';
 import 'package:lezate_khayati/Utils/color_utils.dart';
 import 'package:lezate_khayati/Utils/view_utils.dart';
-import 'package:lottie/lottie.dart';
 
 import '../../Models/Live/comment_model.dart';
 import '../../Models/user_model.dart';
@@ -63,6 +63,8 @@ class _VideoRoomState extends State<TypedVideoRoomV2Unified>
   late final AnimationController animationController;
 
   TextEditingController messageController = TextEditingController();
+
+  bool commentsBan = false;
 
   //todo: create a session and join as publisher ✓
   //todo: send sesion id to all users ✓
@@ -471,39 +473,42 @@ class _VideoRoomState extends State<TypedVideoRoomV2Unified>
                 //   ),
                 // ),
                 // _buildCommentPart(),
+                _buildCommentToggle(),
                 CommentPart(
                   liveId: widget.liveId.toString(),
                 ),
-                (file is File)?Align(
-                  alignment: Alignment.topRight,
-                  child: InkWell(
-                    onTap: () {
-                      showModal();
-                    },
-                    child: Container(
-                      height: size!.height * .05,
-                      width: size!.width * .3,
-                      margin: paddingAll10,
-                      decoration: BoxDecoration(
-                        borderRadius: radiusAll6,
-                        color: Colors.white,
-                        boxShadow: ViewUtils.neoShadow(),
-                      ),
-                      child: Center(
-                        child: AutoSizeText(
-                          'نمایش تصویر',
-                          maxFontSize: 16.0,
-                          maxLines: 1,
-                          minFontSize: 12.0,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 14.0,
+                (file is File)
+                    ? Align(
+                        alignment: Alignment.topRight,
+                        child: InkWell(
+                          onTap: () {
+                            showModal();
+                          },
+                          child: Container(
+                            height: size!.height * .05,
+                            width: size!.width * .3,
+                            margin: paddingAll10,
+                            decoration: BoxDecoration(
+                              borderRadius: radiusAll6,
+                              color: Colors.white,
+                              boxShadow: ViewUtils.neoShadow(),
+                            ),
+                            child: Center(
+                              child: AutoSizeText(
+                                'نمایش تصویر',
+                                maxFontSize: 16.0,
+                                maxLines: 1,
+                                minFontSize: 12.0,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 14.0,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                  ),
-                ):SizedBox(),
+                      )
+                    : SizedBox(),
               ],
             )
           : Stack(
@@ -570,15 +575,13 @@ class _VideoRoomState extends State<TypedVideoRoomV2Unified>
     EasyLoading.show();
     ApiResult result = await RequestsUtil.instance.uploadLiveFile(
       file: file,
-      liveId:widget.liveId.toString(),
+      liveId: widget.liveId.toString(),
     );
     EasyLoading.dismiss();
     if (result.isDone) {
       print(result.data);
     }
   }
-
-
 
   Widget _buildAdminView() {
     List<RemoteStream> items =
@@ -744,9 +747,40 @@ class _VideoRoomState extends State<TypedVideoRoomV2Unified>
       enableDrag: false,
       useRootNavigator: false,
       builder: (BuildContext context) => ShowUploadedImageModal(
-        file:file!,
+        file: file!,
         isSub: false,
       ),
     );
+  }
+
+  Widget _buildCommentToggle() {
+    return Positioned(
+      top: 25.0,
+      right: 25.0,
+      child: ElevatedButton(
+        child: Icon((commentsBan)
+            ? Icons.comment_outlined
+            : Icons.comments_disabled_outlined),
+        onPressed: () {
+          banComments();
+        },
+        style: ElevatedButton.styleFrom(
+          primary:(commentsBan)? Colors.deepOrange:Colors.grey,
+          elevation: 5,
+        ),
+      ),
+    );
+  }
+
+  void banComments() async{
+    EasyLoading.show();
+    ApiResult result = await RequestsUtil.instance.bannedComments();
+    EasyLoading.dismiss();
+
+    if(result.isDone){
+      setState(() {
+        commentsBan = !commentsBan;
+      });
+    }
   }
 }

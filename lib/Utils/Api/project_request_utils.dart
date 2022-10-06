@@ -265,6 +265,16 @@ class RequestsUtil extends GetConnect {
     );
   }
 
+  Future<ApiResult> bannedComments() async {
+    return await makeRequest(
+      type: 'post',
+      webController: WebControllers.admin,
+      webMethod: WebMethods.live,
+      urlParams: 'closeChat',
+      bearer: true,
+    );
+  }
+
   Future<ApiResult> addNewSubscribeToLive({required String fcmToken}) async {
     return await makeRequest(
       type: 'post',
