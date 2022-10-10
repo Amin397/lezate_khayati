@@ -17,6 +17,8 @@ class MainMoreController extends GetxController {
 
   RxBool isLoaded = false.obs;
 
+  int catId = 0;
+
   TextEditingController searchTextController = TextEditingController();
 
   @override
@@ -43,6 +45,7 @@ class MainMoreController extends GetxController {
         }
       case 2:
         {
+          catId = Get.arguments['catId'];
           getProductData();
           break;
         }
@@ -88,7 +91,9 @@ class MainMoreController extends GetxController {
   }
 
   void getProductData() async {
-    ApiResult result = await RequestsUtil.instance.getProductsData();
+    ApiResult result = await RequestsUtil.instance.getProductsData(
+      catId: catId.toString(),
+    );
     if (result.isDone) {
       showMoreItem = ProductsModel.listFromJson(result.data);
       update(['itemsList']);

@@ -211,16 +211,15 @@ class RequestsUtil extends GetConnect {
     required String type,
   }) async {
     return await makeRequest(
-      type: 'post',
-      webController: WebControllers.auth,
-      webMethod: WebMethods.bookmarks,
-      bearer: true,
-      urlParams: 'create',
-      body: {
-        'collection_id':id,
-        'type':type,
-      }
-    );
+        type: 'post',
+        webController: WebControllers.auth,
+        webMethod: WebMethods.bookmarks,
+        bearer: true,
+        urlParams: 'create',
+        body: {
+          'collection_id': id,
+          'type': type,
+        });
   }
 
   Future<ApiResult> buyCourse({
@@ -261,6 +260,16 @@ class RequestsUtil extends GetConnect {
       body: {
         'live_id': Globals.liveStream.liveId,
       },
+      bearer: true,
+    );
+  }
+
+  Future<ApiResult> getProductsCategory() async {
+    return await makeRequest(
+      type: 'post',
+      webController: WebControllers.products,
+      webMethod: WebMethods.cats,
+      urlParams: 'list',
       bearer: true,
     );
   }
@@ -361,14 +370,12 @@ class RequestsUtil extends GetConnect {
     File? file,
     String? type,
   }) async {
-
-
     print('\n\n\n\n\n');
     print(parentId);
     if (file is File) {
       print(file.path);
       print(file.path);
-      if(parentId is String){
+      if (parentId is String) {
         return await makeRequest(
           type: 'post',
           webController: WebControllers.chats,
@@ -378,11 +385,11 @@ class RequestsUtil extends GetConnect {
             'body': message,
             'chat_id': chatId,
             'type': type,
-            'parent_id ':parentId,
+            'parent_id ': parentId,
           },
           bearer: true,
         );
-      }else{
+      } else {
         return await makeRequest(
           type: 'post',
           webController: WebControllers.chats,
@@ -396,9 +403,8 @@ class RequestsUtil extends GetConnect {
           bearer: true,
         );
       }
-
     } else {
-      if(parentId is String){
+      if (parentId is String) {
         return await makeRequest(
           type: 'post',
           webController: WebControllers.chats,
@@ -406,11 +412,11 @@ class RequestsUtil extends GetConnect {
           body: {
             'body': message,
             'chat_id': chatId,
-            'parent_id':parentId,
+            'parent_id': parentId,
           },
           bearer: true,
         );
-      }else{
+      } else {
         return await makeRequest(
           type: 'post',
           webController: WebControllers.chats,
@@ -437,12 +443,16 @@ class RequestsUtil extends GetConnect {
     );
   }
 
-  Future<ApiResult> getProductsData() async {
+  Future<ApiResult> getProductsData({
+    required String catId,
+  }) async {
     return await makeRequest(
-        type: 'get',
-        webController: WebControllers.products,
-        webMethod: WebMethods.archive,
-        bearer: true);
+      type: 'get',
+      webController: WebControllers.products,
+      webMethod: WebMethods.cat,
+      urlParams: catId,
+      bearer: true,
+    );
   }
 
   Future<ApiResult> getLiveJoinedUser({required String liveId}) async {
@@ -575,12 +585,11 @@ class RequestsUtil extends GetConnect {
     required String id,
   }) async {
     return await makeRequest(
-      type: 'get',
-      webController: WebControllers.courses,
-      webMethod: WebMethods.single,
-      urlParams: id,
-      bearer: true
-    );
+        type: 'get',
+        webController: WebControllers.courses,
+        webMethod: WebMethods.single,
+        urlParams: id,
+        bearer: true);
   }
 
   Future<ApiResult> updateProfile({

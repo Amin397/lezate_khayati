@@ -16,6 +16,7 @@ import '../Views/MyClass/my_class_screen.dart';
 import '../Views/MyFavorite/my_favorite_screen.dart';
 import '../Views/MyOrder/my_order_screen.dart';
 import '../Views/MyQuestion/my_question_screen.dart';
+import '../Views/ProductCategory/product_category_screen.dart';
 import '../Views/Search/search_screen.dart';
 import '../Views/SingleArticle/single_article_screen.dart';
 import '../Views/SingleBook/single_book_screen.dart';
@@ -65,6 +66,11 @@ class RoutingUtils {
   static GetPage mainMore = GetPage(
     name: '/mainMore',
     page: () => MainMoreScreen(),
+    transition: Transition.fadeIn,
+  );
+  static GetPage productCategory = GetPage(
+    name: '/productCategory',
+    page: () => ProductCategoryScreen(),
     transition: Transition.fadeIn,
   );
   static GetPage singlePriceyCourse = GetPage(

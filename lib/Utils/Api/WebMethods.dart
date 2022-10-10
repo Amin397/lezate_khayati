@@ -17,6 +17,8 @@ enum WebMethods {
   live,
   buy,
   create,
+  cat,
+  cats,
   messages,
   newmessage,
   fcmUpdate,

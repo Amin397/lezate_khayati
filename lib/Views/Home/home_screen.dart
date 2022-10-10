@@ -73,12 +73,12 @@ class _HomeScreenState extends State<HomeScreen> {
                             SizedBox(
                               height: Get.height * .02,
                             ),
-                            if (controller.productsList.isNotEmpty)
+                            if (controller.productsCategoryList.isNotEmpty)
                               BuildShowListWidget(
                                 controller: controller,
-                                title: 'محصولات',
+                                title: 'دسته بندی محصولات',
                                 id: 2,
-                                list: controller.productsList,
+                                list: controller.productsCategoryList,
                               ),
                             SizedBox(
                               height: Get.height * .02,

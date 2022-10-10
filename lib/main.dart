@@ -79,6 +79,7 @@ void main() async {
           // RoutingUtils.lobby,
           RoutingUtils.live,
           RoutingUtils.joinLive,
+          RoutingUtils.productCategory,
         ],
         builder: EasyLoading.init(),
         home: SplashScreen(),

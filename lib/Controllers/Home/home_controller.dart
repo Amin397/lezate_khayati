@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lezate_khayati/Models/Home/free_courses_model.dart';
 import 'package:lezate_khayati/Models/Home/home_articles_model.dart';
 import 'package:lezate_khayati/Models/Home/pricey_courses_model.dart';
+import 'package:lezate_khayati/Models/Home/product_category_model.dart';
 import 'package:lezate_khayati/Models/Training/Books/books_model.dart';
 import 'package:lezate_khayati/Plugins/get/get.dart';
 import 'package:lezate_khayati/Utils/Api/project_request_utils.dart';
@@ -24,6 +25,7 @@ class HomeController extends GetxController {
   List<BooksModel> booksList = [];
   List<HomeArticlesModel> articlesList = [];
   List<ProductsModel> productsList = [];
+  List<ProductCategoryModel> productsCategoryList = [];
   List<PriceyCoursesModel> priceyCoursesList = [];
   List<FreeCoursesModel> freeCoursesList = [];
 
@@ -59,11 +61,21 @@ class HomeController extends GetxController {
     if (result.isDone) {
       booksList = BooksModel.listFromJson(result.data['books']);
       articlesList = HomeArticlesModel.listFromJson(result.data['articles']);
-      productsList = ProductsModel.listFromJson(result.data['products']);
+      // productsList = ProductsModel.listFromJson(result.data['products']);
       freeCoursesList =
           FreeCoursesModel.listFromJson(result.data['freeCourses']);
       priceyCoursesList =
           PriceyCoursesModel.listFromJson(result.data['pricyCourses']);
+    }
+
+    getProductCategory();
+  }
+
+  getProductCategory() async {
+    ApiResult result = await RequestsUtil.instance.getProductsCategory();
+
+    if (result.isDone) {
+      productsCategoryList = ProductCategoryModel.listFromJson(result.data);
     }
 
     isLoaded(true);
@@ -73,10 +85,20 @@ class HomeController extends GetxController {
     required int id,
     required String title,
   }) {
-    Get.toNamed(RoutingUtils.mainMore.name, arguments: {
-      'id': id,
-      'title': title,
-    });
+    print(id);
+    if (id == 2) {
+      Get.toNamed(
+        RoutingUtils.productCategory.name,
+      );
+    } else {
+      Get.toNamed(
+        RoutingUtils.mainMore.name,
+        arguments: {
+          'id': id,
+          'title': title,
+        },
+      );
+    }
   }
 
   void goToSearchPage() {
