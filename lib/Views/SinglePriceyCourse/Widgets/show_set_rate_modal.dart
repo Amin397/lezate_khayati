@@ -1,8 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:lezate_khayati/Plugins/get/get.dart';
 import 'package:lezate_khayati/Utils/color_utils.dart';
-import 'package:smooth_star_rating/smooth_star_rating.dart';
+
+// import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 import '../../../Utils/Consts.dart';
 
@@ -13,9 +15,8 @@ class ShowSetRateModal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: ()async{
-        Get.back(
-        );
+      onWillPop: () async {
+        Get.back();
         return true;
       },
       child: Container(
@@ -33,8 +34,7 @@ class ShowSetRateModal extends StatelessWidget {
               alignment: Alignment.centerLeft,
               child: IconButton(
                 onPressed: () {
-                  Get.back(
-                  );
+                  Get.back();
                 },
                 icon: Icon(
                   Icons.clear,
@@ -50,21 +50,39 @@ class ShowSetRateModal extends StatelessWidget {
             SizedBox(
               height: 8.0,
             ),
-            SmoothStarRating(
+
+            RatingBar.builder(
+              initialRating: 0,
+              minRating: 1,
+              direction: Axis.horizontal,
               allowHalfRating: true,
-              onRated: (v) {
-                rate = v;
+              itemCount: 5,
+              itemSize: 40.0,
+              itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+              itemBuilder: (context, _) => Icon(
+                Icons.star,
+                color: Colors.amber,
+              ),
+              onRatingUpdate: (rating) {
+                print(rating);
               },
-              starCount: 5,
-              rating: rate,
-              size: 40.0,
-              isReadOnly: false,
-              // fullRatedIconData: Icons.blur_off,
-              // halfRatedIconData: Icons.blur_on,
-              color: Colors.yellow.shade700,
-              borderColor: Colors.yellow,
-              spacing: 0.0,
             ),
+
+            // SmoothStarRating(
+            //   allowHalfRating: true,
+            //   onRated: (v) {
+            //     rate = v;
+            //   },
+            //   starCount: 5,
+            //   rating: rate,
+            //   size: 40.0,
+            //   isReadOnly: false,
+            //   // fullRatedIconData: Icons.blur_off,
+            //   // halfRatedIconData: Icons.blur_on,
+            //   color: Colors.yellow.shade700,
+            //   borderColor: Colors.yellow,
+            //   spacing: 0.0,
+            // ),
             Expanded(
               child: SizedBox(
                 height: double.maxFinite,
@@ -72,7 +90,7 @@ class ShowSetRateModal extends StatelessWidget {
                 child: Align(
                   alignment: Alignment.bottomCenter,
                   child: InkWell(
-                    onTap: (){
+                    onTap: () {
                       Get.back(
                         result: rate,
                       );
